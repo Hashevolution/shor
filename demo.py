@@ -25,7 +25,7 @@ from shor import (
     quantum_order,
     _counting_qubits,
 )
-from multi_base import shor_quantum_multi, shor_quantum_ekera
+from multi_base import shor_quantum_multi, shor_quantum_ekera, shor_quantum_adaptive
 
 
 def run_factor(N: int, seed: int = 0) -> None:
@@ -189,6 +189,52 @@ def compare3(targets: list[int], trials: int = 50, shots: int = 1) -> None:
                   f"{succ:>3}/{trials:<3}  "
                   f"{meas/trials:>10.2f}  "
                   f"{dt/trials*1000:>9.2f}")
+
+
+def compare_adaptive(
+    targets: list[int], trials: int = 100, shots: int = 2,
+) -> None:
+    """다중 base (random) vs 적응적 base 선택 비교.
+
+    측정 횟수, 반복 (iteration) 횟수, 시간, 성공률 4 차원 비교.
+    """
+    print(f"\n── Adaptive vs Random base ({trials} trials, shots={shots}) ──")
+    print(f"  {'N':>4}  {'method':<14} {'succ':>5} {'meas':>5} {'iter':>5} {'ms':>6}")
+
+    for N in targets:
+        # Random base (기존 multi-base)
+        r_succ = r_meas = r_iter = 0
+        r_time = 0.0
+        for seed in range(trials):
+            t0 = time.perf_counter()
+            res, st = shor_quantum_multi(N, shots_per_base=shots, seed=seed)
+            r_time += time.perf_counter() - t0
+            if res is not None:
+                r_succ += 1
+                r_meas += st.measurements
+                r_iter += (res.attempts or 1)
+
+        # Adaptive
+        a_succ = a_meas = a_iter = 0
+        a_time = 0.0
+        for seed in range(trials):
+            t0 = time.perf_counter()
+            res, st = shor_quantum_adaptive(N, shots_per_base=shots, seed=seed)
+            a_time += time.perf_counter() - t0
+            if res is not None:
+                a_succ += 1
+                a_meas += st.measurements
+                a_iter += (res.attempts or 1)
+
+        for label, succ, meas, it, dt in [
+            ("random base", r_succ, r_meas, r_iter, r_time),
+            ("adaptive base", a_succ, a_meas, a_iter, a_time),
+        ]:
+            print(f"  {N:>4}  {label:<14} "
+                  f"{succ:>3}/{trials:<3} "
+                  f"{meas/trials:>5.2f} "
+                  f"{it/trials:>5.2f} "
+                  f"{dt/trials*1000:>6.2f}")
 
 
 def verify_c_determinism(
@@ -575,6 +621,12 @@ def main(argv: list[str]) -> int:
         Ns = [int(x) for x in argv[i + 1:]] if i + 1 < len(argv) else [77, 143, 209]
         for N in Ns:
             verify_c_determinism(N)
+        return 0
+
+    if "--adaptive" in argv:
+        i = argv.index("--adaptive")
+        Ns = [int(x) for x in argv[i + 1:]] if i + 1 < len(argv) else [77, 143, 209, 323, 377]
+        compare_adaptive(Ns)
         return 0
 
     targets = [int(x) for x in argv[1:]] if len(argv) > 1 else [15, 21, 35]

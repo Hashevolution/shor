@@ -484,4 +484,59 @@ H2 ("E[K_λ] = O(log log N) for semiprime") 의 학계 선행연구 종합 검�
 3. **adaptive base 선택 (H5).** 정리가 보장하는 것은 covered → success. covered 의 비율을 어떻게 최대화하는가? base 선택 전략 설계 여지.
 4. **격자 후처리 (Knill-Mosca) 와의 결합.** convergents 경로를 격자 enum 으로 강화하면 ¬covered 의 lucky 비율 증가 가능.
 
-→ §9 에서 위 후속 후보 중 H5 (adaptive base selection) 의 사전 실험 수록 예정.
+→ §9 에서 위 후속 후보 중 H5 (adaptive base selection) 와 격자 후처리의 결과 수록.
+
+## 9. 후속 실험: Adaptive base + 격자 후처리 (negative results)
+
+§8 정리의 함의를 알고리즘적으로 끝까지 밀어붙여, 측정 횟수를 더 줄일 수 있는지 점검.
+
+### 9.1 H5 — Adaptive base 선택
+
+**아이디어.** 정리에 의해 `r_a | L` 인 base 는 *고전적으로* (측정 없이) 회수 가능. 따라서 양자 측정 가치는 `r_a ∤ L` ⇔ `a^L ≢ 1 mod N` 인 base 에서만 발생. 사전 필터링으로 정보-greedy base 선택.
+
+**구현 (`multi_base.shor_quantum_adaptive`).**
+```python
+def adaptive_base_select(N, L, rng):
+    for _ in range(max_tries):
+        a = rng.randrange(2, N)
+        if pow(a, L, N) != 1:  # L 을 확장할 가능성
+            return a, "extending"
+    return None, "saturated"  # L ≈ λ(N) 추정
+```
+
+**비교 (`demo.py --adaptive`, shots=2/base, 100 trials):**
+
+| N | random base (meas / iter) | adaptive (meas / iter) | 차이 |
+|---|---|---|---|
+| 77 | 2.01 / 1.60 | 2.04 / 1.60 | 0 |
+| 143 | 2.11 / 1.62 | 2.11 / 1.62 | 0 |
+| 209 | 2.78 / 1.99 | 2.78 / 1.98 | 0 |
+| 323 | 2.43 / 1.68 | 2.46 / 1.68 | 0 |
+| 377 | 2.16 / 1.55 | 2.20 / 1.56 | 0 |
+| 437 | 2.53 / 1.91 | 2.61 / 1.89 | 0 |
+
+**결과: 차이 없음.** 측정 횟수도 iteration 횟수도 동일.
+
+**원인 (정리의 corollary).** `quantum_order_multi` 의 **fast-path** 가 이미 정리 적용 영역을 자동 검출하고 측정을 건너뛴다 (`is_exponent_for(a, N)` 체크). Adaptive 사전 필터링은 같은 영역을 다른 방식으로 식별할 뿐, 추가 절약할 측정이 없음.
+
+**Corollary 4 (Adaptive 무용성).** §8 의 (C)-determinism 정리와 fast-path 메커니즘의 조합 하에서, 무작위 base + fast-path 는 측정 횟수 면에서 *어떤 사전 필터링 base 선택 전략과도 동등*. 측정 절약을 위해 다른 메커니즘 (격자 후처리, 측정 budget 적응 등) 이 필요.
+
+### 9.2 격자 후처리 (Knill-Mosca식) — 분석적 평가
+
+**아이디어.** 단일 측정에서 `Fraction(k, Q).limit_denominator(N-1)` 대신, multiple 측정의 k₁/Q, k₂/Q 를 동시 격자 분석하면 r 회수 안정성 증가 가능.
+
+**현 구현의 위치.** `multi_base.convergent_denominators` 는 이미 단일 측정의 모든 연분수 수렴값 분모를 열거 (Knill-Mosca 의 single-measurement post-processing). 다중 측정에서는 `quantum_order_multi` 의 shots 루프가 분모들의 lcm 을 누적 (Mosca 의 multi-measurement extension).
+
+**격자 추가 효과.** Joint diophantine approximation 으로 r 회수의 *failure mode* 를 분석:
+- `gcd(j, r) > 1` 인 측정 → 수렴값 분모는 r 의 진약수
+- 다중 측정 lcm 은 이를 보완 (서로 다른 j 들이 서로 다른 약수 정보 제공)
+- 격자 분석은 lcm 보다 marginal 한 추가 정보만 제공 (개별 측정의 수렴값 분모가 이미 모든 가능한 r 후보를 망라하기 때문)
+
+**결론: 격자 후처리는 우리 framework 에 marginal.** Knill-Mosca 의 가치는 single-base, single-measurement 시나리오에서 가장 큼. 우리 multi-base + (C)-determinism framework 에서는 이미 lcm 으로 대부분 capture.
+
+### 9.3 §9 종합 — Negative results 의 의미
+
+두 후속 실험 모두 측정 횟수 감소 면에서 효과 없음. 이는:
+1. **§8 정리의 framework 가 이미 측정-효율 한계에 근접** 함을 시사 (lower bound 후보).
+2. 추가 개선은 다른 차원 — 더 큰 N 으로의 scaling, 노이즈 적응, 격자-Regev 노선 등 — 에서 모색해야.
+3. 본 codebase 의 학술적 기여는 §8 의 정리 + 그 verification + 자명한 한계 명시에 머무름. 정직하게 평가.

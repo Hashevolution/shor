@@ -318,6 +318,118 @@ def shor_quantum_ekera(
 
 
 # ──────────────────────────────────────────────────────────────────
+# 적응적 base 선택 (H5)
+# ──────────────────────────────────────────────────────────────────
+
+def adaptive_base_select(
+    N: int, L: int, rng: random.Random,
+    max_tries: int = 20,
+) -> tuple[Optional[int], str]:
+    """L 을 확장할 가능성이 있는 base 선택.
+
+    a^L ≢ 1 mod N ⇔ r_a ∤ L ⇔ a 의 측정이 L 을 확장할 가능성.
+    a^L ≡ 1 인 a 는 빠른-경로 (측정 없이 r_a 회수) — 정보 추가 없음.
+
+    Returns:
+        (a, mode): a 는 None 또는 선택된 base.
+        mode ∈ {'extending', 'gcd_shortcut', 'saturated', 'L=1'}.
+    """
+    if L <= 1:
+        # L 미축적: 아무 a 나 선택 (extending 보장)
+        for _ in range(max_tries):
+            a = rng.randrange(2, N)
+            if math.gcd(a, N) > 1:
+                return a, "gcd_shortcut"
+            return a, "L=1"
+
+    for _ in range(max_tries):
+        a = rng.randrange(2, N)
+        g = math.gcd(a, N)
+        if g > 1:
+            return a, "gcd_shortcut"
+        if pow(a, L, N) != 1:
+            return a, "extending"
+
+    return None, "saturated"
+
+
+def shor_quantum_adaptive(
+    N: int,
+    max_iter: int = 20,
+    shots_per_base: int = 3,
+    saturation_threshold: int = 3,
+    seed: Optional[int] = None,
+) -> tuple[Optional[FactorResult], MultiBaseState]:
+    """적응적 base 선택을 쓰는 다중 base 인수분해.
+
+    `adaptive_base_select` 로 L 확장 후보 우선 측정.
+    L 확장 안 되는 base 가 saturation_threshold 번 연속 나오면
+    L = λ(N) 로 추정, factor_from_exponent 만 시도.
+
+    iteration 비교: 측정 base 수 (slow path 만) vs 비측정 fast-path base 수.
+    """
+    state = MultiBaseState()
+
+    if N < 2:
+        return None, state
+    if N % 2 == 0:
+        return FactorResult(2, N // 2, "even"), state
+    if is_prime(N):
+        return None, state
+    mp = find_prime_power(N)
+    if mp is not None:
+        return FactorResult(mp, N // mp, "prime_power"), state
+
+    rng_py = random.Random(seed)
+    rng_np = np.random.default_rng(seed)
+    saturated_streak = 0
+
+    for iteration in range(1, max_iter + 1):
+        a, mode = adaptive_base_select(N, state.L, rng_py)
+
+        if mode == "gcd_shortcut":
+            return FactorResult(math.gcd(a, N), N // math.gcd(a, N),
+                                "gcd_shortcut", a=a, attempts=iteration), state
+
+        if mode == "saturated":
+            saturated_streak += 1
+            # L 이 안정화되었다고 보고 factor_from_exponent 시도
+            result = factor_from_exponent(N, state.L, rng_py, max_attempts=10)
+            if result is not None:
+                result.attempts = iteration
+                return result, state
+            if saturated_streak >= saturation_threshold:
+                return None, state
+            continue
+        else:
+            saturated_streak = 0
+
+        # mode in {'extending', 'L=1'} — 측정 실행
+        r = quantum_order_multi(a, N, state, shots=shots_per_base, rng=rng_np)
+        if r == 0:
+            continue
+        state.update(a, r)
+
+        # 표준 쇼어 환원
+        if r % 2 == 0:
+            x = pow(a, r // 2, N)
+            if x != N - 1:
+                for cand in (math.gcd(x - 1, N), math.gcd(x + 1, N)):
+                    if 1 < cand < N:
+                        return FactorResult(cand, N // cand,
+                                            "period_adaptive", a=a, r=r,
+                                            attempts=iteration), state
+
+        # exponent 활용
+        result = factor_from_exponent(N, state.L, rng_py, max_attempts=5)
+        if result is not None:
+            result.attempts = iteration
+            return result, state
+
+    return None, state
+
+
+# ──────────────────────────────────────────────────────────────────
 # 전체 파이프라인
 # ──────────────────────────────────────────────────────────────────
 
