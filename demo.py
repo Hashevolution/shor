@@ -191,6 +191,78 @@ def compare3(targets: list[int], trials: int = 50, shots: int = 1) -> None:
                   f"{dt/trials*1000:>9.2f}")
 
 
+def compare_period_finding_noisy(
+    N: int, p_values: list[float], trials: int = 300, seed: int = 0,
+) -> None:
+    """노이즈 수준에 따른 위수 회수 확률 비교.
+
+    depolarizing 확률 p 에 대해 (A) limit_denominator, (B) 모든 수렴값,
+    (C) 수렴값 + 누적 L 의 회수율을 측정. (C) 의 견고함을 정량 확인.
+    """
+    from fractions import Fraction
+    from multi_base import (
+        convergent_denominators, divisors, minimize_order, MultiBaseState,
+    )
+    from classical import classical_order
+    from noise import simulate_period_finding_noisy
+
+    print(f"\n── 노이즈 견고함: N={N}, {trials} trials ──")
+    print(f"  {'p':>5}  {'(A)':>8}  {'(B)':>8}  {'(C)':>8}  {'L_final':>8}")
+
+    for p in p_values:
+        rng_py = __import__("random").Random(seed)
+        rng_np = np.random.default_rng(seed)
+        state = MultiBaseState()
+        sA = sB = sC = 0
+        bases = 0
+
+        for _ in range(trials):
+            for _retry in range(50):
+                a = rng_py.randrange(2, N)
+                if math.gcd(a, N) == 1:
+                    break
+            else:
+                continue
+            bases += 1
+            true_r = classical_order(a, N)
+
+            m = simulate_period_finding_noisy(
+                a, N, rng=rng_np, depolarizing=p,
+            )
+
+            # (A) limit_denominator
+            d_A = Fraction(m.k, m.Q).limit_denominator(N - 1).denominator
+            if d_A > 0 and pow(a, d_A, N) == 1 and minimize_order(a, N, d_A) == true_r:
+                sA += 1
+
+            # (B) 모든 수렴값
+            cands_B = [
+                d for d in convergent_denominators(m.k, m.Q, N - 1)
+                if d > 0 and pow(a, d, N) == 1
+            ]
+            okB = bool(cands_B) and minimize_order(a, N, min(cands_B)) == true_r
+            if okB:
+                sB += 1
+
+            # (C) 수렴값 ∪ divisors(L)
+            cands_C = set(cands_B)
+            if state.L > 1:
+                cands_C.update(
+                    d for d in divisors(state.L) if pow(a, d, N) == 1
+                )
+            okC = bool(cands_C) and minimize_order(a, N, min(cands_C)) == true_r
+            if okC:
+                sC += 1
+
+            # 최선의 회수가 됐다면 L 누적 (실제 알고리즘 동작 모사)
+            if okC or okB:
+                state.update(a, true_r)
+
+        print(f"  {p:>5.2f}  "
+              f"{sA/bases:>7.1%}  {sB/bases:>7.1%}  {sC/bases:>7.1%}  "
+              f"{state.L:>8d}")
+
+
 def compare_period_finding(N: int, trials: int = 200, seed: int = 0) -> None:
     """순수 위수 회수 확률 비교 (인수분해와 분리).
 
@@ -297,6 +369,14 @@ def main(argv: list[str]) -> int:
         Ns = [int(x) for x in argv[i + 1:]] if i + 1 < len(argv) else [33, 77, 143, 209]
         for N in Ns:
             compare_period_finding(N)
+        return 0
+
+    if "--noise" in argv:
+        i = argv.index("--noise")
+        Ns = [int(x) for x in argv[i + 1:]] if i + 1 < len(argv) else [33, 77, 143]
+        p_values = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+        for N in Ns:
+            compare_period_finding_noisy(N, p_values)
         return 0
 
     targets = [int(x) for x in argv[1:]] if len(argv) > 1 else [15, 21, 35]
