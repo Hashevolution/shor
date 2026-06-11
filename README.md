@@ -111,7 +111,8 @@ QFT가 정확히 jQ/r을 주지 않더라도, `|k/Q - j/r| ≤ 1/(2Q) ≤ 1/(2r�
 | `README.md` | 이론 정리 (이 문서) |
 | `classical.py` | 고전 환원 + 고전적 위수 계산 (검증/비교용 baseline) |
 | `shor.py` | 양자 주기 찾기의 numpy 상태벡터 시뮬레이션 |
-| `demo.py` | N = 15, 21, 35 인수분해 데모 |
+| `multi_base.py` | 다중 base λ(N) 누적으로 측정당 회수율 향상 (§7) |
+| `demo.py` | 인수분해 데모 + 회수율 비교 실험 |
 
 ### 4.1 시뮬레이션 한계
 - 큐비트 수 ≈ 3·⌈log₂ N⌉. 상태벡터 차원 2^(t+n) → N이 커지면 메모리 폭발.
@@ -125,9 +126,12 @@ QFT가 정확히 jQ/r을 주지 않더라도, `|k/Q - j/r| ≤ 1/(2Q) ≤ 1/(2r�
 ## 5. 실행
 
 ```powershell
-python demo.py            # 기본 데모 (15, 21, 35)
-python demo.py 21         # N=21 인수분해
-python classical.py 21    # 고전 baseline
+python demo.py                         # 기본 데모 (15, 21, 35)
+python demo.py 21                      # N=21 인수분해
+python demo.py --multi 91              # 다중 base 모드
+python demo.py --compare 33 35 77      # 인수분해 측정 횟수 비교
+python demo.py --period 33 77 143      # 위수 회수 확률 비교 (§7)
+python classical.py 21                 # 고전 baseline
 ```
 
 ---
@@ -137,3 +141,70 @@ python classical.py 21    # 고전 baseline
 - Shor, P. W. (1994). *Algorithms for quantum computation: discrete logarithms and factoring*. FOCS.
 - Nielsen & Chuang. *Quantum Computation and Quantum Information*, Ch. 5.
 - Kitaev, A. (1995). *Quantum measurements and the Abelian Stabilizer Problem*. arXiv:quant-ph/9511026.
+- Knill, E. & Mosca, M. — 측정 후처리에서 모든 연분수 수렴값을 시도하는 기법.
+- Bach, E. & Shallit, J. *Algorithmic Number Theory*, Vol 1. — Carmichael 함수와 위수 분포.
+
+---
+
+## 7. 위수 회수 확률 향상: 다중 base λ(N) 누적
+
+### 7.1 동기
+
+오일러 정리 `a^φ(N) ≡ 1 mod N` 에서, 더 정확히는 Carmichael 함수에 대해:
+> **모든** a ∈ (Z/N)* 의 위수 r_a 는 λ(N) 을 나눈다.
+
+φ(N) 이나 λ(N) 자체를 알면 인수분해와 동치 (φ(N), N → p+q, p·q → p,q) 라서
+"먼저 λ(N) 부터 알아내자" 는 순환적이지만, **여러 base 의 위수 lcm**
+
+```
+L_k = lcm(r_{a_1}, r_{a_2}, ..., r_{a_k})
+```
+
+은 λ(N) 의 약수이며 점근적으로 λ(N) 에 수렴한다 (대개 2~4 개 base 면 같아짐).
+일단 L 이 (Z/N)* 의 exponent 가 되면 (`b^L ≡ 1` for random b), 다음 두 가지가 가능:
+
+1. 새 base a 의 위수 r_a = min{ d | L : a^d ≡ 1 mod N } — *측정 없이* 고전적으로 회수
+2. L 자체로 Miller-Rabin 식 인수 추출 — `L = 2^t · m`, `a^m → a^(2m) → ... → 1` 시퀀스에서 1 직전이 ±1 아니면 그 값으로 gcd(x±1, N)
+
+### 7.2 알고리즘
+
+각 측정 k 에 대한 후처리:
+
+```
+candidates ← convergents(k/Q) ∪ divisors(L_누적)
+유효 d 들 ← { d ∈ candidates : a^d ≡ 1 mod N }
+r_a ← minimize_order(a, N, min(유효 d 들))
+L ← lcm(L, r_a)
+```
+
+세부 구현은 `multi_base.py` (`quantum_order_multi`, `MultiBaseState`, `factor_from_exponent`).
+
+### 7.3 실험 결과
+
+`demo.py --period N` 으로 측정. 한 번의 양자 측정에서 r 을 회수하는 확률:
+
+| N | (A) `limit_denominator` | (B) 모든 연분수 수렴값 | (C) (B) + 누적 L |
+|---|---:|---:|---:|
+| 21 | 43.0% | 43.0% | **100.0%** |
+| 33 | 54.5% | 54.5% | **93.5%** |
+| 77 | 36.0% | 36.5% | **98.0%** |
+| 91 | 35.5% | 36.5% | **98.0%** |
+| 143 | 36.5% | 36.5% | **94.5%** |
+| 209 | 34.0% | 34.5% | **99.5%** |
+
+(200 trials, base a 균등 무작위)
+
+**해석.**
+- (A) vs (B): 거의 차이 없음. `limit_denominator(N-1)` 가 수렴값 중 최선의 분모와 사실상 같음.
+- (B) vs (C): 측정당 성공률이 **약 35% → 95% 이상**으로 점프. 한 번의 양자 측정에서 r 을 회수하는 확률이 **2~3배** 증가.
+- 누적 L 이 λ(N) 의 약수만 거치므로 false positive 도 없음 — 새 base 의 r 후보가 L 을 나누면 검증이 필연.
+
+`demo.py --compare` 의 인수분해 측정 횟수 비교에서는 차이가 작은데, 이는 작은 N 에서는
+이미 단일 측정만으로도 인수분해에 성공할 만큼 운이 좋기 때문 (gcd shortcut 이나 한 번에 r 회수).
+N 이 커지고 회로 비용이 측정에 지배될수록 위수 회수 확률 차이가 누적 효율로 직결된다.
+
+### 7.4 한계
+
+- 현재 `divisors(L)` 은 trial division. L ≲ N 범위에서는 충분하나 더 큰 N 에서는 소인수 분해 필요.
+- (C) 의 초기 트라이얼들 (L 이 아직 작을 때) 은 (B) 와 동등. λ(N) 회수까지의 transient 가 있음.
+- 양자 회로 자체의 노이즈/디코히어런스 가정 없음 (이상 시뮬레이션). 실제 하드웨어에서는 측정 분포가 흐려져 (A)/(B)/(C) 모두 성능이 떨어지는데, 그 환경에서 (C) 의 견고함은 향후 실험 대상.
