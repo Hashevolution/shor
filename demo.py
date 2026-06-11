@@ -191,10 +191,104 @@ def compare3(targets: list[int], trials: int = 50, shots: int = 1) -> None:
                   f"{dt/trials*1000:>9.2f}")
 
 
+def compare_noise_models(
+    N: int,
+    levels: list[float],
+    trials: int = 300,
+    seed: int = 0,
+    transient_trials: int = 5,
+) -> None:
+    """3가지 노이즈 모델 (depol/phase/modexp) 에 대해 (A)/(B)/(C) 회수율 비교.
+
+    각 모델 × 각 강도 level 에서 trials 회 측정. transient_trials 만큼의
+    초기 구간 (L 누적 전) 과 나머지 (steady-state) 를 분리 측정.
+
+    levels 는 모델마다 다른 척도지만 [0, 1] 정규화 또는 σ ∈ [0, 3] 로 해석.
+    """
+    from fractions import Fraction
+    from multi_base import (
+        convergent_denominators, divisors, minimize_order, MultiBaseState,
+    )
+    from classical import classical_order
+    from noise import simulate_period_finding_noisy
+
+    print(f"\n── 3종 노이즈 견고함: N={N}, {trials} trials, 초기 {transient_trials} 분리 ──")
+    print(f"  ({'모델':<12} {'lvl':>5}  "
+          f"{'(A)트랜':>7} {'(B)트랜':>7} {'(C)트랜':>7} "
+          f"{'(A)정상':>7} {'(B)정상':>7} {'(C)정상':>7})")
+
+    models = [
+        ("depolarizing", "depolarizing"),
+        ("phase_sigma", "phase"),
+        ("modexp_error", "modexp"),
+    ]
+
+    for kwarg, label in models:
+        for lvl in levels:
+            rng_py = random.Random(seed)
+            rng_np = np.random.default_rng(seed)
+            state = MultiBaseState()
+
+            tA = tB = tC = 0  # transient counts
+            sA = sB = sC = 0  # steady counts
+            t_bases = s_bases = 0
+
+            for trial in range(trials):
+                for _retry in range(50):
+                    a = rng_py.randrange(2, N)
+                    if math.gcd(a, N) == 1:
+                        break
+                else:
+                    continue
+
+                true_r = classical_order(a, N)
+                m = simulate_period_finding_noisy(
+                    a, N, rng=rng_np, **{kwarg: lvl},
+                )
+
+                # (A)
+                d_A = Fraction(m.k, m.Q).limit_denominator(N - 1).denominator
+                okA = (d_A > 0 and pow(a, d_A, N) == 1
+                       and minimize_order(a, N, d_A) == true_r)
+
+                # (B)
+                cands_B = [
+                    d for d in convergent_denominators(m.k, m.Q, N - 1)
+                    if d > 0 and pow(a, d, N) == 1
+                ]
+                okB = bool(cands_B) and minimize_order(a, N, min(cands_B)) == true_r
+
+                # (C)
+                cands_C = set(cands_B)
+                if state.L > 1:
+                    cands_C.update(
+                        d for d in divisors(state.L) if pow(a, d, N) == 1
+                    )
+                okC = (bool(cands_C)
+                       and minimize_order(a, N, min(cands_C)) == true_r)
+
+                if trial < transient_trials:
+                    t_bases += 1
+                    tA += okA; tB += okB; tC += okC
+                else:
+                    s_bases += 1
+                    sA += okA; sB += okB; sC += okC
+
+                if okC or okB:
+                    state.update(a, true_r)
+
+            def pct(num, den):
+                return f"{num/den:6.1%}" if den > 0 else "  -  "
+
+            print(f"  ({label:<12} {lvl:>5.2f}  "
+                  f"{pct(tA, t_bases):>7} {pct(tB, t_bases):>7} {pct(tC, t_bases):>7} "
+                  f"{pct(sA, s_bases):>7} {pct(sB, s_bases):>7} {pct(sC, s_bases):>7})")
+
+
 def compare_period_finding_noisy(
     N: int, p_values: list[float], trials: int = 300, seed: int = 0,
 ) -> None:
-    """노이즈 수준에 따른 위수 회수 확률 비교.
+    """노이즈 수준에 따른 위수 회수 확률 비교 (depolarizing 만).
 
     depolarizing 확률 p 에 대해 (A) limit_denominator, (B) 모든 수렴값,
     (C) 수렴값 + 누적 L 의 회수율을 측정. (C) 의 견고함을 정량 확인.
@@ -377,6 +471,14 @@ def main(argv: list[str]) -> int:
         p_values = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
         for N in Ns:
             compare_period_finding_noisy(N, p_values)
+        return 0
+
+    if "--noise3" in argv:
+        i = argv.index("--noise3")
+        Ns = [int(x) for x in argv[i + 1:]] if i + 1 < len(argv) else [77, 143]
+        levels = [0.0, 0.2, 0.5, 0.8]
+        for N in Ns:
+            compare_noise_models(N, levels)
         return 0
 
     targets = [int(x) for x in argv[1:]] if len(argv) > 1 else [15, 21, 35]
