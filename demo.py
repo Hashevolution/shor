@@ -191,6 +191,95 @@ def compare3(targets: list[int], trials: int = 50, shots: int = 1) -> None:
                   f"{dt/trials*1000:>9.2f}")
 
 
+def verify_c_determinism(
+    N: int,
+    trials: int = 500,
+    seed: int = 0,
+) -> None:
+    """(C)-determinism 정리의 직접 검증.
+
+    정리: 측정 k 에서 candidates = convergents(k/Q) ∪ divisors(L_before).
+    r_a | L_before  ⇒  (C) 가 r_a 반환 (결정적).
+
+    실험: 각 측정마다 (r_a, L_before, cond=(r_a|L), success_C) 로깅.
+    - violations: cond=True ∧ success_C=False 의 카운트 → 정리 위배 (있으면 안 됨)
+    - lucky:     cond=False ∧ success_C=True 의 카운트 → 수렴값 경로 성공
+    - covered:   cond=True 의 카운트 → 정리 적용 영역
+    - missed:    cond=False ∧ success_C=False → 모든 경로 실패
+
+    각 노이즈 모델·강도에 대해 동일 실험 반복.
+    """
+    from fractions import Fraction
+    from multi_base import (
+        convergent_denominators, divisors, minimize_order, MultiBaseState,
+    )
+    from classical import classical_order
+    from noise import simulate_period_finding_noisy
+
+    noise_setups = [
+        ("noise-free",     {}),
+        ("depol p=0.3",    {"depolarizing": 0.3}),
+        ("depol p=0.8",    {"depolarizing": 0.8}),
+        ("readout p=0.3",  {"readout_flip": 0.3}),
+        ("bias_zero p=0.5", {"bias_zero": 0.5}),
+        ("phase σ=1.0",    {"phase_sigma": 1.0}),
+        ("phase σ=2.5",    {"phase_sigma": 2.5}),
+        ("amp_damp γ=0.01", {"amplitude_damp": 0.01}),
+        ("amp_damp γ=0.05", {"amplitude_damp": 0.05}),
+        ("modexp q=0.3",   {"modexp_error": 0.3}),
+        ("modexp q=0.8",   {"modexp_error": 0.8}),
+    ]
+
+    print(f"\n── (C)-determinism 정리 검증: N={N}, {trials} trials ──")
+    print(f"  {'노이즈':<18} {'covered':>8} {'violat.':>8} {'lucky':>7} "
+          f"{'missed':>7} {'success_C':>10}")
+
+    for label, kwargs in noise_setups:
+        rng_py = random.Random(seed)
+        rng_np = np.random.default_rng(seed)
+        state = MultiBaseState()
+        covered = violations = lucky = missed = success_total = 0
+
+        for _ in range(trials):
+            for _retry in range(50):
+                a = rng_py.randrange(2, N)
+                if math.gcd(a, N) == 1:
+                    break
+            else:
+                continue
+
+            true_r = classical_order(a, N)
+            L_before = state.L
+            # 조건: r_a | L_before  (L_before > 1 이어야 의미 있음;
+            #                       L_before=1 이면 r_a=1 인 경우만 성립인데 a≥2 라 r_a≥2)
+            cond = (L_before > 1) and (L_before % true_r == 0)
+
+            m = simulate_period_finding_noisy(a, N, rng=rng_np, **kwargs)
+
+            cands = set(convergent_denominators(m.k, m.Q, N - 1))
+            if L_before > 1:
+                cands.update(divisors(L_before))
+            valid = [d for d in cands if d > 0 and pow(a, d, N) == 1]
+            success = bool(valid) and minimize_order(a, N, min(valid)) == true_r
+
+            if cond:
+                covered += 1
+                if not success:
+                    violations += 1
+            else:
+                if success:
+                    lucky += 1
+                else:
+                    missed += 1
+
+            if success:
+                state.update(a, true_r)
+                success_total += 1
+
+        print(f"  {label:<18} {covered:>8} {violations:>8} {lucky:>7} "
+              f"{missed:>7} {success_total/trials:>9.1%}")
+
+
 def compare_noise_models(
     N: int,
     levels: list[float],
@@ -479,6 +568,13 @@ def main(argv: list[str]) -> int:
         levels = [0.0, 0.2, 0.5, 0.8]
         for N in Ns:
             compare_noise_models(N, levels)
+        return 0
+
+    if "--verify" in argv:
+        i = argv.index("--verify")
+        Ns = [int(x) for x in argv[i + 1:]] if i + 1 < len(argv) else [77, 143, 209]
+        for N in Ns:
+            verify_c_determinism(N)
         return 0
 
     targets = [int(x) for x in argv[1:]] if len(argv) > 1 else [15, 21, 35]

@@ -381,12 +381,107 @@ p 는 거시적 노이즈 강도. 실제 NISQ 디바이스의 게이트 오류·
 2. **연구 가치 있는 질문은 노이즈 견고함이 아닌 "L 누적 속도".** 즉 §1 에서 던진 **가설 H2** ("무작위 semiprime N=pq 에서 다중 base 누적 L 이 λ(N) 에 도달하는 base 수의 평균 분포") 가 이제 *진짜* 핵심 미해결 질문으로 남음.
 3. modexp 노이즈가 일반 노이즈 모델보다 (C) 를 더 빨리 떨어뜨리지도 *못함* — 이는 (C) 의 견고함 메커니즘이 본질적으로 *quantum-classical 경계의 비대칭성* (양자 측정은 노이즈, 고전 검증은 결정적) 에 기댄 결과임을 시사.
 
-### 7.9 다음 단계 (가설 H2)
+### 7.9 H2 학계 검증 결과 — 무게중심 재이동
 
-H4 false 가 확인되었으므로 연구의 무게 중심은 **L 의 누적 속도** 로 이동:
+H2 ("E[K_λ] = O(log log N) for semiprime") 의 학계 선행연구 종합 검토 결과:
 
-- 무작위 semiprime N = pq 에 대해 L 이 λ(N) 에 도달하는 base 수 분포
-- λ(N) = lcm(p−1, q−1) 의 구조 (smooth vs non-smooth) 가 누적 속도에 미치는 영향
-- 이론적 상한 (Bach-Shallit 의 expectation 분석 확장)
+- **Carmichael paper (2021, arXiv 2111.02488)** 가 K = O((log N)² · log d) 를 증명, semiprime (d=2) 경우 O(log log N) 으로 환원. → **H2 사실상 이미 증명됨**.
+- **Pomerance et al. (2017)** e(G) ≤ d + 2.752 ⇒ semiprime (Z/N)\* 에서 평균 상수 회 만에 생성 가능.
+- **Erdős-Pomerance-Schmutz (1991)** 및 후속 (Kurlberg-Pomerance, Pollack) 가 λ(N) 분포 / 평균 위수의 정밀 분석 완료.
 
-다음 절에서 H2 검증 실험과 분석을 수록 예정.
+→ H2 는 결과를 numpy 로 재확인하는 수준이 되어 학술 가치 낮음. **무게중심을 §7.8 의 (C)-determinism 정리** 로 재이동.
+
+---
+
+## 8. (C)-determinism 정리: 정식화와 보편성 검증
+
+§7.8 에서 자연스럽게 유도된 정리를 **explicit 형태로 정식화**하고, *어떤 측정-층 노이즈 하에서도 위배되지 않음* 을 직접 검증한다.
+
+### 8.1 정리 statement
+
+**가정.**
+- N: 양의 합성수 (소수 거듭제곱 아님).
+- a ∈ (Z/N)\*, r_a := ord_N(a).
+- L ∈ ℕ: 알고리즘이 누적한 exponent 후보 (이전 base 들의 위수 lcm).
+- k ∈ {0, 1, ..., Q−1}: 측정값 (Q = 2^t, t = 계산 레지스터 큐비트 수).
+- **후보 풀**: candidates(k, L) := convergents(k/Q) ∪ divisors(L).
+- **후처리 출력 (C)**: `(C)(k, L) := minimize_order(a, N, min{d ∈ candidates : pow(a,d,N) == 1})`, 유효 후보 없으면 0.
+
+**정리 (C-determinism).** 만약 `r_a | L`, 그러면 `(C)(k, L) = r_a` (k 와 무관하게 결정적).
+
+### 8.2 증명
+
+가정: `r_a | L`. 따라서 `r_a ∈ divisors(L) ⊆ candidates(k, L)`.
+`pow(a, r_a, N) = 1` 이므로 `r_a` 는 유효 후보 (검증 통과).
+
+유효 후보 집합을 `V := {d ∈ candidates : pow(a, d, N) = 1}` 라 두자.
+`r_a ∈ V` 이므로 `V ≠ ∅`.
+
+위수의 정의: `r_a` 는 `pow(a, m, N) = 1` 을 만족하는 *최소* 양의 정수.
+따라서 임의 `d ∈ V` 에 대해 `r_a ≤ d`. 그리고 `r_a ∈ V` 이므로 `min(V) = r_a`.
+
+`minimize_order` 는 입력이 이미 최소 (`pow(a, r_a/p, N) ≠ 1` for all prime p | r_a, by definition of order) 이므로 `r_a` 그대로 반환. ∎
+
+### 8.3 따름정리
+
+**Corollary 1 (노이즈 불변성).** 위 정리는 측정 분포 `P(k)` 와 무관하다. 따라서 **어떤 측정-층 노이즈 모델 하에서도**, `r_a | L` 만 성립하면 (C) 는 결정적으로 `r_a` 를 회수한다.
+
+**Corollary 2 (L 의 단조 무결성).** 알고리즘이 (C) 의 출력으로 L 을 업데이트할 때, 매 업데이트는 `r_a` (정확한 위수) 로 이뤄진다. 따라서 알고리즘 진행 중 누적 L 은 λ(N) 의 약수만을 lcm 하여 *결코 corrupted 되지 않는다* — 이는 노이즈 하에서도 보장.
+
+**Corollary 3 (실패 영역).** (C) 의 실패는 `r_a ∤ L` 인 경우에만 발생하며, 이 경우 성공은 convergents(k/Q) 에 r_a 의 양의 배수가 있는지에 의존 (일반 (B)-경로).
+
+### 8.4 직접 검증 — 11 종 노이즈 × 3 N × 500 trials
+
+`demo.py --verify N` 으로 정리를 직접 시험. 각 측정마다 (r_a, L_before, condition, (C) success) 로깅.
+
+**측정 메트릭:**
+- `covered`: `r_a | L_before` 인 trial 수 (정리의 가정 영역)
+- `violations`: covered 중 (C) 가 r_a 회수 실패한 수 (**0 이어야 정리 성립**)
+- `lucky`: ¬covered 중 (C) 성공 (convergent 경로)
+- `missed`: ¬covered 중 (C) 실패
+
+**결과 (N=77 / 143 / 209, trials=500):**
+
+| 노이즈 | N=77 violations | N=143 violations | N=209 violations |
+|---|:-:|:-:|:-:|
+| noise-free | 0 | 0 | 0 |
+| depolarizing p=0.3 | 0 | 0 | 0 |
+| depolarizing p=0.8 | 0 | 0 | 0 |
+| readout flip p=0.3 | 0 | 0 | 0 |
+| bias_zero p=0.5 | 0 | 0 | 0 |
+| phase σ=1.0 | 0 | 0 | 0 |
+| phase σ=2.5 | 0 | 0 | 0 |
+| amp_damp γ=0.01 | 0 | 0 | 0 |
+| amp_damp γ=0.05 | 0 | 0 | 0 |
+| modexp q=0.3 | 0 | 0 | 0 |
+| modexp q=0.8 | 0 | 0 | 0 |
+
+**총 16,500 측정 중 violations = 0**. 정리는 *모든* 시험 노이즈 모델·강도에서 성립.
+
+### 8.5 부속 통계 (success_C 와 missed)
+
+전체 (C) 성공률은 covered 의 100% 와 lucky 의 일부 합으로 결정. 가장 가혹한 케이스:
+
+| N | 노이즈 | covered/500 | lucky | missed | success_C |
+|---|---|---:|---:|---:|---:|
+| 77 | modexp q=0.8 | 476 | 3 | 21 | 95.8% |
+| 143 | bias_zero p=0.5 | 480 | 4 | 16 | 96.8% |
+| 209 | phase σ=2.5 | 437 | 3 | 60 | 88.0% |
+
+이 미스율은 모두 **초기 trial 에서 L 이 미축적된 상태 (¬covered) + 노이즈 강함 → convergents 도 실패** 의 조합. 일단 L 이 λ(N) 에 가까워지면 covered 의 100% 가 보장됨.
+
+### 8.6 학술적 함의
+
+1. **(C) 의 견고함은 우연이 아니라 정리.** §7.8 의 경험적 관찰이 4줄 증명으로 확정.
+2. **노이즈 모델 일반화 가능.** 어떤 새 측정-층 노이즈 (정신적 모델, 하드웨어 특이 채널) 에서도 자동으로 적용.
+3. **알고리즘 설계 함의.** L 누적이 진행될수록 (C) 가 *결정적으로* 노이즈 면역이 됨 → adaptive shot allocation 의 이론적 토대.
+4. **선행연구와의 차별점.** 위 정리 statement 의 *explicit 형태* (수렴값 ∪ 약수 + 검증 게이트의 결정적 분리) 는 검색한 문헌 (McAnally 2001, Carmichael 2021, Ekerå 2024 survey) 에서 찾지 못함. *folklore optimization 의 정식화* 로 워크숍/short paper 후보.
+
+### 8.7 한계와 후속 질문
+
+1. **양자 회로 자체가 깨졌을 때.** 모듈러 거듭제곱이 *완전히* 무작위면 (modexp_error → 1) L 이 누적 안 되므로 covered 영역도 못 만들어짐. 이 경우 (C) 는 무력 (정리 적용 안 됨).
+2. **고전 검증의 노이즈.** 정리는 `pow(a, d, N)` 이 정확하다는 가정. 실제 하드웨어에서는 고전 검증 자체에 hardware 노이즈가 있을 수 있으나, 통상 양자 노이즈 대비 무시 가능.
+3. **adaptive base 선택 (H5).** 정리가 보장하는 것은 covered → success. covered 의 비율을 어떻게 최대화하는가? base 선택 전략 설계 여지.
+4. **격자 후처리 (Knill-Mosca) 와의 결합.** convergents 경로를 격자 enum 으로 강화하면 ¬covered 의 lucky 비율 증가 가능.
+
+→ §9 에서 위 후속 후보 중 H5 (adaptive base selection) 의 사전 실험 수록 예정.
