@@ -1,0 +1,414 @@
+% arXiv submission draft.
+% Compile: pdflatex paper.tex (run twice for cross-references).
+% TODO before submission:
+%   - Fill in \author{} and \thanks{} with real identity / affiliation / email.
+%   - Update \date{} if needed.
+%   - Verify all URLs.
+
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{microtype}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  citecolor=blue!50!black,
+  urlcolor=blue!50!black,
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+
+\lstdefinestyle{pythonstyle}{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue!60!black},
+  commentstyle=\color{green!40!black}\itshape,
+  stringstyle=\color{red!60!black},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  framerule=0.4pt,
+  rulecolor=\color{black!30},
+  numbers=none,
+  xleftmargin=0.5em,
+  xrightmargin=0.5em,
+  aboveskip=0.5em,
+  belowskip=0.5em,
+}
+
+\lstdefinestyle{pseudostyle}{
+  basicstyle=\ttfamily\footnotesize,
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  framerule=0.4pt,
+  rulecolor=\color{black!30},
+  numbers=none,
+  xleftmargin=0.5em,
+  xrightmargin=0.5em,
+  aboveskip=0.5em,
+  belowskip=0.5em,
+}
+
+\title{A Noise-Invariant Determinism Theorem for Multi-Base \\
+Post-Processing in Shor's Order Finding}
+
+\author{%
+  Author Name%
+  \thanks{TODO: fill in author name, affiliation, email before submission. Code repository: \url{https://github.com/Hashevolution/shor}.}%
+}
+
+\date{June 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We give an elementary observation about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. Maintaining an accumulated exponent candidate $L$ --- the least common multiple of orders recovered from previous bases --- and augmenting standard continued-fraction post-processing with a divisor search over $L$ yields a procedure (which we call $(C)$) that recovers the order $r_a$ of any new base $a$ deterministically whenever $r_a \mid L$, \emph{independent of the measurement distribution}. As a corollary, the procedure is robust to any measurement-layer noise model: a measurement returning a value of $k$ drawn from any distribution still yields the correct order, provided the accumulated $L$ covers $r_a$. We verify this experimentally across 11 noise setups (depolarizing, readout flip, bias, phase decoherence, amplitude damping, modular exponentiation error) at three composite sizes and 500 trials each (16{,}500 total measurements), observing zero violations. We discuss the theorem's relation to prior work --- Knill's lcm trick (1995), McAnally's larger-$Q$ convergent enumeration (2001), the Bach--Shallit textbook treatment of $r \mid \lambda(N)$, and the quantum algorithm for computing the Carmichael function (2021) --- and conclude that while every individual ingredient is folklore, the \emph{clean statement of the noise-invariance corollary} appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme --- adaptive base selection and lattice-based joint post-processing --- yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale.
+\end{abstract}
+
+\section{Background and Notation}
+\label{sec:background}
+
+Let $N$ be a composite integer, not a prime power, with $N$ odd. Define $Q = 2^t$ where $t = 2\lceil \log_2 N \rceil$ (so $Q \geq N^2$). For $a \in (\mathbb{Z}/N\mathbb{Z})^*$, let $r_a$ denote the multiplicative order of $a$ modulo $N$ (the smallest positive integer with $a^{r_a} \equiv 1 \bmod N$). Shor's order-finding~\cite{shor1994,nielsenchuang2000} measures $k \in \{0, 1, \ldots, Q-1\}$ from a distribution concentrated near $j \cdot Q / r_a$ for integer $j$. Standard classical post-processing uses the continued-fraction expansion of $k/Q$ to recover $r_a$.
+
+Two classical facts are central:
+
+\begin{description}
+\item[(F1) Carmichael bound.] For all $a \in (\mathbb{Z}/N\mathbb{Z})^*$, $r_a \mid \lambda(N)$ where $\lambda$ is the Carmichael function --- the exponent of the group $(\mathbb{Z}/N\mathbb{Z})^*$.
+\item[(F2) Order as minimum.] $r_a$ is by definition the smallest positive integer $d$ with $a^d \equiv 1 \bmod N$. Any $d$ satisfying this is a positive multiple of $r_a$.
+\end{description}
+
+\section{The $(C)$ Procedure}
+\label{sec:procedure}
+
+Let $L \in \mathbb{N}$ be a quantity maintained by the algorithm --- initially $L = 1$, updated as orders are recovered (see Algorithm~\ref{alg:1} below). For a measurement $k \in \{0, \ldots, Q-1\}$ and current $L$, define the candidate pool:
+\[
+  \mathrm{candidates}(k, L) \;:=\; \mathrm{convergents}(k/Q) \,\cup\, \mathrm{divisors}(L)
+\]
+where $\mathrm{convergents}(k/Q)$ is the set of denominators of continued-fraction convergents of $k/Q$ up to $N-1$, and $\mathrm{divisors}(L)$ is the set of positive divisors of $L$.
+
+The $(C)$ post-processing is:
+
+\begin{lstlisting}[style=pythonstyle]
+def C(a, N, k, Q, L):
+    cands = convergents(k/Q, max_denom=N-1) | divisors(L)
+    valid = {d in cands : a^d == 1 mod N}
+    if valid is empty: return 0
+    return minimize_order(a, N, min(valid))
+\end{lstlisting}
+
+\noindent
+where \texttt{minimize\_order(a, N, d)} reduces $d$ to its smallest positive divisor still satisfying $a^? \equiv 1$ (by removing small prime factors). See Appendix~\ref{app:impl} for the reference implementation.
+
+\begin{lstlisting}[style=pseudostyle, caption={Multi-base accumulation.}, label={alg:1}]
+L <- 1
+for iteration in 1..max_iter:
+    pick a in {2,...,N-1} uniformly at random
+    if gcd(a, N) > 1: return factor gcd(a, N)
+    if L > 1 and a^L == 1 mod N:
+        # fast path: recover r_a classically
+        r <- min{d divides L : a^d == 1 mod N}
+    else:
+        # slow path: quantum measurement followed by (C)
+        k <- measure(a, N)
+        r <- C(a, N, k, Q, L)
+    if r == 0: continue
+    L <- lcm(L, r)
+    attempt factoring with (a, r) via standard Shor reduction
+    or via factor_from_exponent(L) [Miller-Rabin style]
+\end{lstlisting}
+
+\section{Main Theorem}
+\label{sec:theorem}
+
+\begin{theorem}[$(C)$-determinism]\label{thm:c-det}
+If $r_a \mid L$, then $C(a, N, k, Q, L) = r_a$ for every $k \in \{0, \ldots, Q-1\}$.
+\end{theorem}
+
+\begin{proof}
+Assume $r_a \mid L$. Then $r_a \in \mathrm{divisors}(L) \subseteq \mathrm{candidates}(k, L)$. By construction, $a^{r_a} \equiv 1 \bmod N$, so $r_a \in \mathrm{valid}$. Hence $\mathrm{valid} \neq \emptyset$. By (F2), every $d \in \mathrm{valid}$ is a positive multiple of $r_a$, so $r_a \leq d$. Combining with $r_a \in \mathrm{valid}$ gives $\min(\mathrm{valid}) = r_a$. Finally, $\texttt{minimize\_order}(a, N, r_a) = r_a$ since $r_a$ is already the order.
+\end{proof}
+
+\begin{corollary}[Noise invariance]\label{cor:noise}
+Theorem~\ref{thm:c-det} makes no assumption on the distribution from which $k$ is drawn. Hence: under any noise model that affects only the measurement step --- including arbitrary distortions of the QFT output distribution --- $(C)$ returns $r_a$ whenever $r_a \mid L$.
+\end{corollary}
+
+\begin{corollary}[$L$ integrity]\label{cor:integrity}
+When Algorithm~\ref{alg:1} updates $L \leftarrow \mathrm{lcm}(L, r)$, the value $r$ returned by $(C)$ is always either $r_a$ (success) or $0$ (failure). In the success case, $r_a \mid \lambda(N)$ by (F1), so $L$ always remains a divisor of $\lambda(N)$. Under noise, $L$ cannot be corrupted to a value outside the divisors of $\lambda(N)$.
+\end{corollary}
+
+\begin{corollary}[Failure region]\label{cor:failure}
+$(C)$ can fail only when $r_a \nmid L$. In that case, success depends on $\mathrm{convergents}(k/Q)$ containing some positive multiple of $r_a$ --- the classical ``$(B)$-path.''
+\end{corollary}
+
+\section{Empirical Verification}
+\label{sec:verification}
+
+We verify Theorem~\ref{thm:c-det} across diverse noise models. For each measurement, we log $(r_a, L_{\mathrm{before}}, \mathrm{condition}, \mathrm{success})$ where $\mathrm{condition} := (r_a \mid L_{\mathrm{before}})$ and $\mathrm{success} := ((C) \text{ output} = r_a)$. We count:
+\begin{itemize}
+  \item \texttt{violations} := count of $\mathrm{condition} = \text{True} \land \mathrm{success} = \text{False}$ (theorem predicts $0$)
+  \item \texttt{lucky} := $\mathrm{condition} = \text{False} \land \mathrm{success} = \text{True}$ (recovery via convergents alone)
+  \item \texttt{covered} := $\mathrm{condition} = \text{True}$
+\end{itemize}
+
+Noise models tested (each implemented in \texttt{noise.py} of the companion code):
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Category & Model & Parameter \\
+\midrule
+A (measurement only) & depolarizing & $p \in [0, 1]$ \\
+A & readout bit flip & $p$ per bit \\
+A & bias-to-zero (adversarial) & $p$ \\
+B (QFT input) & phase decoherence & $\sigma$ (rad) on amplitude \\
+B & amplitude damping (T1) & $\gamma$ decay rate \\
+C (structural) & modular exponentiation error & $q$ per $f(x)$ value \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Result.}
+Across $N \in \{77, 143, 209\}$, 11 noise setups, and 500 trials each ($16{,}500$ measurements total): \textbf{violations $= 0$}. The theorem holds in every case.
+
+The \texttt{lucky} count is small ($1$--$4$ per setup), confirming most successes flow through the \texttt{covered} region. The \texttt{missed} count ($\mathrm{condition} = \text{False} \land \mathrm{success} = \text{False}$) is dominated by early trials ($L = 1$) under high noise.
+
+See \texttt{demo.py -{}-verify <N>} in the companion code to reproduce; per-noise-model breakdown for $N=77$ is in Appendix~\ref{app:tables}.
+
+\section{Related Work}
+\label{sec:related}
+
+We outline how Theorem~\ref{thm:c-det} relates to existing literature, including which ingredients are folklore and where the gap (if any) lies.
+
+\paragraph{Knill (1995)~\cite{knill1995}.}
+Proposes running the quantum step twice for the same base and taking the lcm of denominators recovered from convergents. This is \emph{single-base} lcm. Our $(C)$ extends this to multi-base lcm and augments the candidate pool with $\mathrm{divisors}(L)$.
+
+\paragraph{McAnally (2001)~\cite{mcanally2001}.}
+Same-base accumulation: enlarges the Fourier transform modulus to $Q \approx 2 w n^3$ and enumerates \emph{all} convergent denominators in a single measurement, achieving near-certainty per run. Same-base structure, different mechanism ($Q$ enlargement vs.\ $L$ accumulation across bases).
+
+\paragraph{Bourdon--Williams (2007)~\cite{bourdonwilliams2007}.}
+Sharp asymptotic lower bound on per-measurement success probability ($\sim 94\%$) via Carmichael-based analysis. Theoretical bound; no algorithmic change.
+
+\paragraph{Ekerå (2021)~\cite{ekera2021}.}
+Shows the order of a \emph{single} base typically suffices for complete factorization via smoothness extension. Different direction from our multi-base accumulation; complementary.
+
+\paragraph{Quantum Carmichael (2021)~\cite{carmichaelquantum2021}.}
+Algorithm~1 of this paper essentially runs the multi-base lcm to recover $\lambda(N)$. Closest prior work to our framework. The paper \emph{does not augment subsequent measurements' post-processing with $\mathrm{divisors}(L)$}; each order is computed independently.
+
+\paragraph{Ekerå (2024)~\cite{ekera2024}.}
+Comprehensive survey of post-processing techniques: continued fractions, lattice post-processing, offset search, divisor search of recovered $r/d$, Seifert's joint solving. \emph{Multi-base accumulation across different $a$ values is not surveyed as a post-processing technique here.}
+
+\paragraph{Bach--Shallit (1996)~\cite{bachshallit1996}.}
+Foundational textbook coverage of $r \mid \lambda(N)$, multi-element lcm convergence to $\lambda(N)$, and factoring from a known exponent (Miller--Rabin reduction). Related classical analysis of the Carmichael function distribution: Erd\H{o}s--Pomerance--Schmutz~\cite{erdosps1991}.
+
+\paragraph{Pomerance et al.\ (2017)~\cite{pomerance2017}.}
+Shows $e(G) \leq d + 2.752\ldots$ where $d$ is the maximum Sylow generator count. For semiprime $(\mathbb{Z}/N\mathbb{Z})^*$, this gives constant-bounded expected number of bases to \emph{generate} the group (hence reach $\lambda(N)$ via lcm).
+
+\paragraph{Position of our contribution.}
+Every individual ingredient --- $r \mid \lambda(N)$, multi-base lcm, divisor search given exponent, continued fractions, factoring from exponent --- is folklore or established in the references above. The \emph{clean separation theorem} (noise invariance via the classical verification gate, formalized as Theorem~\ref{thm:c-det}) and its corollaries appear to not be stated explicitly. We propose Theorem~\ref{thm:c-det} as the \emph{folklore packaged} result that gives a uniform explanation for the empirical robustness of multi-base post-processing.
+
+\section{Limitations and Discussion}
+\label{sec:limitations}
+
+\paragraph{No measurement saving from adaptive base selection.}
+A natural attempt --- pre-filter bases by $a^L \not\equiv 1 \bmod N$ so that every measured base extends $L$ --- yields no improvement in measurement count over the random-selection $+$ fast-path scheme (\texttt{shor\_quantum\_adaptive} vs.\ \texttt{shor\_quantum\_multi} in the companion code). The fast path already skips classical-only bases; pre-filtering shifts the work but does not eliminate any measurement.
+
+\paragraph{Marginal value of lattice post-processing.}
+The Knill--Mosca lattice approach strengthens single-base, multi-measurement convergent recovery. In our multi-base framework, $\mathrm{lcm}(r_{a_1}, \ldots, r_{a_k})$ already accomplishes equivalent recovery across bases. We did not find a regime where additional lattice basis reduction (LLL or simpler) provides measurable benefit over the lcm strategy.
+
+\paragraph{The theorem is conditional on $r_a \mid L$.}
+When $L = 1$ (start of algorithm), the condition fails and $(C) \equiv (B)$. The transient before $L$ reaches $\lambda(N)$ is governed by classical number theory: for typical semiprime $N = pq$, $\mathbb{E}[K_\lambda] = O(\log \log N)$ bases suffice (essentially proven by Pomerance et al.~\cite{pomerance2017} and the Carmichael-function paper~\cite{carmichaelquantum2021}).
+
+\paragraph{Classical verification gate is assumed exact.}
+Theorem~\ref{thm:c-det} relies on $\texttt{pow}(a, d, N)$ returning the correct value. On real hardware, this could in principle be corrupted by classical computation errors, but at standard machine precision this is negligible compared to quantum noise.
+
+\paragraph{Scale of verification.}
+Our experiments are at $N \leq 437$ (small for cryptographic purposes) but with high statistical replication (500 trials per noise setup). Scaling to cryptographic $N$ requires no algorithmic change; the bottleneck is classical state-vector simulation. Hardware verification on existing NISQ devices is a natural next step.
+
+\section{Code and Reproducibility}
+\label{sec:code}
+
+All experiments are reproducible via the companion repository at\\
+\url{https://github.com/Hashevolution/shor}.
+
+\begin{lstlisting}[style=pseudostyle]
+pip install numpy
+git clone https://github.com/Hashevolution/shor
+cd shor
+python demo.py --verify 77 143 209          # reproduces Sec. 4 table
+python demo.py --noise3 77 143              # 3-noise comparison
+python demo.py --adaptive 77 143 209 323    # negative result, Sec. 6
+\end{lstlisting}
+
+\noindent
+The codebase is approximately 700 lines of \texttt{numpy}. No quantum libraries are required.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We formalize a folklore observation about classical post-processing of multi-base Shor order-finding measurements: augmenting continued-fraction recovery with a divisor search over the accumulated lcm $L$ makes the procedure deterministic whenever the order of the current base divides $L$ --- independent of the measurement distribution, hence robust to all measurement-layer noise models. We verify this across $16{,}500$ trials in 11 noise setups (zero violations), and show that two natural attempts to extend the result (adaptive base selection, lattice post-processing) yield no further measurement savings, indicating Theorem~\ref{thm:c-det} captures the essential structure at this scale.
+
+The work is best viewed as expository and a foundation for explorations of more substantive improvements: noise-resilient implementations on hardware, the \texttt{lucky} region under structured measurement distributions, and connections to lattice-based factoring~\cite{regev2023}.
+
+\begin{thebibliography}{12}
+
+\bibitem{shor1994}
+P.~W. Shor.
+\newblock Algorithms for quantum computation: discrete logarithms and factoring.
+\newblock In \emph{Proceedings 35th Annual Symposium on Foundations of Computer Science}, 1994.
+
+\bibitem{knill1995}
+E.~Knill.
+\newblock On Shor's quantum factor finding algorithm: Increasing the probability of success and tradeoffs involving the {F}ourier transform modulus.
+\newblock Technical report, Los Alamos National Laboratory, 1995.
+
+\bibitem{mcanally2001}
+D.~McAnally.
+\newblock A refinement of {S}hor's algorithm.
+\newblock arXiv:quant-ph/0112055, 2001.
+
+\bibitem{nielsenchuang2000}
+M.~A. Nielsen and I.~L. Chuang.
+\newblock \emph{Quantum Computation and Quantum Information}.
+\newblock Cambridge University Press, 2000.
+
+\bibitem{bourdonwilliams2007}
+P.~S. Bourdon and H.~T. Williams.
+\newblock Sharp probability estimates for {S}hor's order-finding algorithm.
+\newblock arXiv:quant-ph/0607148, 2007.
+
+\bibitem{ekera2021}
+M.~Ekerå.
+\newblock On completely factoring any integer efficiently in a single run of an order-finding algorithm.
+\newblock \emph{Quantum Information Processing}, 20(6), 2021.
+\newblock arXiv:2007.10044.
+
+\bibitem{ekera2024}
+M.~Ekerå.
+\newblock On the success probability of quantum order finding.
+\newblock \emph{ACM Transactions on Quantum Computing}, 2024.
+\newblock arXiv:2201.07791.
+
+\bibitem{bachshallit1996}
+E.~Bach and J.~Shallit.
+\newblock \emph{Algorithmic Number Theory}, volume~1.
+\newblock MIT Press, 1996.
+
+\bibitem{erdosps1991}
+P.~Erdős, C.~Pomerance, and E.~Schmutz.
+\newblock {C}armichael's lambda function.
+\newblock \emph{Acta Arithmetica}, 58(4):363--385, 1991.
+
+\bibitem{pomerance2017}
+C.~Pomerance et~al.
+\newblock The expected number of elements to generate a finite group with $d$-generated {S}ylow subgroups.
+\newblock arXiv:1707.07193, 2017.
+
+\bibitem{regev2023}
+O.~Regev.
+\newblock An efficient quantum factoring algorithm.
+\newblock arXiv:2308.06572, 2023.
+
+\bibitem{carmichaelquantum2021}
+A quantum algorithm for computing the {C}armichael function.
+\newblock arXiv:2111.02488, 2021.
+
+\end{thebibliography}
+
+\appendix
+
+\section{Reference Implementation}
+\label{app:impl}
+
+\begin{lstlisting}[style=pythonstyle]
+def divisors(n):
+    """Divisors of n, ascending."""
+    small, large = [], []
+    i = 1
+    while i*i <= n:
+        if n % i == 0:
+            small.append(i)
+            if i != n // i:
+                large.append(n // i)
+        i += 1
+    return small + large[::-1]
+
+
+def convergent_denominators(k, Q, max_denom):
+    """All convergent denominators of k/Q up to max_denom."""
+    a, b = k, Q
+    h_prev, h_curr = 0, 1
+    k_prev, k_curr = 1, 0
+    denoms = []
+    while b != 0:
+        q = a // b
+        a, b = b, a - q*b
+        h_prev, h_curr = h_curr, q*h_curr + h_prev
+        k_prev, k_curr = k_curr, q*k_curr + k_prev
+        if 0 < k_curr <= max_denom:
+            denoms.append(k_curr)
+        elif k_curr > max_denom:
+            break
+    return denoms
+
+
+def minimize_order(a, N, candidate):
+    if candidate <= 0 or pow(a, candidate, N) != 1:
+        return 0
+    r = candidate
+    for p in prime_factors(r):
+        while r % p == 0 and pow(a, r // p, N) == 1:
+            r //= p
+    return r
+
+
+def C(a, N, k, Q, L):
+    """The (C) post-processing procedure."""
+    cands = set(convergent_denominators(k, Q, N - 1))
+    if L > 1:
+        cands.update(divisors(L))
+    valid = [d for d in cands if d > 0 and pow(a, d, N) == 1]
+    if not valid:
+        return 0
+    return minimize_order(a, N, min(valid))
+\end{lstlisting}
+
+\section{Per-Noise-Model Violation Counts ($N = 77$)}
+\label{app:tables}
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+Noise & covered/500 & violations & lucky & missed \\
+\midrule
+noise-free               & 493 & 0 & 3 & 4 \\
+depolarizing $p=0.3$     & 499 & 0 & 1 & 0 \\
+depolarizing $p=0.8$     & 494 & 0 & 3 & 3 \\
+readout flip $p=0.3$     & 487 & 0 & 3 & 10 \\
+bias zero $p=0.5$        & 499 & 0 & 1 & 0 \\
+phase $\sigma=1.0$       & 496 & 0 & 3 & 1 \\
+phase $\sigma=2.5$       & 481 & 0 & 2 & 17 \\
+amp.\ damp.\ $\gamma=0.01$ & 491 & 0 & 2 & 7 \\
+amp.\ damp.\ $\gamma=0.05$ & 492 & 0 & 3 & 5 \\
+modexp $q=0.3$           & 493 & 0 & 3 & 4 \\
+modexp $q=0.8$           & 476 & 0 & 3 & 21 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Identical pattern (violations $= 0$) for $N = 143$ and $N = 209$; see \texttt{demo.py -{}-verify} output in the companion code.
+
+\end{document}
