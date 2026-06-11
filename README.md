@@ -208,3 +208,58 @@ N 이 커지고 회로 비용이 측정에 지배될수록 위수 회수 확률 
 - 현재 `divisors(L)` 은 trial division. L ≲ N 범위에서는 충분하나 더 큰 N 에서는 소인수 분해 필요.
 - (C) 의 초기 트라이얼들 (L 이 아직 작을 때) 은 (B) 와 동등. λ(N) 회수까지의 transient 가 있음.
 - 양자 회로 자체의 노이즈/디코히어런스 가정 없음 (이상 시뮬레이션). 실제 하드웨어에서는 측정 분포가 흐려져 (A)/(B)/(C) 모두 성능이 떨어지는데, 그 환경에서 (C) 의 견고함은 향후 실험 대상.
+
+### 7.5 선행연구와의 관계 (정직한 attribution)
+
+위 알고리즘의 구성요소를 학계 선행연구에 맞춰 솔직히 정리한다.
+
+| 우리 구현 | 선행 |
+|---|---|
+| 같은 base 다중 측정 → 분모 lcm (`quantum_order` 의 일부) | **Knill (1995)** Los Alamos tech report. 표준 기법. |
+| 1회 측정에서 모든 연분수 수렴값 분모 시도 | **McAnally (2001)** [arXiv:quant-ph/0112055](https://arxiv.org/abs/quant-ph/0112055): "all denominators of convergents up to the first ≥ n" + Fourier 모듈러스 Q ≈ 2wn³ 확대로 단일 run 확신도 →1. |
+| `r | λ(N)` 와 lcm of orders → λ(N) | **Bach-Shallit** *Algorithmic Number Theory*. 교과서. |
+| 단일 measurement 위수의 sharp bound (~94%) | **Bourdon-Williams (2007)** [arXiv:quant-ph/0607148](https://arxiv.org/abs/quant-ph/0607148). 이론적 lower bound (알고리즘 변경 X). |
+| **다중 base** 측정·order들의 lcm으로 λ(N) 직접 계산 | **2021 Carmichael paper** [arXiv:2111.02488](https://arxiv.org/abs/2111.02488). Algorithm 1: `for k in 1..K: a←random; λ←lcm(λ, ord(a))`. K = O((log N)²). |
+| 단일 base 위수만으로 N 완전 인수분해 | **Ekerå (2021)** [arXiv:2007.10044](https://arxiv.org/abs/2007.10044). 다른 방향의 단일 측정 노선. |
+| 위수 회수 확률 종합 분석 | **Ekerå (2024)** [arXiv:2201.07791](https://arxiv.org/abs/2201.07791). Survey: 연분수, 격자, 오프셋 탐색, 약수 탐색, Seifert joint solving. **다중 base 누적은 survey에 부재**. |
+
+**우리 구현의 차별점.** 우리가 한 일은 위 요소들의 *특정 조합*:
+
+1. **다중 base 누적 L을 새 측정의 CF 후처리 후보풀에 합치기** — `candidates ← convergents(k/Q) ∪ divisors(L)`. McAnally 의 "all convergents" 후처리와 Carmichael paper 의 "multi-base lcm" 을 묶음. 명시적 문헌은 찾지 못함 (자명한 조합이라 folklore 일 가능성).
+
+2. **L 이 새 base 의 exponent가 되면 측정 생략** — `if pow(a, L, N) == 1: return min divisor d with a^d ≡ 1`. 표준 reduction (위수 = exponent 의 최소 양호한 약수) 의 알고리즘적 활용. 새로운 수학은 아님.
+
+3. **N ≲ 209 작은 N에서의 정량 검증** — 측정당 회수율 ~35% → ~95% 점프 (200 trials × 6 N). 같은 metric으로 측정한 선행 표를 찾지 못했으나 시뮬레이션 규모가 작아 학술 기여로 보기는 어려움.
+
+**솔직한 평가.** 알고리즘적으로 새로운 것은 거의 없다. 가치는:
+- 여러 분산된 기법을 하나의 일관된 시뮬레이션 환경에서 결합·비교
+- 측정당 회수율 점프를 시각적으로 보여주는 정량 데이터
+- 교육·연구 entry point 로서 numpy 200줄 분량의 self-contained 구현
+
+학술 기여를 노린다면 §7.4 의 한계 — 특히 **노이즈 모델 하 견고함** 또는 **베이지안 후처리와의 결합** — 으로 가야 한다.
+
+### 7.6 Ekerå 단일-측정 + smoothness extension 과의 비교 실험
+
+`multi_base.shor_quantum_ekera` 는 Ekerå 2021 의 핵심 아이디어를 구현:
+> 한 base 의 위수 r 에 작은 소수들의 거듭제곱을 곱해 r′ = r · ∏(q^⌊log_q(m')⌋) 를 만든 뒤,
+> r′ 을 exponent 로 가정해 `factor_from_exponent` (Miller-Rabin 식) 실행.
+
+다중 base 누적과의 비교 (`demo.py --compare3`, shots=1/base):
+
+| N | 원본 single-base | multi-base | Ekerå smoothness |
+|---|---|---|---|
+| 33 | 100% / 1.98 meas | 100% / 1.04 meas | 100% / 1.04 meas |
+| 77 | 100% / 2.68 meas | 100% / 1.70 meas | 98% / 1.34 meas |
+| 143 | 100% / 2.24 meas | 100% / 1.94 meas | 94% / 1.36 meas |
+| 209 | 100% / 3.68 meas | 98% / 2.34 meas | 90% / 1.58 meas |
+| 247 | 100% / 2.74 meas | 100% / 2.74 meas | 88% / 1.48 meas |
+| 299 | 100% / 2.74 meas | 100% / 1.84 meas | 98% / 1.60 meas |
+| 323 | 100% / 2.56 meas | 98% / 2.14 meas | 96% / 1.86 meas |
+| 377 | 100% / 2.98 meas | 98% / 2.28 meas | 94% / 1.76 meas |
+
+**해석.**
+- **Ekerå** 가 가장 적은 측정으로 끝남 (1.3~1.8 meas/trial) 이지만 88~98% 성공률. 단일 측정 + smoothness 가 N 이 커질수록 부족.
+- **Multi-base** 는 측정을 조금 더 쓰고 (1.7~2.7 meas) 98~100% 성공률. λ(N) 회수까지 가는 transient 덕분에 안정적.
+- **원본 single-base** 는 내부 shots=8 까지 보강해 가장 견고하지만 항상 비싼 budget.
+
+이는 두 접근이 **상호 배타적이지 않다**는 것을 시사: r 회수 후 `ekera_extend(L)` 으로 한 번 더 확장하면 multi-base 의 견고함 + Ekerå 의 압축성을 결합 가능. 향후 실험 후보.

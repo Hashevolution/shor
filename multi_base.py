@@ -183,6 +183,34 @@ def quantum_order_multi(
 # exponent → 인수분해 (Miller-Rabin 식)
 # ──────────────────────────────────────────────────────────────────
 
+def _primes_up_to(m: int) -> list[int]:
+    """단순 sieve. 작은 m 에서만 사용."""
+    if m < 2:
+        return []
+    sieve = [True] * (m + 1)
+    sieve[0] = sieve[1] = False
+    for i in range(2, int(m**0.5) + 1):
+        if sieve[i]:
+            for j in range(i * i, m + 1, i):
+                sieve[j] = False
+    return [i for i in range(m + 1) if sieve[i]]
+
+
+def ekera_extend(r: int, m_prime: int) -> int:
+    """Ekerå 2021 smoothness extension: r' = r · ∏(q^⌊log_q(m')⌋) for prime q ≤ m'.
+
+    r 을 m'-smooth 영역의 모든 소수거듭제곱과 곱해, r' 이 λ(N) 의 배수일 확률을 높임.
+    """
+    if m_prime < 2:
+        return r
+    r_prime = r
+    for q in _primes_up_to(m_prime):
+        eta = int(math.log(m_prime) / math.log(q))
+        if eta >= 1:
+            r_prime *= q ** eta
+    return r_prime
+
+
 def factor_from_exponent(
     N: int, L: int, rng: random.Random, max_attempts: int = 20,
 ) -> Optional[FactorResult]:
@@ -224,6 +252,69 @@ def factor_from_exponent(
                 break
             x = y
     return None
+
+
+# ──────────────────────────────────────────────────────────────────
+# Ekerå 2021: 단일 측정 + smoothness extension
+# ──────────────────────────────────────────────────────────────────
+
+def shor_quantum_ekera(
+    N: int,
+    m_prime: Optional[int] = None,
+    k_attempts: int = 20,
+    shots_single_base: int = 4,
+    seed: Optional[int] = None,
+) -> tuple[Optional[FactorResult], MultiBaseState]:
+    """Ekerå 2021 식 단일-base 인수분해.
+
+    한 base a 의 위수 r 을 회수, smoothness extension r → r' 로 확장,
+    r' 을 exponent 로 가정해 factor_from_exponent 실행.
+
+    multi-base 누적과의 차이:
+      - 양자 측정 횟수 ≤ shots_single_base (한 base만 사용)
+      - r' 은 보통 매우 큼 (log²N 이상)
+    """
+    state = MultiBaseState()
+
+    if N < 2:
+        return None, state
+    if N % 2 == 0:
+        return FactorResult(2, N // 2, "even"), state
+    if is_prime(N):
+        return None, state
+    mp = find_prime_power(N)
+    if mp is not None:
+        return FactorResult(mp, N // mp, "prime_power"), state
+
+    if m_prime is None:
+        m_prime = max(10, int(math.log2(N) ** 2))
+
+    rng_py = random.Random(seed)
+    rng_np = np.random.default_rng(seed)
+
+    for attempt in range(1, 6):  # 몇 번 base 만 시도
+        a = rng_py.randrange(2, N)
+        g = math.gcd(a, N)
+        if g > 1:
+            return FactorResult(g, N // g, "gcd_shortcut", a=a, attempts=attempt), state
+
+        # 한 base 에 다중 측정으로 위수 r 회수 (Knill lcm 트릭)
+        r = quantum_order_multi(a, N, state, shots=shots_single_base, rng=rng_np)
+        if r == 0:
+            continue
+        state.update(a, r)
+
+        # Ekerå smoothness extension
+        r_prime = ekera_extend(r, m_prime)
+
+        # r' 을 exponent 로 인수 추출
+        result = factor_from_exponent(N, r_prime, rng_py, max_attempts=k_attempts)
+        if result is not None:
+            result.method = "ekera_" + result.method
+            result.attempts = attempt
+            return result, state
+
+    return None, state
 
 
 # ──────────────────────────────────────────────────────────────────

@@ -25,7 +25,7 @@ from shor import (
     quantum_order,
     _counting_qubits,
 )
-from multi_base import shor_quantum_multi
+from multi_base import shor_quantum_multi, shor_quantum_ekera
 
 
 def run_factor(N: int, seed: int = 0) -> None:
@@ -133,6 +133,64 @@ def compare(targets: list[int], trials: int = 50) -> None:
               f"{m_time/trials*1000:>9.2f}")
 
 
+def compare3(targets: list[int], trials: int = 50, shots: int = 1) -> None:
+    """단일-base / 다중-base / Ekerå 단일측정 세 방법 비교.
+
+    측정 횟수, 성공률, 평균 시간을 표로 출력. 모두 같은 시드 셋 사용.
+    shots 으로 base 당 측정 횟수를 제한해 빠듯한 budget 시뮬레이션.
+    """
+    print(f"\n── 3-way 비교 ({trials} trials × shots={shots}/base) ──")
+    print(f"  {'N':>4}  {'method':<14}  {'success':>7}  "
+          f"{'meas/trial':>10}  {'ms/trial':>9}")
+
+    for N in targets:
+        # 단일 base (원본, 내부 shots=8 고정)
+        s_succ = 0
+        s_meas = 0
+        s_time = 0.0
+        for seed in range(trials):
+            t0 = time.perf_counter()
+            res, n = _count_single_base(N, seed)
+            s_time += time.perf_counter() - t0
+            if res is not None:
+                s_succ += 1
+            s_meas += n
+
+        # 다중 base, shots_per_base = shots
+        m_succ = 0
+        m_meas = 0
+        m_time = 0.0
+        for seed in range(trials):
+            t0 = time.perf_counter()
+            res, st = shor_quantum_multi(N, shots_per_base=shots, seed=seed)
+            m_time += time.perf_counter() - t0
+            if res is not None:
+                m_succ += 1
+                m_meas += st.measurements
+
+        # Ekerå, shots_single_base = shots
+        e_succ = 0
+        e_meas = 0
+        e_time = 0.0
+        for seed in range(trials):
+            t0 = time.perf_counter()
+            res, st = shor_quantum_ekera(N, shots_single_base=shots, seed=seed)
+            e_time += time.perf_counter() - t0
+            if res is not None:
+                e_succ += 1
+                e_meas += st.measurements
+
+        for label, succ, meas, dt in [
+            ("single-base", s_succ, s_meas, s_time),
+            ("multi-base", m_succ, m_meas, m_time),
+            ("ekera-smooth", e_succ, e_meas, e_time),
+        ]:
+            print(f"  {N:>4}  {label:<14}  "
+                  f"{succ:>3}/{trials:<3}  "
+                  f"{meas/trials:>10.2f}  "
+                  f"{dt/trials*1000:>9.2f}")
+
+
 def compare_period_finding(N: int, trials: int = 200, seed: int = 0) -> None:
     """순수 위수 회수 확률 비교 (인수분해와 분리).
 
@@ -226,6 +284,12 @@ def main(argv: list[str]) -> int:
         i = argv.index("--compare")
         Ns = [int(x) for x in argv[i + 1:]] if i + 1 < len(argv) else [15, 21, 33, 35]
         compare(Ns)
+        return 0
+
+    if "--compare3" in argv:
+        i = argv.index("--compare3")
+        Ns = [int(x) for x in argv[i + 1:]] if i + 1 < len(argv) else [33, 77, 143, 209]
+        compare3(Ns)
         return 0
 
     if "--period" in argv:
