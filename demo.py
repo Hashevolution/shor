@@ -241,6 +241,7 @@ def verify_c_determinism(
     N: int,
     trials: int = 500,
     seed: int = 0,
+    noise_subset: list[str] | None = None,
 ) -> None:
     """(C)-determinism 정리의 직접 검증.
 
@@ -275,6 +276,8 @@ def verify_c_determinism(
         ("modexp q=0.3",   {"modexp_error": 0.3}),
         ("modexp q=0.8",   {"modexp_error": 0.8}),
     ]
+    if noise_subset is not None:
+        noise_setups = [(l, k) for (l, k) in noise_setups if l in noise_subset]
 
     print(f"\n── (C)-determinism 정리 검증: N={N}, {trials} trials ──")
     print(f"  {'노이즈':<18} {'covered':>8} {'violat.':>8} {'lucky':>7} "
@@ -621,6 +624,16 @@ def main(argv: list[str]) -> int:
         Ns = [int(x) for x in argv[i + 1:]] if i + 1 < len(argv) else [77, 143, 209]
         for N in Ns:
             verify_c_determinism(N)
+        return 0
+
+    if "--verify-large" in argv:
+        # 대형 N 에서 (C)-determinism 정리 검증. 측정당 비용이 ~수십배 커서
+        # trials 를 줄이고 노이즈 대표 4종 (A/B/C 군 + noise-free) 만 본다.
+        i = argv.index("--verify-large")
+        Ns = [int(x) for x in argv[i + 1:]] if i + 1 < len(argv) else [1147, 2491, 4087]
+        subset = ["noise-free", "depol p=0.8", "phase σ=2.5", "modexp q=0.8"]
+        for N in Ns:
+            verify_c_determinism(N, trials=100, noise_subset=subset)
         return 0
 
     if "--adaptive" in argv:

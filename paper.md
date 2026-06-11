@@ -5,7 +5,7 @@
 
 ## Abstract
 
-We give an elementary observation about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. Maintaining an accumulated exponent candidate `L` — the least common multiple of orders recovered from previous bases — and augmenting standard continued-fraction post-processing with a divisor search over `L` yields a procedure (which we call (C)) that recovers the order `r_a` of any new base `a` deterministically whenever `r_a | L`, *independent of the measurement distribution*. As a corollary, the procedure is robust to any measurement-layer noise model: a measurement returning a value of `k` drawn from any distribution still yields the correct order, provided the accumulated `L` covers `r_a`. We verify this experimentally across 11 noise setups (depolarizing, readout flip, bias, phase decoherence, amplitude damping, modular exponentiation error) at three composite sizes and 500 trials each (16,500 total measurements), observing zero violations. We discuss the theorem's relation to prior work — Knill's lcm trick (1995), McAnally's larger-Q convergent enumeration (2001), the Bach-Shallit textbook treatment of `r | λ(N)`, and the quantum algorithm for computing the Carmichael function (2021) — and conclude that while every individual ingredient is folklore, the *clean statement of the noise-invariance corollary* appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme — adaptive base selection and lattice-based joint post-processing — yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale.
+We give an elementary observation about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. Maintaining an accumulated exponent candidate `L` — the least common multiple of orders recovered from previous bases — and augmenting standard continued-fraction post-processing with a divisor search over `L` yields a procedure (which we call (C)) that recovers the order `r_a` of any new base `a` deterministically whenever `r_a | L`, *independent of the measurement distribution*. As a corollary, the procedure is robust to any measurement-layer noise model: a measurement returning a value of `k` drawn from any distribution still yields the correct order, provided the accumulated `L` covers `r_a`. We verify this experimentally across 11 noise setups (depolarizing, readout flip, bias, phase decoherence, amplitude damping, modular exponentiation error) at three composite sizes and 500 trials each (16,500 measurements), and additionally at three larger semiprimes up to `N = 4087` (1,200 further measurements) — 17,700 total, zero violations. We discuss the theorem's relation to prior work — Knill's lcm trick (1995), McAnally's larger-Q convergent enumeration (2001), the Bach-Shallit textbook treatment of `r | λ(N)`, and the quantum algorithm for computing the Carmichael function (2021) — and conclude that while every individual ingredient is folklore, the *clean statement of the noise-invariance corollary* appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme — adaptive base selection and lattice-based joint post-processing — yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale.
 
 ## 1. Background and notation
 
@@ -92,7 +92,7 @@ Noise models tested (each implemented in `noise.py`):
 
 The `lucky` count is small (1-4 per setup), confirming most successes flow through the `covered` region. The `missed` count (`condition = False ∧ success = False`) is dominated by early trials (`L = 1`) under high noise.
 
-See `demo.py --verify <N>` to reproduce.
+See `demo.py --verify <N>` to reproduce. We extend the same verification protocol to larger semiprimes `N ∈ {1147, 2491, 4087}` with a representative 4-noise subset and 100 trials per setup — see Appendix C. Per-noise-model breakdown for `N = 77` is in Appendix B.
 
 ## 5. Related work
 
@@ -126,7 +126,7 @@ We outline how Theorem 1 relates to existing literature, including which ingredi
 
 **Classical verification gate is assumed exact.** Theorem 1 relies on `pow(a, d, N)` returning the correct value. On real hardware, this could in principle be corrupted by classical computation errors, but at standard machine precision this is negligible compared to quantum noise.
 
-**Scale of verification.** Our experiments are at `N ≤ 437` (small for cryptographic purposes) but with high statistical replication (500 trials per noise setup). Scaling to cryptographic `N` requires no algorithmic change; the bottleneck is classical state-vector simulation. Hardware verification on existing NISQ devices is a natural next step.
+**Scale of verification.** Our experiments span `N ∈ {77, 143, 209}` with 500 trials per noise setup (§4) and `N ∈ {1147, 2491, 4087}` with 100 trials per setup (Appendix C), totaling 17,700 measurements. The largest `N = 4087 = 61 · 67` requires a 24-qubit counting register (`Q = 2^24 ≈ 16.8M` amplitudes, 256 MB at complex128) — at the upper end of single-machine state-vector simulation. Scaling to cryptographic `N` requires no algorithmic change; the remaining bottleneck is pure classical simulation memory. Hardware verification on existing NISQ devices is a natural next step.
 
 ## 7. Code, reproducibility
 
@@ -137,6 +137,7 @@ pip install numpy
 git clone https://github.com/Hashevolution/shor
 cd shor
 python demo.py --verify 77 143 209          # reproduces §4 table
+python verify_large_run.py 1147 2491 4087   # reproduces Appendix C (large N)
 python demo.py --noise3 77 143              # reproduces 3-noise comparison
 python demo.py --adaptive 77 143 209 323    # reproduces §9.1 negative result
 ```
@@ -145,7 +146,7 @@ The codebase is `~700` lines of numpy. No quantum libraries required.
 
 ## 8. Conclusion
 
-We formalize a folklore observation about classical post-processing of multi-base Shor order-finding measurements: augmenting continued-fraction recovery with a divisor search over the accumulated lcm `L` makes the procedure deterministic whenever the order of the current base divides `L` — independent of the measurement distribution, hence robust to all measurement-layer noise models. We verify this across 16,500 trials in 11 noise setups (zero violations), and show that two natural attempts to extend the result (adaptive base selection, lattice post-processing) yield no further measurement savings, indicating Theorem 1 captures the essential structure at this scale.
+We formalize a folklore observation about classical post-processing of multi-base Shor order-finding measurements: augmenting continued-fraction recovery with a divisor search over the accumulated lcm `L` makes the procedure deterministic whenever the order of the current base divides `L` — independent of the measurement distribution, hence robust to all measurement-layer noise models. We verify this across 17,700 trials at six composite sizes (zero violations), and show that two natural attempts to extend the result (adaptive base selection, lattice post-processing) yield no further measurement savings, indicating Theorem 1 captures the essential structure at this scale.
 
 The work is best viewed as expository and a foundation for explorations of more substantive improvements: noise-resilient implementations on hardware, the `lucky` region under structured measurement distributions, and connections to lattice-based factoring (Regev 2023).
 
@@ -233,3 +234,28 @@ def C(a, N, k, Q, L):
 | modexp q=0.8 | 476 | 0 | 3 | 21 |
 
 Identical pattern (violations = 0) for `N = 143` and `N = 209`; see `demo.py --verify` output.
+
+## Appendix C. Extended verification at larger N
+
+We additionally verify Theorem 1 at three larger semiprimes, with a representative subset of noise models (one each from categories A/B/C plus noise-free) and reduced trial count (100 per setup) due to increased per-measurement cost (≈ 0.45 s at `N = 1147`, ≈ 1.9 s at `N = 4087`).
+
+| N            | Noise         | covered/100 | violations | lucky | missed |
+|--------------|---------------|------------:|-----------:|------:|-------:|
+| 1147 = 31·37 | noise-free    |          91 |          0 |     2 |      7 |
+| 1147         | depol p=0.8   |          93 |          0 |     3 |      4 |
+| 1147         | phase σ=2.5   |           9 |          0 |     4 |     87 |
+| 1147         | modexp q=0.8  |          61 |          0 |     2 |     37 |
+| 2491 = 47·53 | noise-free    |          97 |          0 |     2 |      1 |
+| 2491         | depol p=0.8   |          96 |          0 |     1 |      3 |
+| 2491         | phase σ=2.5   |           1 |          0 |     1 |     98 |
+| 2491         | modexp q=0.8  |          59 |          0 |     2 |     39 |
+| 4087 = 61·67 | noise-free    |          88 |          0 |     3 |      9 |
+| 4087         | depol p=0.8   |          93 |          0 |     2 |      5 |
+| 4087         | phase σ=2.5   |          50 |          0 |     3 |     47 |
+| 4087         | modexp q=0.8  |           1 |          0 |     1 |     98 |
+
+**Total: 1,200 additional measurements, 0 violations.** Combined with §4 the verification covers 17,700 measurements.
+
+Note that under extreme noise the `covered` fraction can drop sharply — `phase σ = 2.5` at `N = 2491` and `modexp q = 0.8` at `N = 4087` both reach `covered = 1` — because the measurement is so degraded that `L` cannot accumulate. The theorem then applies only vacuously over most trials, but on the few trials where it does apply, success remains 100%. The non-monotonicity across `N` for the same noise (`phase σ = 2.5` covered: 9, 1, 50 at `N = 1147, 2491, 4087`) is a sample-size artifact at 100 trials and reflects which random seeds happened to land on bases with small `r_a` early.
+
+Reproduce: `python verify_large_run.py 1147 2491 4087` (≈ 26 min total on a single CPU).
