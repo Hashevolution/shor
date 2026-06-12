@@ -1,0 +1,69 @@
+# F1+F2: Stochastic resonance (SR) search for factoring
+# 가설: 적정 노이즈가 인수분해를 *돕는다*. U-shape (= min at σ > 0) 이면 SR confirmed.
+
+# F1: K_λ vs noise (N=437, 50 trials)
+#   baseline (noise-free): 5.12
+
+#   phase_sigma σ:
+#     σ=0.00: K_λ =   5.12
+#     σ=0.10: K_λ =   5.02  ← slightly < baseline
+#     σ=0.20: K_λ =   5.34
+#     σ=0.30: K_λ =   5.38
+#     σ=0.50: K_λ =   5.86
+#     σ=0.70: K_λ =   7.64
+#     σ=1.00: K_λ =  12.96
+#     σ=1.50: K_λ =  26.42
+#     σ=2.00: K_λ =  40.50
+
+#   depolarizing p:
+#     p=0.00: K_λ =   5.12
+#     p=0.05: K_λ =   5.94
+#     p=0.10: K_λ =   6.38
+#     p=0.20: K_λ =   5.88  ← non-monotone but > baseline
+#     p=0.30: K_λ =   7.58
+#     p=0.50: K_λ =   9.90
+
+# F2: hybrid K vs noise (N=437, d=4, 50 trials)
+#   baseline (noise-free): 2.62
+
+#   phase_sigma σ:
+#     σ=0.00: hybrid K =   2.62
+#     σ=0.05: hybrid K =   2.56  ← ↓
+#     σ=0.10: hybrid K =   2.56  ← ↓
+#     σ=0.20: hybrid K =   2.56  ← ↓
+#     σ=0.30: hybrid K =   2.60
+#     σ=0.50: hybrid K =   2.66
+#     σ=0.70: hybrid K =   2.82
+#     σ=1.00: hybrid K =   3.04
+#     σ=1.50: hybrid K =   4.20
+#     σ=2.00: hybrid K =   7.62
+
+#   depolarizing p:
+#     p=0.00: hybrid K =   2.62
+#     p=0.05: hybrid K =   2.64
+#     p=0.10: hybrid K =   2.64
+#     p=0.20: hybrid K =   2.76
+#     p=0.30: hybrid K =   2.84
+#     p=0.50: hybrid K =   2.98
+
+#   amplitude_damp γ:
+#     γ=0.0000: hybrid K =   2.62
+#     γ=0.0001: hybrid K =   2.64
+#     γ=0.0005: hybrid K =   2.84
+#     γ=0.0010: hybrid K =   3.16
+#     γ=0.0050: hybrid K =   6.12
+#     γ=0.0100: hybrid K =   8.34
+
+# 결론:
+# - F1: phase σ=0.10 만 baseline 보다 약간 ↓ (5.02 vs 5.12, 1.9%). 다른 σ 는 monotone ↑.
+# - F2 hybrid + phase: σ ∈ [0.05, 0.20] 3 점 연속 baseline 보다 2.3% ↓ — 약한 SR 신호 가능성.
+# - F2 hybrid + depol: monotone ↑ (SR 없음).
+# - F2 hybrid + amp_damp: monotone ↑ (SR 없음).
+
+# → Phase noise 만이 SR 신호 후보. 50 trials 의 SE 크므로 (~0.15) borderline.
+#    500 trials 확정 실험 진행 중 (sr_confirm.py).
+
+# 해석 가설:
+# - Phase noise: peak 만 smear, marginal 정보 유지 → 일부 trial 에서 더 다양한 convergent 노출
+# - 가능: hybrid 가 d 개 좌표 중 하나라도 "lucky b" 만나면 1 run, 노이즈가 이 lucky rate 약간 향상?
+# - 다른 노이즈 (depol, amp): 정보 손실 위주 → 향상 없음.
