@@ -297,21 +297,42 @@ P[α_p = 0] = 2^{-v_p}, P[α_p = j] = 2^{j - 1 - v_p} for 1 ≤ j ≤ v_p.
 
 `α_p` and `α_q` are independent (CRT). Computing `P[α_p = α_q]` as a sum and using `Σ_{j=1}^{m} 4^j = 4(4^m - 1)/3` gives the closed form. ∎
 
-**Theorem 5 (hybrid factoring — formal).** Pick `b_1, ..., b_d` uniform random in `(Z/N)*` and set `a_i = b_i² mod N`. Let `g(η)` denote the per-coordinate (C) recovery probability at `L = 1` under noise model `η` (this is the quantity `g_M(η)` measured in §3.3 / `experiments/g_eta.py`). Let `c := P[nontrivial sqrt]` from Lemma 5.1, so `c ≥ 1/2`. The probability that the hybrid algorithm factors `N` in `K` Regev runs is at least:
+**Theorem 5 (hybrid factoring — formal).** Pick `b_1, ..., b_d` uniform random in `(Z/N)*` and set `a_i = b_i² mod N`. Let `g(η)` denote the per-coordinate (C) recovery probability at `L = 1` under noise model `η` (the `g_M(η)` of §3.3). Let `c := P[nontrivial sqrt]` from Lemma 5.1, so `c ≥ 1/2`.
+
+**(a) Single-run success.** The probability that the hybrid algorithm factors `N` in **one** Regev run is at least:
 
 ```
-P[hybrid succeeds in K runs] ≥ 1 − (1 − g(η) · c)^{K·d},
+P[1-run success] ≥ 1 − (1 − g(η) · c)^d.
 ```
 
-and the expected number of runs satisfies:
+**(b) K-run success (with fixed bases).** Letting `X_i` be the indicator that `b_i^{ord(a_i)}` is a nontrivial square root of 1, and conditioning on the fixed `b_i`:
 
 ```
-E[K] ≤ 1 / (1 − (1 − g(η) · c)^d).
+P[K-run success | b_1, ..., b_d] = 1 − ∏_{i=1}^{d} (1 − X_i (1 − (1 − g(η))^K)).
 ```
 
-For `d = √(log N)` and any `η` with `g(η) > 0`, `E[K] → 1` as `N → ∞`. For finite `N` and the empirical values measured in §3.3: `g(0) ≈ 0.38` at `N = 437`, but for *small* orders `r_a` (typical when `a_i = b_i²` since the order is then a divisor of `λ(N)`), the per-coordinate convergent recovery in 1 measurement is much higher (close to 1). Hence at `N = 437`, `d = 4`, the prediction `E[K] ≤ 1/(1 − (1/2)^4) ≈ 1.07` matches the empirical mean of `1.03`.
+Taking expectation over `b_i` (independent, each with `E[X_i] ≥ c`):
 
-**Proof.** Per Regev run, the d coordinates `(a_1, k_1), ..., (a_d, k_d)` provide d independent chances. For each coordinate, the hybrid succeeds iff (C) recovers `ord(a_i)` from `k_i` (probability `g(η)`) AND `b_i^{ord(a_i)}` is a nontrivial square root of 1 (probability `c` by Lemma 5.1, since `b_i` is uniform random and independent of `k_i`). The two events are independent, so per-coordinate success ≥ `g(η) · c`. The d coordinates are independent (in our model — Regev's joint correlations only tighten via §3.4 which empirically does not hurt). Hence per-run failure probability ≤ `(1 - g(η) · c)^d`, giving the K-run bound and the expectation bound. ∎
+```
+P[K-run success] ≥ 1 − ((1 − c) + c · (1 − g(η))^K)^d.
+```
+
+In particular, as `K → ∞` with fixed bases, the success probability approaches `1 − (1 − c)^d`, *bounded by base randomness*: a fraction `≤ (1 − c)^d ≤ 2^{−d}` of base choices have all `X_i = 0` and the algorithm cannot succeed without restarting.
+
+**(c) Restart-augmented expectation.** Modify the algorithm to draw fresh `b_1, ..., b_d` after `K_max` failed runs (a standard amplification trick). Then `E[\text{total runs}] ≤ K_max / (1 − (1 − c)^d) \cdot 1/(1 − \text{conditional fail prob})`. For `K_max = O(\log(1/\epsilon)/g)` and `d ≥ \log_2(1/\epsilon)`, the algorithm succeeds with probability `1 − \epsilon` in `O(K_max)` runs.
+
+**(d) Asymptotic.** For `d = \lceil \log_2(1/\epsilon) \rceil` (so `(1 − c)^d ≤ \epsilon`), and `g(η) = \Omega(1)`, the expected total runs is `O(1)` as `N → ∞`.
+
+At `N = 437`, `d = 4`, with empirical `g ≈ 1` for the small orders typical when `a_i = b_i²`: the 1-run bound gives `P[\text{success}] ≥ 1 − (1/2)^4 = 15/16 ≈ 0.94`, so `E[K] ≤ 16/15 ≈ 1.07`. Empirical mean: `1.03`. The `(1 − c)^d = 1/16` "bad bases" event was *not observed* in 30 trials (`P[\text{at least one bad case}] = 1 − (15/16)^{30} ≈ 0.86`, so observing 0 is within statistical fluctuation).
+
+**Proof of (a) and (b).** For coordinate `i`, the hybrid succeeds in `K` runs iff `X_i = 1` AND `(C)` recovers `ord(a_i)` in at least one of the `K` runs. The second event has probability `1 − (1 − g(η))^K` (each run is an independent Bernoulli `g(η)`). The two are independent (b_i and k_i are independent). So `P[\text{coord } i \text{ succeeds in } K | b_i] = X_i (1 − (1 − g(η))^K)`, giving the conditional formula. Marginalizing over the d independent b_i with `E[X_i] = c`:
+
+```
+P[fail in K | b₁, …, b_d] = ∏ᵢ (1 − Xᵢ(1 − (1 − g)^K))
+E[above]                  = ((1 − c) + c(1 − g)^K)^d
+```
+
+(by independence of the d coordinates in our model). Hence (b). Setting `K = 1` and using `(1 − c) + c(1 − g) = 1 − cg` recovers (a). ∎
 
 Reproduce: `python -m experiments.rv_filter_lll factor`.
 

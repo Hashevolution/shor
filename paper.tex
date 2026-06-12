@@ -414,18 +414,22 @@ Hence $\mathbb{P}[\text{nontrivial}] = \mathbb{P}[\alpha_p \neq \alpha_q]$. Stan
 
 \begin{theorem}[Hybrid factoring --- formal]\label{thm:hybrid-formal}
 Pick $b_1, \ldots, b_d$ uniform random in $(\mathbb{Z}/N\mathbb{Z})^*$ and set $a_i = b_i^2 \bmod N$. Let $g(\eta)$ denote the per-coordinate $(C)$ recovery probability at $L = 1$ under noise $\eta$ (the $g_M(\eta)$ of Section~\ref{sec:theorem}). Let $c := \mathbb{P}[\text{nontrivial sqrt}]$ from Lemma~\ref{lem:b-sqrt} ($c \geq 1/2$). Then:
-\[
-  \mathbb{P}[\text{hybrid factors $N$ in $K$ runs}] \;\geq\; 1 - (1 - g(\eta) \cdot c)^{K \cdot d},
-\]
-and the expected number of runs satisfies
-\[
-  \mathbb{E}[K] \;\leq\; \frac{1}{1 - (1 - g(\eta) \cdot c)^d}.
-\]
-For $d = \sqrt{\log N}$ and any $\eta$ with $g(\eta) > 0$, $\mathbb{E}[K] \to 1$ as $N \to \infty$. At $N = 437$, $d = 4$, with per-coordinate recovery $\approx 1$ (small orders), the prediction $\mathbb{E}[K] \leq 1/(1 - (1/2)^4) \approx 1.07$ matches the empirical mean $1.03$.
+\begin{itemize}
+  \item \textbf{(a) Single-run success.} $\mathbb{P}[\text{1-run success}] \geq 1 - (1 - g(\eta) \cdot c)^d.$
+  \item \textbf{(b) $K$-run success with fixed bases.} Letting $X_i$ be the indicator that $b_i^{\mathrm{ord}(a_i)}$ is a nontrivial sqrt of 1, $\mathbb{P}[K\text{-run success}] \geq 1 - ((1 - c) + c(1 - g(\eta))^K)^d$. As $K \to \infty$ this approaches $1 - (1 - c)^d \leq 1 - 2^{-d}$, \emph{bounded by base randomness}.
+  \item \textbf{(c) Restart-augmented.} Drawing fresh $b_i$ after $K_{\max}$ failed runs amplifies success. For $K_{\max} = O(\log(1/\varepsilon)/g)$ and $d \geq \log_2(1/\varepsilon)$, $\mathbb{E}[\text{total runs}] = O(K_{\max})$ for failure probability $\varepsilon$.
+  \item \textbf{(d) Asymptotic.} For $d \geq \lceil \log_2 (1/\varepsilon) \rceil$ and $g(\eta) = \Omega(1)$, $\mathbb{E}[\text{total runs}] = O(1)$ as $N \to \infty$.
+\end{itemize}
+At $N = 437$, $d = 4$, with empirical $g \approx 1$: the 1-run bound gives $\mathbb{P}[\text{success}] \geq 15/16 \approx 0.94$, so $\mathbb{E}[K] \leq 16/15 \approx 1.07$. Empirical mean: $1.03$. The $(1-c)^d = 1/16$ ``bad bases'' event was not observed in 30 trials ($\mathbb{P}[\text{at least one bad}] \approx 0.86$, within statistical fluctuation).
 \end{theorem}
 
 \begin{proof}
-Per Regev run, the $d$ coordinates provide independent chances. For each, hybrid succeeds iff $(C)$ recovers $\mathrm{ord}(a_i)$ from $k_i$ (probability $g(\eta)$) AND $b_i^{\mathrm{ord}(a_i)}$ is a nontrivial sqrt of 1 (probability $c$ by Lemma~\ref{lem:b-sqrt}, independent of $k_i$). Per-coordinate success $\geq g(\eta) \cdot c$. Per-run failure $\leq (1 - g(\eta) c)^d$, giving the bounds.
+For coordinate $i$, the hybrid succeeds in $K$ runs iff $X_i = 1$ AND $(C)$ recovers $\mathrm{ord}(a_i)$ in at least one of the $K$ runs. The second event has probability $1 - (1 - g(\eta))^K$ (independent Bernoulli $g(\eta)$ per run). The two are independent ($b_i$ and $k_i$ independent). So $\mathbb{P}[\text{coord } i \text{ succeeds in } K \mid b_i] = X_i \cdot (1 - (1 - g(\eta))^K)$. Marginalizing over the $d$ independent $b_i$ with $\mathbb{E}[X_i] = c$:
+\[
+  \mathbb{P}[\text{fail in } K] = \mathbb{E}\Bigl[\prod_i (1 - X_i (1 - (1-g)^K))\Bigr]
+  = ((1-c) + c(1-g)^K)^d.
+\]
+Setting $K = 1$ and using $(1 - c) + c(1 - g) = 1 - cg$ recovers (a). The asymptotic claim (c)-(d) follows from standard amplification.
 \end{proof}
 
 Reproduce: \texttt{python -m experiments.rv\_filter\_lll factor}.
