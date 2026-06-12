@@ -633,10 +633,35 @@ arXiv abstract + summary fetch 로 핵심 구조 확인:
 LLL 구현이 numpy-only 정책 위반 (fpylll 또는 sympy 필요). 본 세션은 정리 4 진술 + 증명
 sketch 만 작성. 본 검증은 후속 세션.
 
-## §7 진행 로그
+## §7 frontier — 본 paper 의 틀 밖 탐색
+
+**별도 문서**: `frontier.md` (2026-06-12 대화에서 도출).
+
+핵심 내용:
+- 본 paper 의 4 트릭 (공책, 다중 픽, 갈아만든 픽, hybrid) + 8 개 암묵적 가정.
+- 4 가지 "틀 밖" 방향 (다른 invariant, 체계적 base, 추측-검증, 직접 RSA) 의 literature 검토.
+- 모두 **이미 탐구 또는 fundamental 한계** 로 막힘.
+- 추가 6 방향 (NFS quantum hybrid, partial order, 다중 N, ECDLP, info-theoretic limit, **noise as feature**)
+  의 frontier 가능성.
+- 가장 흥미: **F (noise 활용)** — Lemma 5.1 의 정신 확장.
+
+본 paper 본문 외부 — 후속 연구 가능성 기록용.
+
+## §8 진행 로그
 
 - **2026-06-12 (1)**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
   본 문서 §1 추가. Phase 1 (A) 착수 — §2 의 정리 윤곽 작성.
+- **2026-06-12 (14)**: **틀 밖 탐색 + 4 방향 literature 검토.** 본 paper 의 framework 분석
+  (4 트릭, 8 암묵 가정) + 4 "틀 밖" 방향 (다른 invariant, 체계적 base, 추측-검증, 직접 RSA)
+  의 사전 검토. **결과: 4 방향 모두 이미 탐구 또는 정보이론적 한계 로 막힘**.
+  - #1 (다른 invariant): Cheung-Mosca, Hallgren, Carmichael paper 2021 = 거의 막힘.
+  - #3 (체계적 base): 양자에서 적게 탐구, marginal advance 만 기대.
+  - #7 (추측-검증): Grover 의 √N = Shor poly(log N) 보다 느림. dead-end.
+  - #8 (직접 RSA): Miller's theorem (factoring ↔ d 회수 poly-time 동치) 로 fundamental 막힘.
+  추가 6 방향 (NFS hybrid, partial, 다중 N, ECDLP, info-limit, **noise as feature**)
+  중 가장 흥미는 **F (noise 활용)** — Lemma 5.1 정신 확장.
+  결과 frontier.md 에 기록. 본 paper 본문에는 포함 안 함.
+
 - **2026-06-12 (13)**: **B-4 본실행 — 정리 5 (hybrid) 발견 + 검증.** Regev 의 quadratic
   character 트릭 정확 구현: `b_i` random 으로 고른 후 `a_i = b_i² mod N`. 알려진 b_i 로
   `b = ∏ b_i^z_i` 의 nontrivial sqrt(1) 검증 → 인수.
