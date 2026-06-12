@@ -247,10 +247,100 @@ formalize. 가능하면 → noise-robust Regev variant. 작업 중 후보 C 의 
 
 ---
 
-## §3 진행 로그
+## §3 Phase 2 — D: Noise→covered 점근식 (착수)
+
+### 3.1 문제
+
+`(C)` 알고리즘이 누적하는 `L` 은 매 trial 마다 잠재적으로 확장된다. 노이즈는 매 trial 의
+**확장 성공 확률** 만 줄인다. 정리 2 (노이즈-free) 에서 `E[K_λ]` 이 도출됐다 — 노이즈 하
+의 일반화를 원함.
+
+### 3.2 핵심 통찰 (sketch)
+
+매 trial 의 사건은 두 단계로 분리:
+
+1. **Sylow 진전 (coupling).** 새 base 가 새 ℓ-Sylow 정보를 가지는가? 노이즈 무관.
+   P = 1 - (1/ℓ)^{s_ℓ} (정리 2 Step 2 그대로).
+2. **추출 성공 (noise-dependent).** (C) 가 measurement k 로부터 그 정보를 회복하는가?
+   이 단계가 noise 의존.
+
+매 trial 의 L 확장 확률 = P_progress · g(η) where g(η) := P[(C) succeeds | r_a ∤ L_before, noise η].
+
+### 3.3 정리 3 (안)
+
+> **정리 3 (noise-adapted K_λ).** 노이즈 모델 M 의 effective extension prob `g_M ∈ (0, 1]`
+> 에 대해, 노이즈 하의 `K_λ^M` 은
+>
+> `E[K_λ^M] ≤ E[K_λ] / g_M  ≤  (1 + Σ 1/(ℓ^{s_ℓ}-1)) / g_M`
+>
+> P[L_K^M < λ(N)] ≤ ω(λ(N)) · 2^{-K · g_M / log₂ e}.
+
+### 3.4 g_M 의 계산 (모델별)
+
+- depolarizing p: `g = (1-p) · g_0` (g_0 ≈ 0.9 in noise-free regime)
+- bias_zero p: 같음
+- modexp q: `g = (1-q) · g_0` (구조 파괴 시 회복 0)
+- phase σ: g(σ) = ?(peak 분산도 의존). closed form derivation 필요 (gaussian peak smearing).
+- amp_damp γ: g(γ) ≈ exp(-γ·t) · g_0 ? 검증 필요.
+
+### 3.5 1차 측정 결과 (2026-06-12)
+
+`experiments/g_eta.py` 로 N=437, L_before=1 에서 5종 노이즈 측정 (500 trials/condition).
+
+`g_0 = 0.38` (noise-free, L=1 의 어려운 조건. 이는 *위수 회수 확률* 이지 L 확장
+확률이 아님; 새 base 가 새 Sylow info 를 추가할 확률 α 와 별개).
+
+| 모델 | p/q/σ/γ → g/g_0 거동 |
+|---|---|
+| depolarizing | p=0.1→0.89, 0.5→0.59, 0.9→0.24. (1-p) 식보다 항상 큼. |
+| bias_zero | p=0.1→0.85, 0.5→0.49, 0.9→0.12. (1-p) 식과 거의 일치. |
+| modexp_error | q=0.1→0.84, 0.5→0.34, 0.9→0.18. (1-q) 식과 일치-근사. |
+| phase_sigma | σ=0.5→0.85, 1.0→0.51, 2.0→0.17. 비선형 (peak 분산). |
+| amplitude_damp | γ=0.001→0.44. 매우 민감 (Q=2^18 에서 exp(-γQ) 효과). |
+
+### 3.6 핵심 모델 (2-parameter form)
+
+데이터가 다음 형태로 깔끔히 정리됨:
+
+`g_M(η) ≈ (1 − η_eff(η)) · g_0  +  η_eff(η) · g_unif_M`
+
+- `η_eff(η)`: 모델의 효과적 "destruction rate" (depol/bias/modexp 는 η_eff=η,
+  phase/amp_damp 는 모델별 함수).
+- `g_unif_M`: 노이즈의 stationary 분포에서 (C) 가 회수할 확률.
+  · depol: `g_unif ≈ 0.06` (uniform k 의 lucky rate)
+  · bias_zero: `g_unif = 0` (k=0 → 분모=1 만 후보)
+  · modexp: `g_unif ≈ 0.075`
+  · phase/amp_damp: ~0.05
+
+### 3.7 정리 3 (수정안)
+
+> **정리 3 (algorithm K_λ under noise).** 노이즈 M 의 effective extraction rate `g_M(η)` 가
+> 정의됐을 때, (C) 알고리즘이 `L = λ(N)` 에 도달하는 base 수 `K_λ^alg`:
+>
+> `E[K_λ^alg(η)] ≤ E[K_λ^ideal] / g_M(η)  ≤  (1 + Σ 1/(ℓ^{s_ℓ}-1)) / g_M(η)`
+>
+> 여기서 `E[K_λ^ideal]` 은 정리 2(c) 의 상한이다.
+
+증명 sketch: 각 trial 의 L-확장 확률 = (Sylow-새-정보 확률 α_s) × (C 회수 확률 g_M).
+독립성으로 단계별 기댓값 / g_M.
+
+### 3.8 다음 세션 시작점
+
+- 정리 3 의 엄밀 증명 작성 (coupling: 각 ideal trial 은 평균 1/g_M 개의 algorithm trial 에 대응).
+- η_eff 의 모델별 정확한 표현 정리 — depol/bias/modexp 의 (1-η) 식 정당화, phase/amp 의
+  근사식 도출.
+- N 다양화: N=437 외에 N=1147, 4087 에서 동일 측정 → g_M 의 N-의존성 확인.
+- paper.md/tex 의 §3.4 또는 §4.1 에 정리 3 + Phase 2 검증 표 추가.
+
+## §4 진행 로그
 
 - **2026-06-12 (1)**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
   본 문서 §1 추가. Phase 1 (A) 착수 — §2 의 정리 윤곽 작성.
+- **2026-06-12 (3)**: **Phase 2 착수.** `g_eta.py` 작성 + N=437 에서 5종 노이즈 측정.
+  핵심 발견: g_M(η) ≈ (1-η_eff)·g_0 + η_eff·g_unif_M 의 2-parameter form.
+  depol/bias/modexp 는 (1-η) 식 잘 맞음. phase/amp_damp 는 비선형 의존.
+  정리 3 (수정안) 작성 — `E[K_λ^alg] ≤ E[K_λ^ideal] / g_M`. 본실행은 다음 세션.
+
 - **2026-06-12 (2)**: **Phase 1 완료.**
   - 정리 2 (K_λ 분포) 완전 도출 — 4 형태 (tail sharp, tail simple, expectation, high-prob).
     Step 2 (cyclic group 위수 분포) 를 N=120, 96, 1000 수치 검증으로 확인.
