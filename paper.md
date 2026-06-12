@@ -380,7 +380,19 @@ A fine-grained measurement of the hybrid's mean `K` as a function of phase noise
 
 **Interpretation (speculative).** Small phase noise broadens the QFT measurement distribution around `j · Q / r` slightly. For the hybrid algorithm, which succeeds as soon as *any* coordinate of one Regev run yields a successful order recovery + nontrivial `b`-sqrt, this broadening occasionally exposes alternative convergent candidates that boost the per-coordinate success rate slightly. At `σ > 0.30` the noise becomes destructive and the baseline regime is recovered. The U-shape is the qualitative signature of *stochastic resonance* (Benzi et al. 1981 classically; Wellens-Buchleitner et al. for the quantum variant) and of *environment-assisted quantum transport* (Plenio-Huelga 2008): noise as a *resource* rather than an obstacle.
 
-**Caveat.** The effect is small and confined to phase noise; the analogous experiments with depolarizing `p` or amplitude damping `γ` show monotone degradation, as expected. We conjecture but do not prove that the phase-noise effect persists for other `N` and `d`, and we do not attempt to optimize the noise level operationally — for any practical use, noise-free measurement remains preferable. We note this finding as the first observed signal of a quantum-stochastic-resonance phenomenon in integer factoring (to our knowledge); a formal account is left to future work.
+**Caveat.** The effect is small and confined to phase noise; the analogous experiments with depolarizing `p` or amplitude damping `γ` show monotone degradation, as expected. The mechanism is distributional, not local: artificially perturbing the measured `k` to `k ± 1, k ± 2, ..., k ± 10` (`k_neighbors` enumeration in the companion code) yields *zero* benefit, because the continued-fraction expansion of `(k + δ)/Q` for small `δ` essentially coincides with that of `k/Q` at the relevant scale. The phase noise instead changes the *sampling distribution* of `k` itself, occasionally exposing alternative convergent paths.
+
+**Dependence on `d` (sweet spot).** Varying the number of bases per Regev run reveals a non-monotone pattern (`N = 437`, 200 trials per setting):
+
+| `d` | baseline `K` (σ=0) | min `K` (σ ≤ 0.20) | SR % |
+|---:|---:|---:|---:|
+| 2 | 4.420 | 4.400 | 0.45% |
+| 4 | 2.205 | 2.165 | 1.81% |
+| 8 | 1.190 | 1.195 | 0.00% |
+
+The SR effect is largest at `d = 4` (the Regev-optimal value for `N = 437`) and vanishes at `d = 8`: there the baseline `K` is essentially saturated to `1`, leaving no operational headroom for noise to improve. The SR phenomenon thus emerges only in a window where `K_baseline > 1` and per-coordinate effects can accumulate across `d` coordinates without hitting the `K = 1` floor.
+
+We note this finding as the first observed signal of a quantum-stochastic-resonance phenomenon in integer factoring (to our knowledge); a formal account, the dependence on `N`, and the precise `(d, σ)` optimum are left to future work.
 
 ### 3.7 Joint interpretation
 

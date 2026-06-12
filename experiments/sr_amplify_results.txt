@@ -1,0 +1,44 @@
+# SR 증폭 메커니즘 탐색
+
+# M1: d 변화에 따른 SR 효과 (N=437, 200 trials)
+    d       σ=0    σ=0.05    σ=0.10    σ=0.20   SR %
+    2     4.420     4.400     4.405     4.415   0.45%
+    4     2.205     2.165     2.170     2.170   1.81%
+    8     1.190     1.195     1.195     1.195   0.00%
+
+# M2: k-neighbor enumeration (N=437, d=4, 200 trials, noise-free)
+   k_neighbors    hybrid K   vs baseline
+             0       2.205        +0.000
+             1       2.205        +0.000
+             2       2.205        +0.000
+             3       2.205        +0.000
+             5       2.205        +0.000
+            10       2.205        +0.000
+
+# 핵심 발견:
+
+## M1 (larger d 증폭) — 비단조 결과
+- d=2: SR=0.45% (작음)
+- d=4: SR=1.81% (sweet spot, 본 paper 의 main regime)
+- d=8: SR=0.00% (ceiling — K_baseline≈1 라 개선 여지 없음)
+
+SR 의 정확한 mechanism:
+- Per-coordinate noise advantage 가 d 개 coord 에 amplify
+- BUT K_baseline 가 1 에 saturate 하면 효과 사라짐
+- 즉 "K_baseline > 1 충분히 + d 적당히 큼" 의 narrow window
+
+## M2 (k-neighbor enumeration) — null
+- k=0, 1, 2, 3, 5, 10 모두 동일 K=2.205
+- 이유: k+δ 의 continued fraction 가 k 와 거의 동일 (Q 가 크니까)
+- → Phase noise SR 의 mechanism 은 "k local shift" 가 아닌
+  *distribution-level perturbation*
+
+# 본 paper 의 정합 정정:
+- 500-trial sr_confirm 값 (σ=0: 2.322) 이 본 200-trial 값 (2.205) 보다 신뢰.
+- 500 trials 의 SR % = 1.03% 가 더 정확.
+- M1 의 d=4 1.81% 는 200 trials 의 sampling fluctuation 가능.
+
+# 결론:
+- SR 효과 확정 (d=4, N=437 에서 ~1%)
+- d 변화에 따라 sweet spot 존재 (d 너무 작거나 너무 큼 모두 효과 ↓)
+- 인공적 k-broadening 으로 흉내 불가 — 진정한 distributional noise 효과
