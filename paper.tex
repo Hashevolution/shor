@@ -439,6 +439,23 @@ $N$ & mean $K$ (hybrid) & success & mean $K$ ($b$-trick) & mean $K$ ($(C)$ lcm) 
 
 The hybrid maintains $\mathbb{E}[K] \in [1.1, 1.5]$ across two orders of magnitude in $N$, matching the theorem's prediction. For comparison, pure $(C)$ lcm fails to factor in $\sim 3/30$ trials (the odd-$L$ issue) and uses $2.6$--$4.3$ runs when it succeeds; pure $b$-trick succeeds always but needs $1.1$--$1.6$ runs (no multi-base accumulation). The hybrid combines the strengths.
 
+\paragraph{Noise robustness at large $N$ ($N = 4087$, $d = 4$, 20 trials).}
+We further confirm that the hybrid's noise tolerance carries over to the largest $N$ tested:
+
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Noise condition & hybrid mean $K$ & success \\
+\midrule
+noise-free      & 1.55 & 20/20 \\
+depol $p=0.3$   & 2.15 & 20/20 \\
+phase $\sigma=1.0$ & 2.70 & 20/20 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+At $N = 4087$, the hybrid still factors in $\leq 2.7$ runs even under heavy $\sigma = 1.0$ phase noise, with $100\%$ success.
+
 \begin{proof}
 For coordinate $i$, the hybrid succeeds in $K$ runs iff $X_i = 1$ AND $(C)$ recovers $\mathrm{ord}(a_i)$ in at least one of the $K$ runs. The second event has probability $1 - (1 - g(\eta))^K$ (independent Bernoulli $g(\eta)$ per run). The two are independent ($b_i$ and $k_i$ independent). So $\mathbb{P}[\text{coord } i \text{ succeeds in } K \mid b_i] = X_i \cdot (1 - (1 - g(\eta))^K)$. Marginalizing over the $d$ independent $b_i$ with $\mathbb{E}[X_i] = c$:
 \[

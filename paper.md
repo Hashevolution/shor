@@ -335,6 +335,16 @@ At `N = 437`, `d = 4`, with empirical `g ≈ 1` for the small orders typical whe
 
 The hybrid maintains `E[K] ∈ [1.1, 1.5]` across two orders of magnitude in N, matching the theorem's prediction. For comparison, pure (C) lcm fails to factor in ~3/30 trials (the odd-L issue) and uses 2.6–4.3 runs when it succeeds; pure b-trick succeeds always but needs 1.1–1.6 runs (no multi-base accumulation). The hybrid combines the strengths.
 
+**Noise robustness at large N (N = 4087, d = 4, 20 trials).** We further confirm that the hybrid's noise tolerance carries over to the largest N tested:
+
+| Noise condition | hybrid mean K | success |
+|---|---:|---:|
+| noise-free      | 1.55 | 20/20 |
+| depol p=0.3     | 2.15 | 20/20 |
+| phase σ=1.0     | 2.70 | 20/20 |
+
+At `N = 4087`, hybrid still factors in `≤ 2.7` runs even under heavy `phase σ = 1.0` noise, with 100% success. This is consistent with Theorem 5's noise-invariance claim and the destructive-noise scaling of Theorem 3.
+
 **Proof of (a) and (b).** For coordinate `i`, the hybrid succeeds in `K` runs iff `X_i = 1` AND `(C)` recovers `ord(a_i)` in at least one of the `K` runs. The second event has probability `1 − (1 − g(η))^K` (each run is an independent Bernoulli `g(η)`). The two are independent (b_i and k_i are independent). So `P[\text{coord } i \text{ succeeds in } K | b_i] = X_i (1 − (1 − g(η))^K)`, giving the conditional formula. Marginalizing over the d independent b_i with `E[X_i] = c`:
 
 ```
