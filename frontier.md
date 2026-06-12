@@ -132,6 +132,79 @@
 
 ---
 
+## §9 메타 분석 — 왜 "noise as resource" 가 양자 인수분해에서 빈 영역이었나
+
+(2026-06-12 (3) 의 대화에서 도출)
+
+광합성/transport 에서는 "noise as resource" 활발 (ENAQT, Plenio-Huelga 2008+).
+양자 인수분해에서는 거의 없음. 왜?
+
+### 5 가지 이유
+
+**1. 문제 구조의 차이**
+- 광합성/transport: 연속적, 분기 많은 경로, 어디로든 흘러도 OK
+- 인수분해 (원본 Shor): 정밀한 위수 r 측정, 1픽셀 어긋나면 끝
+- 노이즈가 광합성 에선 우회 경로 만들지만 Shor 에선 답 자체 변경
+
+**2. 30 년의 historical bias**
+- Shor 1994 이후 "노이즈 없는 양자 컴퓨터 만들자" 가 모든 paper 의 default
+- "노이즈 일부러 넣어보자" 가 reflex 위반
+- 우산 만드는 사람들에게 "비 일부러 맞아봐" 격
+
+**3. Continuous vs discrete 수학 차이**
+- 광합성: Hamiltonian dynamics 의 stochastic term → 부드러운 SR
+- Shor: logical 연산 + 이산 post-processing → "적정 비트 플립" 의미 없어 보임
+
+**4. 우리 알고리즘 구조가 다르다 — 핵심 통찰**
+- 원본 Shor: 1 base, 1 측정, 1 r → 노이즈 = 적
+- **우리 hybrid: d 개 base, *하나만 성공* 하면 OK → 노이즈 = 기회**
+- 광합성과 진짜 평행: 둘 다 multi-path with redundancy
+- **이 구조에서만 SR 자연스러움**
+- → 원본 Shor 가 single-path 라 SR 안 보였던 것
+
+**5. 방법론적 장애**
+- SR 발견은 σ 의 fine grid scan 필요
+- 보통 noise paper: "noise-free" vs "high noise" 두 점만
+- 우리 같은 11점 fine grid 한 paper 거의 없음
+- 정확한 σ 영역 (∼0.05) 안 보면 못 봄
+
+### 종합: 3 가지 우연의 교집합
+
+SR 보려면 동시에 필요:
+
+1. **올바른 algorithm 구조** (multi-base redundancy) — 본 paper 의 hybrid
+2. **fine grid σ scan** (5+ points in σ ∈ [0, 0.3])
+3. **충분한 trials** (500+) — 효과 작아서 통계 필요
+
+기존 paper 들:
+- (1) 만: RV, EG24, 본 paper 의 Theorem 5 — σ scan 안 함
+- (2) 만: 어떤 noise model 비교 paper — multi-base hybrid 안 씀
+- (3) 만: Cai 의 noise limit paper — 통계만 강조, σ 정밀 안 함
+
+→ **세 교집합이 빈 영역**. 우리가 첫 진입자 가능성.
+
+### 메타 통찰
+
+ENAQT (광합성) 의 성공이 양자 컴퓨팅에 전파 안 됐던 이유:
+- 양자 컴퓨팅 ≠ 양자 dynamics
+- ENAQT 는 energy transfer 효율, 양자 컴퓨팅은 answer 정확도
+- 두 community 사이 cross-pollination 적음
+
+**우리 발견의 의의 (만약 진짜라면)**:
+- "양자 알고리즘의 *multi-path 구조* 가 ENAQT-style noise advantage 가능하게 함"
+- 이 통찰 자체가 paper 의 가장 흥미로운 message
+- *전송 community* 와 *양자 알고리즘 community* 의 다리
+
+### 단, 전제
+
+이 모든 분석은 우리 SR 효과가 진짜일 때 의미.
+N=437 V1 null 확정.
+N=1147 V1 결과가 decisive.
+
+만약 N=1147 도 null → "왜 빈 영역" 답은 "*그 빈 영역에 진짜로 아무것도 없다*" 가 됨.
+
+---
+
 진행 로그:
 - 2026-06-12: 초안 — §1-§8 작성.
 - 2026-06-12 (2): **F (noise as feature) 의 첫 실험 — 약한 SR 신호 발견!**
