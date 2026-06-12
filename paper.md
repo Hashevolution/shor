@@ -242,7 +242,7 @@ A purely (C)-based extraction misses this: in Regev's setup, the orders `ord(a_i
 
 Combining the two: apply (C) coordinate-wise for noise-tolerant per-base order recovery, and on each newly-recovered `ord(a_i)`, immediately compute `b_i^{ord(a_i)} mod N` and check for a nontrivial square root. We call this `(C) + b-trick`.
 
-**Theorem 5 ((C) + Regev b-trick hybrid factoring — empirical).** For semiprime `N` with `λ(N)` even and Regev's setup (`a_i = b_i² mod N`, `b_i` random), the hybrid algorithm:
+**Algorithm 2 (Hybrid (C) + Regev b-trick).**
 
 ```
 For each Regev run:
@@ -255,7 +255,7 @@ For each Regev run:
         Return gcd(b ± 1, N) as a factor.
 ```
 
-inherits both: (a) Theorem 1's noise-invariance per coordinate, and (b) Regev's b-trick's ability to factor without requiring `L = λ(N)`. Empirically (N = 437, d = 4, 30 trials each):
+The algorithm inherits both: (a) Theorem 1's noise-invariance per coordinate, and (b) Regev's b-trick's ability to factor without requiring `L = λ(N)`. Empirically (N = 437, d = 4, 30 trials each):
 
 | Condition          | (C) lcm only   | Regev b-trick | (C)+b-trick hybrid |
 |--------------------|---------------:|--------------:|-------------------:|
@@ -297,7 +297,7 @@ P[α_p = 0] = 2^{-v_p}, P[α_p = j] = 2^{j - 1 - v_p} for 1 ≤ j ≤ v_p.
 
 `α_p` and `α_q` are independent (CRT). Computing `P[α_p = α_q]` as a sum and using `Σ_{j=1}^{m} 4^j = 4(4^m - 1)/3` gives the closed form. ∎
 
-**Theorem 5 (hybrid factoring — formal).** Pick `b_1, ..., b_d` uniform random in `(Z/N)*` and set `a_i = b_i² mod N`. Let `g(η)` denote the per-coordinate (C) recovery probability at `L = 1` under noise model `η` (the `g_M(η)` of §3.3). Let `c := P[nontrivial sqrt]` from Lemma 5.1, so `c ≥ 1/2`.
+**Theorem 5 (Hybrid factoring — quantitative bound).** Apply Algorithm 2 with `d` uniform random `b_1, ..., b_d` ∈ (Z/N)*, `a_i = b_i² mod N`. Let `g(η)` denote the per-coordinate (C) recovery probability at `L = 1` under noise model `η` (the `g_M(η)` of §3.3). Let `c := P[nontrivial sqrt]` from Lemma 5.1, so `c ≥ 1/2`.
 
 **(a) Single-run success.** The probability that the hybrid algorithm factors `N` in **one** Regev run is at least:
 

@@ -361,9 +361,9 @@ The empirical comparison in Section~\ref{sec:theorem} reveals an unexpected cons
 
 A purely $(C)$-based extraction misses this: in Regev's setup, $\mathrm{ord}(a_i) = \mathrm{ord}(b_i^2)$ is the \emph{odd part} of $\mathrm{ord}(b_i)$ --- the factor of 2 from $\lambda(N)$ is lost. Pure $(C)$ accumulates $L \leq \lambda(N)/2$, and Miller--Rabin reduction (\texttt{factor\_from\_exponent}) fails on odd $L$. Pure Regev's $b$-trick succeeds but requires recovering each $\mathrm{ord}(a_i)$ independently (no multi-base accumulation gain).
 
-\begin{theorem}[$(C)$ + Regev $b$-trick hybrid factoring --- empirical]\label{thm:hybrid}
-For semiprime $N$ with $\lambda(N)$ even and Regev's setup ($a_i = b_i^2 \bmod N$, $b_i$ random), apply $(C)$ post-processing coordinate-wise; on each newly-recovered $r = \mathrm{ord}(a_i)$, compute $b \leftarrow b_i^r \bmod N$ and check whether $b \notin \{1, N-1\}$ and $b^2 \equiv 1 \pmod N$. If so, return $\gcd(b \pm 1, N)$. The resulting hybrid algorithm inherits both: (a) Theorem~\ref{thm:c-det}'s noise-invariance per coordinate, and (b) Regev's $b$-trick's ability to factor without requiring $L = \lambda(N)$.
-\end{theorem}
+\paragraph{Algorithm~2 (Hybrid $(C)$ + Regev $b$-trick).} For semiprime $N$ with $\lambda(N)$ even and Regev's setup ($a_i = b_i^2 \bmod N$, $b_i$ random), apply $(C)$ post-processing coordinate-wise; on each newly-recovered $r = \mathrm{ord}(a_i)$, compute $b \leftarrow b_i^r \bmod N$ and check whether $b \notin \{1, N-1\}$ and $b^2 \equiv 1 \pmod N$. If so, return $\gcd(b \pm 1, N)$.
+
+The algorithm inherits both: (a) Theorem~\ref{thm:c-det}'s noise-invariance per coordinate, and (b) Regev's $b$-trick's ability to factor without requiring $L = \lambda(N)$.
 
 \paragraph{Empirical performance ($N = 437$, $d = 4$, 30 trials each, max 20 runs).}
 
@@ -412,7 +412,7 @@ Otherwise (at least one $\alpha \geq 1$), $\mathrm{ord}(a) = \mathrm{ord}(b)/2$:
 Hence $\mathbb{P}[\text{nontrivial}] = \mathbb{P}[\alpha_p \neq \alpha_q]$. Standard cyclic-group analysis gives the marginals: in $C_n$ with $n = 2^v \cdot m$ ($m$ odd), elements with $v_2(\mathrm{ord}) \leq j$ form the unique subgroup of order $2^j m$. So $\mathbb{P}[\alpha_p = 0] = 2^{-v_p}$ and $\mathbb{P}[\alpha_p = j] = 2^{j - 1 - v_p}$ for $1 \leq j \leq v_p$. $\alpha_p, \alpha_q$ independent (CRT). Summing $\mathbb{P}[\alpha_p = \alpha_q]$ and using $\sum_{j=1}^{m} 4^j = \tfrac{4(4^m - 1)}{3}$ gives the closed form.
 \end{proof}
 
-\begin{theorem}[Hybrid factoring --- formal]\label{thm:hybrid-formal}
+\begin{theorem}[Hybrid factoring --- quantitative bound]\label{thm:hybrid-formal}
 Pick $b_1, \ldots, b_d$ uniform random in $(\mathbb{Z}/N\mathbb{Z})^*$ and set $a_i = b_i^2 \bmod N$. Let $g(\eta)$ denote the per-coordinate $(C)$ recovery probability at $L = 1$ under noise $\eta$ (the $g_M(\eta)$ of Section~\ref{sec:theorem}). Let $c := \mathbb{P}[\text{nontrivial sqrt}]$ from Lemma~\ref{lem:b-sqrt} ($c \geq 1/2$). Then:
 \begin{itemize}
   \item \textbf{(a) Single-run success.} $\mathbb{P}[\text{1-run success}] \geq 1 - (1 - g(\eta) \cdot c)^d.$
