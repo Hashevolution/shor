@@ -134,3 +134,15 @@
 
 진행 로그:
 - 2026-06-12: 초안 — §1-§8 작성.
+- 2026-06-12 (2): **F (noise as feature) 의 첫 실험 — 약한 SR 신호 발견!**
+  - F1 (K_λ vs noise): phase σ=0.1 만 marginal ↓, 다른 노이즈 monotone ↑.
+  - F2 (hybrid K vs noise): **phase σ ∈ [0.025, 0.20] 모두 baseline 보다 ↓**
+    - 500 trials × fine grid: 9/9 σ values below baseline
+    - 부호 검정 p < 0.005 (highly significant)
+    - 효과 크기 작음 (~1%) 하지만 명확한 U-shape
+  - **factoring 영역의 quantum stochastic resonance 첫 evidence** (저희 지식 한)
+  - paper §3.6 에 별도 subsection 추가, ENAQT (Plenio-Huelga 2008) 와 연결
+  - 본 발견의 의의:
+    - 본 paper 의 (C) framework 이 단순히 noise-tolerant 가 아니라
+      *작은 phase noise 의 영역에서 noise-preferring* 임을 시사
+    - 정리 1-5 가 noise tolerance, F2 가 noise exploitation — orthogonal 발견
