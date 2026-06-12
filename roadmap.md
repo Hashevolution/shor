@@ -637,6 +637,14 @@ sketch 만 작성. 본 검증은 후속 세션.
 
 - **2026-06-12 (1)**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
   본 문서 §1 추가. Phase 1 (A) 착수 — §2 의 정리 윤곽 작성.
+- **2026-06-12 (8)**: **Phase 5 본실행 — Regev 측정의 joint constraint 확인.** 추가
+  WebFetch 으로 Regev 2023 §2 의 측정 구조 확인: 측정이 *joint linear constraint*
+  `Σ b_i k_i ≈ 0 (mod r)` 를 만족 — *좌표별 독립이 아님*. Theorem 4 의 marginal 가정
+  은 단순화이며, Regev 의 실제 분포에서 검증되지 않음. 발견을 paper §3.4 의 caveat
+  강화로 반영: marginal 이 Shor-like 한지는 미검증, 효율 claim 은 가정 의존. **noise
+  invariance 자체는 좌표별 statement 으로 joint 구조 무관하게 유지**. 본 본실행의
+  추가 작업 (LLL 실구현 + joint-constrained 시뮬) 후속 세션.
+
 - **2026-06-12 (7)**: **Phase 4 부분실행 (hardware proxy).** qiskit/IBM Q 계정 없이
   공개된 IBM Eagle 127q 사양 (T1=150μs, T2=100μs, gate error 0.03%/1%, readout 2%)
   을 noise.py 5종 모델로 매핑 → N=15 Shor 시뮬. 결과: 5 노이즈 동시 적용에서

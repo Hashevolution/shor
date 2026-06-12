@@ -264,10 +264,9 @@ Theorem~\ref{thm:k-lambda-alg} predicts $K_\lambda^{\text{alg}}$ within $\sim 11
 
 Regev's 2023 algorithm~\cite{regev2023} uses $d \approx \sqrt{\log N}$ bases per quantum circuit and recovers factorization via lattice reduction on $\sqrt{n} + 4$ independent measurement vectors. We observe that $(C)$ post-processing applies \emph{coordinate-wise} to Regev's measurements, conditional on a marginal-distribution assumption.
 
-\paragraph{Assumption (Regev marginal).} Each measurement of Regev's circuit produces a vector $(k_1, \ldots, k_d) \in \{0, \ldots, Q-1\}^d$, where the \emph{marginal} distribution of each coordinate $k_i$ satisfies $k_i \approx j_i \cdot Q / r_{a_i}$ for some integer $j_i$ --- i.e., is statistically identical to Shor's single-base measurement distribution for base $a_i$.
+\paragraph{Assumption (Regev marginal --- partial validity).} Each measurement of Regev's circuit produces a vector $(k_1, \ldots, k_d) \in \{0, \ldots, Q-1\}^d$. For the \emph{marginal} of each coordinate $k_i$ to be Shor-like --- i.e., $k_i \approx j_i \cdot Q / r_{a_i}$ so that continued fractions of $k_i / Q$ recover $r_{a_i}$ with positive probability --- is sufficient for the $(C)$ framework to apply coordinate-wise.
 
-\noindent
-(Consistent with public summaries of Regev's algorithm but ignores potential joint correlations that Regev's lattice post-processing may exploit.)
+\paragraph{Caveat on the assumption.} Public summaries of Regev~(2023)~\cite{regev2023} indicate the measurements jointly satisfy a \emph{linear constraint} of the form $\sum_i b_i k_i \approx 0 \pmod{r}$, where the $b_i$ encode quadratic-character structure. The constraint introduces correlations across coordinates but does not prohibit Shor-like marginals --- it adds a low-dimensional structure that Regev's LLL post-processing exploits for \emph{additional} efficiency beyond coordinate-wise recovery. Whether each $k_i$ is \emph{individually} Shor-like (allowing $(C)$ per coordinate) is a property of the marginal that should be verified directly against Regev's distribution. We have not done so; the empirical numbers below assume independent Shor-like marginals as a working model.
 
 \begin{theorem}[Regev-$(C)$ compatibility, conditional]\label{thm:regev-c}
 Under the Regev marginal assumption, applying $(C)$ post-processing independently to each coordinate of each Regev measurement yields:
@@ -299,7 +298,7 @@ $N$ & $d$ & mean $K$ runs & bases $\leq K \cdot d$ & p99 (runs) & max (runs) \\
 
 For $N = 437$, Regev-$(C)$ requires $\sim 1.75$ runs in expectation, compared to Regev's $\sqrt{n} + 4 \approx 4$ runs claimed for LLL post-processing. $(C)$ coordinate-wise may be more measurement-efficient under the marginal assumption, but ignores joint correlations that LLL exploits --- a trade-off, not a strict improvement.
 
-\paragraph{Caveat.} If the Regev marginal assumption fails (e.g., if coordinates are jointly entangled in a way that distorts individual marginals), Theorem~\ref{thm:regev-c}'s empirical numbers do not transfer. A precise analysis of Regev's measurement marginals from the original paper is left to future work.
+\paragraph{Caveat.} The numbers above assume each coordinate of Regev's measurement is independently Shor-distributed. Regev's actual joint constraint $\sum_i b_i k_i \approx 0 \pmod r$ would correlate the coordinates, potentially reducing per-coordinate $(C)$ efficiency. The qualitative noise-invariance of Theorem~\ref{thm:c-det} carries over to Regev's setting whenever per-coordinate $(C)$ succeeds (since Theorem~\ref{thm:c-det} is a per-coordinate statement and makes no joint assumption); only the \emph{efficiency} claim of part~(b) depends on the marginal Shor-likeness. Empirically validating against Regev's exact measurement distribution is left to future work.
 
 \subsection{Joint interpretation}
 
