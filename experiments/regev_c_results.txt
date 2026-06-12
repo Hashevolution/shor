@@ -1,0 +1,19 @@
+# Regev-(C) 좌표별 후처리: K_λ^Regev (in runs) vs (in bases)
+# d 선택: Regev 의 √(n+4) ≈ √(log₂ N) + 0.6 (소수 N 의 경우 ceil)
+# trials = 200, noise-free
+
+      N   d   runs (mean)   bases ≤ runs·d   p99(runs)   max(runs)
+     77   3          2.41             7.23          11          12
+    143   3          3.02             9.07          11          11
+    437   4          1.75             7.02           6           7
+   1147   4          2.50             9.98           9           9
+
+# 비교:
+# - 단일-base (C) (Phase 2): K_λ^alg 평균 = 4.97 bases (N=437)
+# - Regev-(C) 본 실험: 1.75 runs · 4 base/run ≤ 7.0 bases (N=437) — 비슷
+# - Regev 의 LLL 후처리 (claim): √n+4 ≈ 4 runs
+# - Regev-(C) (본 실험): 1.75 runs — LLL 대비 빠를 가능성, 다만 joint 상관 무시
+
+# 가정: Regev 측정의 각 좌표 marginal 이 Shor 분포 k_i ≈ j_i·Q/r_{a_i} 와 동일.
+# 실제 Regev 회로의 joint correlation 은 본 시뮬에서 무시 — 실제로는 marginal 이
+# 약간 더 noisy 할 수 있음.

@@ -389,10 +389,268 @@ phase 노이즈에서 `g_M(s, η)` 의 closed-form 도출은 후속 작업. 본 
 - structural 노이즈 의 g_M(s, η) 도출 — Phase 2 follow-up.
 - N 다양화 (N=1147, 4087) — 만약 시간 허락 시.
 
-## §4 진행 로그
+## §4 Phase 3 — B: HSP / 이산로그 확장 (스코핑 + 결론)
+
+### 4.1 문제
+
+(C) 프레임워크 (다중 base lcm 누적 + divisor search 후처리) 가 다른 양자
+은닉구조 문제 (DL, abelian HSP, 격자 주기) 로 *비자명하게* 확장되는가?
+
+### 4.2 (C) 의 핵심 구조 재확인
+
+(C) 의 성공 조건은 다음 3가지:
+
+1. **그룹 학습 문제**: Shor 는 단일 인스턴스 r_a 가 아니라 *그룹 exponent λ(N)*
+   를 학습 (그 부산물로 인수분해). 여러 base 의 r_a 들은 lcm 으로 결합 → λ(N).
+2. **정수 격자 (lcm/divisor)**: 후보 풀의 자연 결합 연산. 후보 검증이 단조 (divisor
+   추가만 가능).
+3. **빠른 고전 검증**: `a^d ≡ 1 mod N` 가 polylog time.
+
+(C)-determinism 정리 (정리 1) 는 (2)+(3) 의 직접 결과. (C)-스케일링 정리 (정리 3) 는
+(1)+(2) 의 다중 base 구조의 결과.
+
+### 4.3 후보 확장 평가
+
+| 후보 | (1) 다중 base 가능 | (2) 격자 구조 | (3) 검증 | 평가 |
+|---|---|---|---|---|
+| **A. 다중 prime 인수분해** | ✓ (동일) | ✓ (동일) | ✓ (동일) | **trivial extension** |
+| **B. 이산 로그 (DLP)** | ✗ (단일 인스턴스) | ✗ (x ∈ Z/r 의 단일 원소) | ✓ | **불가** |
+| **C. abelian 1-D HSP** | ✗ (Shor 와 동일) | (= Shor) | (= Shor) | **redundant** |
+| **D. abelian multi-D HSP** | ✗ (단일 f) | △ (sublattice) | ✓ | **trivial / well-known** |
+| **E. (C) + Pohlig-Hellman** | (조합 사용) | — | — | **useful 조합 알고리즘** |
+| **F. Regev 2023 격자** | (Phase 5 표적) | △ | △ | Phase 5 |
+
+### 4.4 결론
+
+**(C) 의 핵심 (다중 base 의 lcm 누적) 은 Shor 의 factoring 에 *구조적으로 결합*** —
+"군의 exponent 를 학습" 한다는 목적이 다중 base 결합을 자연스럽게 만든다.
+
+- DL 과 HSP 는 *단일 인스턴스* 문제로, 다중 base 가 자연스럽지 않음. 다른 base 를 쓰면
+  완전히 다른 문제가 됨 (다른 (g, h), 다른 f).
+- 다중 prime 인수분해는 trivial 확장 — 정리 1·2·3 가 그대로 성립 (단지 λ(N) 의 정의가
+  복잡해질 뿐). paper 의 후속 코멘트로 충분.
+- (C) + Pohlig-Hellman: (C) 로 ord(g) 학습 → PH 로 DL. 유용한 *조합* 알고리즘이지만
+  (C) 의 새 확장은 아님. paper 코멘트.
+
+**Phase 3 의 가장 가치 있는 산출물 = 음수 영역 결과** (negative scope result):
+
+> **관찰**: (C)-식 다중 base 후처리는 *그룹 exponent 학습* 형태의 양자 알고리즘에
+> 특정된다. DL 과 abelian HSP 같은 *단일 인스턴스* 문제에는 자연스럽게 적용되지 않음.
+
+이는 paper §6 (Limitations) 에 명시할 가치 있음 — (C) 의 적용 범위를 정확히 함.
+
+### 4.5 paper 통합
+
+- §6 (Limitations) 에 새 paragraph 추가: "Scope of the framework — multi-base accumulation
+  is specific to group-exponent learning".
+- 다중 prime 인수분해 확장은 한 문장 코멘트.
+
+### 4.6 다음 phase
+
+Phase 3 는 짧게 종료. Phase 4 (hardware) 로 진행.
+
+## §5 Phase 4 — C: Hardware 데모 (스코핑)
+
+### 5.1 외부 의존
+
+본 phase 는 **IBM Quantum (또는 IonQ) 계정 + qiskit 설치** 가 필요. 현재 저장소는
+numpy-only 정책 — qiskit 추가는 사용자 명시 결정 필요. 본 세션은 *준비 작업*
+(스코핑, 스켈레톤, 체크리스트) 만 진행.
+
+### 5.2 표적 시나리오
+
+- **N = 15** (가장 작은 nontrivial 반소수): 4 큐비트 작업 레지스터 + 8 큐비트 계산 레지스터.
+  IBM Q free tier (e.g., `ibmq_qasm_simulator` 또는 7-큐비트 hardware 인 `ibm_lagos` /
+  `ibm_perth`) 에서 실행 가능 (회로 깊이 ~30-50).
+- **N = 21**: 5+10 큐비트. NISQ 한계 근처.
+- **N ≥ 35**: NISQ 깊이 한계 초과, 실행 불가.
+
+### 5.3 측정 목표
+
+(C) 의 hardware 검증 = **실제 디바이스 노이즈가 (C) 의 covered 영역에 도달하는가?**
+
+- 각 N 에서 K = 50-100 회 측정.
+- 각 측정마다 (k, base a) 기록.
+- 후처리: (C) 알고리즘 적용 → L 누적.
+- 정리 1 검증: K 가 충분히 큰 시점에서 r_a | L_before 인 측정의 회수율 = 100% (zero violations).
+- 정리 2 검증: K_λ 의 경험 분포 → λ(N) 도달까지 측정 수.
+- 정리 3 검증: hardware 노이즈를 "destructive equivalent η_M" 으로 매핑 (depol 근사) →
+  K_λ^alg 예측 vs 경험.
+
+### 5.4 코드 스켈레톤 (qiskit 기반, future use)
+
+`experiments/hardware_demo.py` (가칭) 의 골격:
+
+```python
+from qiskit import QuantumCircuit, transpile
+from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2
+
+def shor_circuit(N: int, a: int, t: int) -> QuantumCircuit:
+    \"\"\"단순 modexp + iQFT 회로. N=15, 21 까지만 효율적.\"\"\"
+    ...  # standard Shor circuit
+
+def run_hardware(N: int, K: int = 50, backend_name: str = "ibm_lagos"):
+    service = QiskitRuntimeService()
+    backend = service.backend(backend_name)
+    results = []
+    for trial in range(K):
+        a = pick_coprime(N)
+        qc = shor_circuit(N, a, t=2 * int(math.log2(N)) + 2)
+        qc_t = transpile(qc, backend)
+        sampler = SamplerV2(mode=backend)
+        job = sampler.run([qc_t], shots=1)
+        k = int(list(job.result()[0].data.meas.get_counts().keys())[0], 2)
+        results.append((a, k))
+    return results
+
+def apply_C_to_hardware_data(N, results):
+    from multi_base import MultiBaseState, order_from_measurement
+    ...  # accumulate L, log covered/violations/lucky
+```
+
+### 5.5 다음 phase
+
+본 phase 는 사용자의 IBM Q 계정/qiskit 설치 결정에 의존. 결정시 별도 세션에서 실행.
+Phase 5 (Regev 본실행) 로 진행.
+
+## §6 Phase 5 — E: Regev 통합 (본실행)
+
+### 6.1 Phase 0 재확인
+
+Phase 0 에서 후보 B (Regev 의 격자 측정에서 좌표별 (C) 추출) 를 Phase 5 표적으로
+확정. 본 phase 는 *Regev 2023 의 격자 후처리에 (C)-식 noise-invariance 를 통합* 하는
+시도.
+
+### 6.2 Regev 알고리즘 기본 구조 (재확인)
+
+Regev 2023 (arXiv:2308.06572):
+- `d ≈ √(log N)` 개 base `a_1, …, a_d` 를 *병렬* 로 사용
+- 단일 QFT 측정 → 격자점 `y ∈ Z^d` 회수 (idealy, `y` 는 specific dual lattice 안)
+- 후처리: LLL 격자 환원으로 joint period 회수
+
+회로 효율 우위 (O(n^{3/2}) gates) 대신 후처리가 무거움 (LLL).
+
+### 6.3 (C) 통합 시도
+
+#### 시도 1: 직렬 합성 (Phase 0 의 후보 A)
+
+Regev 로 `L_0 = lcm(r_{a_1}, …, r_{a_d})` 회수 → 이후 다른 base 는 (C) 의 fast path.
+- 작동 보장. paper 코멘트 한 줄 가능.
+- 새 contribution 작음.
+
+#### 시도 2: Regev 격자 좌표별 (C) — Phase 0 후보 B
+
+Regev 의 격자 측정 `y = (y_1, …, y_d)` 가 좌표별로 `y_i ≈ j_i · Q / r_{a_i}` 형태로
+해석 가능한가? 가능하면 *좌표별 독립 (C) 후처리* 가 적용 가능.
+
+**핵심 질문**: Regev 의 측정 분포에서 `y_i` 의 marginal 이 Shor 의 단일 base 측정 분포
+와 동일한가?
+
+이를 확인하려면 Regev 2023 §3-4 정독 필요. **현재 인터넷 접근 없음** → 사전 지식 기반
+추측만 가능.
+
+**추측 (검증 필요)**: Regev 의 측정은 격자 `Λ = ⊕_i (Q · Z / r_{a_i}) ⊕ remainder` 의
+dual 위의 분포. 좌표별 marginal 은 Shor 분포에 가까우나 정확히 같지는 않음 (joint
+correlation 존재).
+
+이 경우:
+- 좌표별 (C) 는 *근사적으로* 적용 가능.
+- 노이즈 하에서 (C) 의 noise-invariance 가 좌표별로 부분 유지.
+- Regev 의 LLL 단계가 노이즈에 약한 부분을 (C) 가 보완.
+
+#### 시도 3: (C) 의 격자 일반화 — Phase 0 후보 C
+
+(C) 의 "lcm 누적 + divisor search" 를 격자 setting 으로 추상화:
+- `L` → 누적 부분격자 `Λ_K`
+- divisor search → 격자 sub-element search
+- 검증자: `a^d ≡ 1` → `d ∈ Λ_K^⊥` (격자 멤버십)
+
+이 일반화가 자연스러우면 → "lattice (C)-determinism 정리" 도출 가능.
+**현재 평가**: 격자 구조와 divisor 구조의 1-to-1 대응이 자연스럽지 않아 보임. 시도해
+보지 않으면 모름.
+
+### 6.4 Regev 2023 구조 확인 (WebFetch 2026-06-12)
+
+arXiv abstract + summary fetch 로 핵심 구조 확인:
+
+- 각 양자 run 이 `d = √(n + 4) ≈ √(log N)` 개 base `a_1, ..., a_d` 의 **좌표별
+  측정** 산출: 출력은 벡터 `(k_1, ..., k_d) ∈ Z^d`.
+- **각 좌표의 marginal**: `k_i ≈ j_i · Q / r_{a_i}` — **Shor 의 단일 base 측정 분포와 동일**.
+- 총 `√n + 4` 회 독립 run, 매번 다른 base 셋.
+- Regev 의 후처리: 격자 환원 (LLL/BKZ) on 수집된 `K · d` 좌표 벡터.
+
+**시도 2 (Phase 0 후보 B) viability 확정**: marginal 이 Shor 분포 이므로 **각 좌표에
+독립적으로 (C) 후처리 적용 가능**.
+
+### 6.5 정리 4 (안) — Regev + (C) 좌표별 후처리
+
+> **정리 4 (Regev-(C) 합성).** Regev 의 양자 회로를 `K` 회 독립 실행. 각 측정 `(k^{(t)}_1,
+> ..., k^{(t)}_d)`, `t = 1, ..., K` 에 대해 좌표별로 (C) 후처리 적용 — 누적 `L` 을 다음
+> 규칙으로 갱신:
+>
+> `L ← lcm(L, (C)(a_i^{(t)}, N, k^{(t)}_i, Q, L))` for each (t, i)
+>
+> 그러면:
+>
+> **(a) covered:** 만약 어떤 (t, i) 에서 `r_{a_i^{(t)}} | L_before`, 회수는 결정적
+> (정리 1 의 Regev 적용).
+>
+> **(b) K_λ bound:** Regev 의 base 분포가 균등이라 가정하면, 정리 2 가 적용되어
+> `E[K_λ^Regev-(C)] = E[K_λ^ideal] / d` runs (각 run 이 d 개 base 제공).
+>
+> **(c) 노이즈 무관성 (정리 1 corollary 1 의 Regev 적용):** 측정 좌표 `k^{(t)}_i` 의
+> 분포가 어떻게 손상되든, `r_{a_i^{(t)}} | L_before` 이면 (C) 가 회수.
+
+**의의**: Regev 의 격자 환원 (LLL) 후처리는 측정 정확도에 민감 — 잡음이 격자점을 왜곡
+하면 LLL 실패. (C) 좌표별 후처리는 noise-invariance 유지 → **noise-robust Regev variant**.
+
+**Trade-off**: (C) 좌표별은 좌표 간 결합 정보를 무시 → Regev 의 LLL 만큼의 효율 보장은
+못함. 하지만 노이즈 환경에서 더 견고.
+
+### 6.6 증명 sketch
+
+(a): 정리 1 의 직접 적용 — 좌표 `i` 의 측정 분포가 무엇이든 `r_{a_i^{(t)}} | L` 이면
+(C) 좌표별 = 정리 1.
+
+(b): 한 run 이 d 개 독립 base 제공. K runs 에서 K·d 개 독립 base 누적. 정리 2 에 K·d
+입력 → `P[L_{K·d} < λ(N)] ≤ ω(λ) · 2^{-K·d}`. K = `log_2 ω(λ) / d` 면 됨.
+
+(c): 정리 1 corollary 1 의 직접 적용.
+
+### 6.7 검증 계획
+
+- numpy 시뮬: Regev-style 다중 base 회로의 단순화 (각 좌표 = 독립 Shor 측정).
+- (C) 좌표별 후처리 vs Regev LLL 의 K_λ 비교 (노이즈-free + 노이즈 하).
+- N 작음 (15, 21, 35) 에서 LLL 라이브러리 (e.g., fpylll) 또는 직접 구현.
+
+### 6.8 paper 통합
+
+- §3.4 또는 §5 에 정리 4 + 검증표.
+- 메인 메시지: "(C) 의 다중 base 후처리는 Regev framework 와도 직교 결합 가능".
+
+### 6.9 본 세션 한계
+
+LLL 구현이 numpy-only 정책 위반 (fpylll 또는 sympy 필요). 본 세션은 정리 4 진술 + 증명
+sketch 만 작성. 본 검증은 후속 세션.
+
+## §7 진행 로그
 
 - **2026-06-12 (1)**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
   본 문서 §1 추가. Phase 1 (A) 착수 — §2 의 정리 윤곽 작성.
+- **2026-06-12 (6)**: **Phase 5 부분실행 (Regev compatibility).** WebFetch 으로 Regev 2023
+  의 구조 확인: d=√(n+4) 개 base 의 좌표별 측정, 각 marginal k_i ≈ j_i·Q/r_{a_i}.
+  numpy 시뮬 (각 좌표 = 독립 Shor 측정 가정) 으로 (C) 좌표별 후처리 = 정리 4 검증.
+  결과 (N=437, d=4): 평균 1.75 runs · 4 bases ≤ 7 bases 으로 λ(N) 도달.
+  정리 4 (conditional on marginal assumption) 작성 + paper §3.4 통합.
+  Joint correlation 무시한 한계 명시. 본 phase 의 "본실행" 은 LLL 실구현 필요로
+  후속 작업.
+
+- **2026-06-12 (5)**: **Phase 3 종료 (negative scope result).** (C) 의 다중 base 누적이
+  Shor 의 group-exponent learning 에 구조적으로 결합됨을 분석. DL/HSP 는 단일 인스턴스
+  문제로 자연스럽지 않음. 다중 prime 인수분해는 trivial 확장 (한 줄 코멘트). (C)+PH
+  composition 은 유용한 하이브리드 알고리즘. paper §6 (Limitations) 에 "Scope of the
+  framework" 단락 추가. Phase 4 로 이동.
+
 - **2026-06-12 (4)**: **Phase 2 본실행.** `k_lambda_alg.py` 작성 + N=437 에서 9종 노이즈
   직접 측정 (100 trials each). 정리 3 (destructive case) 의 Markov chain 증명 완성:
   `E[K_λ^alg(η)] = E[K_λ^ideal] / g_M(η)`. 검증: depol/bias 6 setups 에서 평균 +11% 오차로

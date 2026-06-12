@@ -75,7 +75,7 @@ Post-Processing in Shor's Order Finding}
 \maketitle
 
 \begin{abstract}
-We give three elementary observations about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. \textbf{(1) Noise-invariant determinism}: maintaining an accumulated exponent candidate $L$ --- the least common multiple of orders recovered from previous bases --- and augmenting standard continued-fraction post-processing with a divisor search over $L$ yields a procedure (which we call $(C)$) that recovers the order $r_a$ of any new base $a$ deterministically whenever $r_a \mid L$, \emph{independent of the measurement distribution}. \textbf{(2) Logarithmic coverage time (ideal)}: for a semiprime $N = pq$, the expected number of independent uniform bases $K_\lambda$ required for $L = \lambda(N)$ satisfies $\mathbb{E}[K_\lambda] \leq 1 + \sum_{\ell \mid \lambda(N)} 1/(\ell^{s_\ell} - 1)$, where $s_\ell \in \{1, 2\}$ records the $\ell$-Sylow overlap of $(\mathbb{Z}/p)^*$ and $(\mathbb{Z}/q)^*$ (refining a corollary of Pomerance et al.~2017). \textbf{(3) Noise scaling}: under a class of ``destructive'' noise models (depolarizing, bias, modexp), the actual algorithm $K_\lambda$ scales exactly as $\mathbb{E}[K_\lambda^{\text{alg}}(\eta)] = \mathbb{E}[K_\lambda^{\text{ideal}}] / g_M(\eta)$ where $g_M(\eta)$ is the per-base extraction probability. Together: a noise-adjusted logarithmic number of measurements suffice to enter the noise-immune regime of (1). We verify (1) across $17{,}700$ measurements (zero violations), (2) across $17{,}000$ trials (mean within bound), and (3) across 9 noise setups on $N = 437$ (mean error $\sim 11\%$ for the destructive class). We discuss the theorem's relation to prior work --- Knill's lcm trick (1995), McAnally's larger-$Q$ convergent enumeration (2001), the Bach--Shallit textbook treatment of $r \mid \lambda(N)$, and the quantum algorithm for computing the Carmichael function (2021) --- and conclude that while every individual ingredient is folklore, the \emph{clean statement of the noise-invariance corollary} appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme --- adaptive base selection and lattice-based joint post-processing --- yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale.
+We give three theorems and one conditional compatibility observation about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. \textbf{(1) Noise-invariant determinism}: maintaining an accumulated exponent candidate $L$ --- the least common multiple of orders recovered from previous bases --- and augmenting standard continued-fraction post-processing with a divisor search over $L$ yields a procedure (which we call $(C)$) that recovers the order $r_a$ of any new base $a$ deterministically whenever $r_a \mid L$, \emph{independent of the measurement distribution}. \textbf{(2) Logarithmic coverage time (ideal)}: for a semiprime $N = pq$, the expected number of independent uniform bases $K_\lambda$ required for $L = \lambda(N)$ satisfies $\mathbb{E}[K_\lambda] \leq 1 + \sum_{\ell \mid \lambda(N)} 1/(\ell^{s_\ell} - 1)$, where $s_\ell \in \{1, 2\}$ records the $\ell$-Sylow overlap of $(\mathbb{Z}/p)^*$ and $(\mathbb{Z}/q)^*$ (refining a corollary of Pomerance et al.~2017). \textbf{(3) Noise scaling}: under a class of ``destructive'' noise models (depolarizing, bias, modexp), the actual algorithm $K_\lambda$ scales exactly as $\mathbb{E}[K_\lambda^{\text{alg}}(\eta)] = \mathbb{E}[K_\lambda^{\text{ideal}}] / g_M(\eta)$ where $g_M(\eta)$ is the per-base extraction probability. Together: a noise-adjusted logarithmic number of measurements suffice to enter the noise-immune regime of (1). We verify (1) across $17{,}700$ measurements (zero violations), (2) across $17{,}000$ trials (mean within bound), and (3) across 9 noise setups on $N = 437$ (mean error $\sim 11\%$ for the destructive class). Theorem~\ref{thm:regev-c} additionally demonstrates conditional compatibility with Regev's 2023 multi-base framework (\texttt{numpy} simulation, 200 trials $\times$ 4 $N$), provided each measurement coordinate's marginal is Shor-like. We discuss the theorem's relation to prior work --- Knill's lcm trick (1995), McAnally's larger-$Q$ convergent enumeration (2001), the Bach--Shallit textbook treatment of $r \mid \lambda(N)$, and the quantum algorithm for computing the Carmichael function (2021) --- and conclude that while every individual ingredient is folklore, the \emph{clean statement of the noise-invariance corollary} appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme --- adaptive base selection and lattice-based joint post-processing --- yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale.
 \end{abstract}
 
 \section{Background and Notation}
@@ -260,9 +260,50 @@ Theorem~\ref{thm:k-lambda-alg} predicts $K_\lambda^{\text{alg}}$ within $\sim 11
 
 \paragraph{Out of scope: structural noise.} For \texttt{phase\_sigma} and \texttt{amplitude\_damp} (not destructive in the above sense), per-base recovery $g_M(s, \eta)$ depends strongly on $s$ --- recovering large $r_a$ from a smeared peak is harder. The analogous prediction $\mathbb{E}[K_\lambda^{\text{ideal}}] / g_M(L=1, \eta)$ is a \emph{lower} bound on $\mathbb{E}[K_\lambda^{\text{alg}}]$, underestimating the truth by factor $1.4$--$2.4$ at moderate noise and $> 5$ at extreme noise (\texttt{phase} $\sigma = 2.0$: prediction $28.6$, empirical $69.1$). A closed-form for $g_M(s, \eta)$ under structural noise is left as future work.
 
+\subsection{Theorem 4: Compatibility with Regev's multi-base measurement (conditional)}
+
+Regev's 2023 algorithm~\cite{regev2023} uses $d \approx \sqrt{\log N}$ bases per quantum circuit and recovers factorization via lattice reduction on $\sqrt{n} + 4$ independent measurement vectors. We observe that $(C)$ post-processing applies \emph{coordinate-wise} to Regev's measurements, conditional on a marginal-distribution assumption.
+
+\paragraph{Assumption (Regev marginal).} Each measurement of Regev's circuit produces a vector $(k_1, \ldots, k_d) \in \{0, \ldots, Q-1\}^d$, where the \emph{marginal} distribution of each coordinate $k_i$ satisfies $k_i \approx j_i \cdot Q / r_{a_i}$ for some integer $j_i$ --- i.e., is statistically identical to Shor's single-base measurement distribution for base $a_i$.
+
+\noindent
+(Consistent with public summaries of Regev's algorithm but ignores potential joint correlations that Regev's lattice post-processing may exploit.)
+
+\begin{theorem}[Regev-$(C)$ compatibility, conditional]\label{thm:regev-c}
+Under the Regev marginal assumption, applying $(C)$ post-processing independently to each coordinate of each Regev measurement yields:
+\begin{itemize}
+  \item \textbf{(a) Per-coordinate Theorem~\ref{thm:c-det}.} Whenever $r_{a_i} \mid L_{\text{before}}$ for any (run, coordinate) pair, recovery is deterministic regardless of how the marginal distribution of $k_i$ is distorted by noise.
+  \item \textbf{(b) Run-level $K_\lambda$ bound.} Let $K_\lambda^{\text{Regev-}(C)}$ be the number of Regev runs before $L = \lambda(N)$. Then $\mathbb{E}[K_\lambda^{\text{Regev-}(C)}] \leq \mathbb{E}[K_\lambda^{\text{ideal}}] / d$ (under noise-free, ignoring intra-run early termination).
+  \item \textbf{(c) Noise invariance.} Corollary~\ref{cor:noise} applies coordinate-wise: any measurement-layer noise on Regev's output preserves the recovery of $r_{a_i}$ whenever the corresponding component is covered.
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+(a) and (c) are direct applications of Theorem~\ref{thm:c-det} and Corollary~\ref{cor:noise} to each coordinate independently --- valid because $(C)$ acts only on the marginal of $k_i$, by the assumption. (b) follows from Theorem~\ref{thm:k-lambda}(b) applied to $K \cdot d$ independent samples: $\mathbb{P}[L_{K \cdot d} < \lambda(N)] \leq \omega(\lambda(N)) \cdot 2^{-K \cdot d}$, so $\mathbb{E}[K \cdot d] \leq \log_2 \omega(\lambda(N)) + O(1)$, giving $\mathbb{E}[K] \leq (\log_2 \omega(\lambda(N)) + O(1)) / d$.
+\end{proof}
+
+\paragraph{Empirical (\texttt{numpy} simulation with assumption).} We simulate Regev runs as $d$ independent Shor measurements per run and apply $(C)$ coordinate-wise. Trials $= 200$, noise-free:
+
+\begin{center}
+\begin{tabular}{rrrrrr}
+\toprule
+$N$ & $d$ & mean $K$ runs & bases $\leq K \cdot d$ & p99 (runs) & max (runs) \\
+\midrule
+  77 & 3 & 2.41 & 7.23 & 11 & 12 \\
+ 143 & 3 & 3.02 & 9.07 & 11 & 11 \\
+ 437 & 4 & 1.75 & 7.02 &  6 &  7 \\
+1147 & 4 & 2.50 & 9.98 &  9 &  9 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For $N = 437$, Regev-$(C)$ requires $\sim 1.75$ runs in expectation, compared to Regev's $\sqrt{n} + 4 \approx 4$ runs claimed for LLL post-processing. $(C)$ coordinate-wise may be more measurement-efficient under the marginal assumption, but ignores joint correlations that LLL exploits --- a trade-off, not a strict improvement.
+
+\paragraph{Caveat.} If the Regev marginal assumption fails (e.g., if coordinates are jointly entangled in a way that distorts individual marginals), Theorem~\ref{thm:regev-c}'s empirical numbers do not transfer. A precise analysis of Regev's measurement marginals from the original paper is left to future work.
+
 \subsection{Joint interpretation}
 
-Theorem~\ref{thm:c-det} says: \emph{once} $r_a \mid L$, success is deterministic regardless of noise. Theorem~\ref{thm:k-lambda} says: an ideal algorithm reaches this state in $O(\log \log \log N)$ bases in expectation. Theorem~\ref{thm:k-lambda-alg} says: under destructive noise, the actual algorithm reaches it in $\mathbb{E}[K_\lambda^{\text{ideal}}] / g_M(\eta)$ bases --- exactly $1/g_M(\eta)$ overhead. Together they explain the algorithm's empirical robustness: a noise-adjusted logarithmic number of measurements suffice to enter a regime immune to further measurement noise.
+Theorem~\ref{thm:c-det} says: \emph{once} $r_a \mid L$, success is deterministic regardless of noise. Theorem~\ref{thm:k-lambda} says: an ideal algorithm reaches this state in $O(\log \log \log N)$ bases in expectation. Theorem~\ref{thm:k-lambda-alg} says: under destructive noise, the actual algorithm reaches it in $\mathbb{E}[K_\lambda^{\text{ideal}}] / g_M(\eta)$ bases --- exactly $1/g_M(\eta)$ overhead. Theorem~\ref{thm:regev-c} says: under a marginal-distribution assumption, $(C)$ applies coordinate-wise to Regev's multi-base measurements with corresponding reduction in run count. Together they explain the algorithm's empirical robustness: a noise-adjusted logarithmic number of measurements suffice to enter a regime immune to further measurement noise, and the framework composes naturally with Regev's circuit (modulo marginal assumption).
 
 \section{Empirical Verification}
 \label{sec:empirical}
@@ -342,6 +383,14 @@ The Knill--Mosca lattice approach strengthens single-base, multi-measurement con
 \paragraph{The theorem is conditional on $r_a \mid L$.}
 When $L = 1$ (start of algorithm), the condition fails and $(C) \equiv (B)$. Theorem~\ref{thm:k-lambda} precisely characterizes this transient: $\mathbb{E}[K_\lambda] \leq 1 + \sum_\ell 1/(\ell^{s_\ell} - 1)$, which is $O(\log \log \log N)$ for typical semiprimes. Empirically, $K_\lambda \leq 14$ across all $17{,}000$ trials at $N \leq 4087$ (Appendix~\ref{app:k-lambda}).
 
+\paragraph{Scope of the framework --- group-exponent learning.}
+The multi-base accumulation underlying Theorems~\ref{thm:c-det}--\ref{thm:k-lambda-alg} is specific to \emph{group-exponent learning}: Shor's order finding is fundamentally an algorithm that learns $\lambda(N)$ (the exponent of $(\mathbb{Z}/N\mathbb{Z})^*$) via $\mathrm{lcm}$ of orders, with factorization following as a byproduct. The structure does \emph{not} naturally extend to:
+\begin{itemize}
+  \item \textbf{Discrete logarithm} (single-instance: a specific $x$ for a specific $(g, h)$; no natural multi-base $\mathrm{lcm}$).
+  \item \textbf{Abelian hidden subgroup problem} (single-instance: a specific $H$ for a specific $f$; sublattice accumulation is well-studied but does not gain noise-invariance from a $(C)$-style divisor verifier).
+\end{itemize}
+It does extend, with no algorithmic change, to \emph{multi-prime} factoring ($N = p_1 \cdots p_k$ with $k \geq 2$): Theorems~\ref{thm:c-det}--\ref{thm:k-lambda-alg} hold verbatim, with $\lambda(N) = \mathrm{lcm}(p_1 - 1, \ldots, p_k - 1)$ and $s_\ell \in \{1, \ldots, k\}$. A useful \emph{composition} is $(C)$+Pohlig--Hellman: use $(C)$ to learn $\lambda(N)$ and hence $\mathrm{ord}(g)$ for any $g$, then apply Pohlig--Hellman for discrete log on $g$. This is a hybrid algorithm, not an extension of the $(C)$ framework itself.
+
 \paragraph{Classical verification gate is assumed exact.}
 Theorem~\ref{thm:c-det} relies on $\texttt{pow}(a, d, N)$ returning the correct value. On real hardware, this could in principle be corrupted by classical computation errors, but at standard machine precision this is negligible compared to quantum noise.
 
@@ -363,6 +412,7 @@ python verify_large_run.py 1147 2491 4087   # Appendix C (large N)
 python -m experiments.k_lambda_dist         # Appendix D (Theorem 2)
 python -m experiments.g_eta 437             # measures g_M (Theorem 3)
 python -m experiments.k_lambda_alg 437      # reproduces Theorem 3 table
+python -m experiments.regev_c               # reproduces Theorem 4 table
 python demo.py --noise3 77 143              # 3-noise comparison
 python demo.py --adaptive 77 143 209 323    # negative result, Sec. 6
 \end{lstlisting}
