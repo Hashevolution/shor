@@ -292,6 +292,76 @@ H9 (polynomial scaling) 가 H16 의 *core* — **strongly confirmed**.
 | H12c (polynomial up) | **기각** (sigma 같음) |
 | **H12 통합** | **σ_opt 거의 N 무관** |
 
+## H17: N=2491 결과 + 17.86% confirm 후 *대량 기각*
+
+### 최종 데이터 (2026-06-12)
+
+| (N, d) | K_baseline | SR % | 메모 |
+|---|---|---|---|
+| (437, 4) | 2.32 | **+0.8%** | V3 confirmed (sign test p=0.03) |
+| (1147, 2) | 2.63 | +5~9% | variable; mean ~3% in confirm |
+| (1147, 4) | 1.44 | +5.9% | single seed |
+| (1147, 8) | 1.05 | +0.5% | ceiling |
+| **(2491, 2)** | **2.25** | **0% (실제 -)** | already too efficient |
+| (2491, 4) | 1.07 | 0% | ceiling |
+| (2491, 8) | 1.00 | 0% | floor |
+
+### 17.86% confirm (1000 trials × 4 seed) 의 첫 2 seed
+- seed 1: +2.11%
+- seed 2: -1.77%
+- mean of 2: +0.17% (essentially zero)
+- → **σ scan 의 17.86% 는 fluke 확정**
+
+### 갱신된 결론
+
+#### **H9 (polynomial scaling) — *완전 기각***
+
+- N=437 → 1147 SR 증가 (1% → 5%)
+- N=1147 → 2491 SR **사라짐** (5% → 0%)
+- → polynomial 아니라 *N 의 window* 안에만 존재
+
+#### **H16 (σ_opt 고정 + polynomial) — *기각***
+- 전제 17.86% 가 fluke
+- 진짜 SR_max 는 훨씬 작음 (1-5%)
+
+#### **H4 (K_baseline sweet spot) — *지배적 mechanism***
+
+| K_baseline | SR | 영역 |
+|---|---|---|
+| ≈ 1 (ceiling/floor) | 0% | 알고리즘 too efficient |
+| 2.3-2.7 (sweet) | 1-9% | SR 발현 |
+| > 3 (slow) | 미관측 (N=437 baseline d=2 = 4.4 에서 SR 0.45%) | inefficient |
+
+### 자물쇠 직관 (사용자) — 정직 평가
+
+| 사용자 표현 | 데이터 |
+|---|---|
+| "큰 자물쇠 = 큰 흔들림" (H12c) | **기각** (σ_opt 고정) |
+| "큰 자물쇠 = 큰 효과" (H16) | **기각** (N↑ → SR↓) |
+| 실제 패턴 | "K_baseline sweet spot 에서만 SR — N 너무 크면 알고리즘이 *너무 좋아서* 노이즈 못 도와줌" |
+
+### 새 H17: **SR 의 *narrow N window*** 
+
+`SR(N, d) ≠ 0` 만 `K_baseline(N, d) ∈ [K_lo, K_hi]` 에서.
+- K_lo ≈ 2.0 (ceiling threshold)
+- K_hi ≈ 3.5 (effectiveness threshold)
+- N 증가 = K_baseline 감소 (효율 증가) → window 빠르게 벗어남
+
+### RSA 위협 함의 (재평가)
+
+- 처음 (17.86% scan): RSA 위협 가능성 시사
+- **실제 (2491 결과)**: RSA-scale 까지 못 감
+- → **RSA 보안에 변화 없음**
+
+본 SR finding 은 *theoretically interesting* 하지만 *practically narrow*.
+
+### 본 paper 의 main message (정정)
+
+> *"Phase noise 가 *small N* 의 *narrow window* 에서 hybrid 알고리즘에 ~1% 의 SR 효과 줌.*  
+> *N 증가시 알고리즘이 본래 더 efficient 해져서 SR 효과 *사라짐*.*  
+> *Polynomial scaling 가설 (σ scan 의 17.86%) 은 작은 표본의 fluke.*  
+> *진짜 SR 효과는 *작고 narrow window*, RSA paradigm 변화 *없음*."*
+
 ## 변경 로그
 
 - 2026-06-12 (초안): H1-H8 작성, 데이터 ground truth 표 작성.
@@ -303,3 +373,11 @@ H9 (polynomial scaling) 가 H16 의 *core* — **strongly confirmed**.
   - σ_opt 는 N 무관 (≈ 0.010)
   - SR_max ∝ N^α, α ≈ 2.34 (polynomial)
   - 사용자 직관 *수정된 형태* 로 정확화: 흔들림 크기 → 흔들림 효과 크기 비례
+- 2026-06-13 (5): **H17 추가 — N=2491 결과 + 17.86% confirm 후 대량 기각**.
+  - H9, H16 둘 다 기각 (polynomial scaling, σ_opt + polynomial 가설)
+  - σ scan 의 17.86% = fluke 확정 (1000 trials × multiple seeds 에서 mean ~0%)
+  - **H4 (K_baseline sweet spot) 가 지배적 mechanism**
+  - **H17: SR 의 narrow N window** — 큰 N 에서 알고리즘 너무 efficient → SR 사라짐
+  - 사용자의 *자물쇠 직관* (H12c, H16) 정직하게 기각
+  - 본 paper 는 modest workshop note 수준 finding (~1% SR at small N)
+  - **RSA paradigm 변화 없음**
