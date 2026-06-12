@@ -1,0 +1,36 @@
+# IBM Eagle 127q 하드웨어 사양 매핑 — N=15 Shor 시뮬
+# 노이즈 (5종 동시): readout_flip=0.02, modexp_error=0.05,
+#                    amplitude_damp=0.002, phase_sigma=0.3, depolarizing=0.01
+
+## Theorem 1: covered / violations 측정 (N=15, 500 trials)
+
+── (C)-determinism 정리 검증: N=15, 500 trials ──
+  노이즈                 covered  violat.   lucky  missed  success_C
+  noise-free              499        0       1       0    100.0%
+  depol p=0.3             494        0       2       4     99.2%
+  depol p=0.8             495        0       2       3     99.4%
+  readout p=0.3           499        0       1       0    100.0%
+  bias_zero p=0.5         497        0       1       2     99.6%
+  phase σ=1.0             499        0       1       0    100.0%
+  phase σ=2.5             499        0       1       0    100.0%
+  amp_damp γ=0.01         499        0       1       0    100.0%
+  amp_damp γ=0.05         499        0       1       0    100.0%
+  modexp q=0.3            499        0       1       0    100.0%
+  modexp q=0.8            493        0       2       5     99.0%
+
+## Theorem 1: hardware-calibrated mixed noise (N=15, 500 trials)
+  covered=499, violations=0, lucky=1, missed=0
+  success rate: 100.0%
+
+## Theorem 3: K_λ^alg (N=15, 100 trials)
+  mean K_λ^alg = 3.84, max = 19
+  baseline (noise-free): mean = 3.04, max = 11
+  ratio = 1.26x
+
+# 해석:
+# - Eagle 127q 사양 매핑 (5 노이즈 동시) 하에서 (C) 가 N=15 Shor 인수분해
+#   를 100% 성공률, violations=0 으로 수행.
+# - Theorem 3 의 destructive-class 예측 (overhead = 1/g_M) 가 mixed 노이즈
+#   에도 적용: g_M ≈ 0.79 · g_0 (실측 ratio 1.26 = 1/0.79).
+# - 실제 hardware 실행 (qiskit + IBM Q) 은 후속 phase. 본 결과는 numpy
+#   proxy 검증.

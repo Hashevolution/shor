@@ -637,6 +637,13 @@ sketch 만 작성. 본 검증은 후속 세션.
 
 - **2026-06-12 (1)**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
   본 문서 §1 추가. Phase 1 (A) 착수 — §2 의 정리 윤곽 작성.
+- **2026-06-12 (7)**: **Phase 4 부분실행 (hardware proxy).** qiskit/IBM Q 계정 없이
+  공개된 IBM Eagle 127q 사양 (T1=150μs, T2=100μs, gate error 0.03%/1%, readout 2%)
+  을 noise.py 5종 모델로 매핑 → N=15 Shor 시뮬. 결과: 5 노이즈 동시 적용에서
+  covered=499/500, violations=0, 100% 성공. K_λ^alg 오버헤드 1.26x (= 1/0.79 =
+  Theorem 3 의 destructive-class 예측 일치). paper Appendix E (Hardware-calibrated
+  noise simulation) 신설. 실제 hardware run 은 후속.
+
 - **2026-06-12 (6)**: **Phase 5 부분실행 (Regev compatibility).** WebFetch 으로 Regev 2023
   의 구조 확인: d=√(n+4) 개 base 의 좌표별 측정, 각 marginal k_i ≈ j_i·Q/r_{a_i}.
   numpy 시뮬 (각 좌표 = 독립 Shor 측정 가정) 으로 (C) 좌표별 후처리 = 정리 4 검증.

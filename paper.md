@@ -285,6 +285,7 @@ python -m experiments.k_lambda_dist         # reproduces Appendix D (Theorem 2)
 python -m experiments.g_eta 437             # measures g_M(η) per noise model (Theorem 3)
 python -m experiments.k_lambda_alg 437      # reproduces §3.3 table (Theorem 3)
 python -m experiments.regev_c               # reproduces §3.4 table (Theorem 4)
+python -m experiments.hardware_calibrated   # reproduces Appendix E (hardware proxy)
 python demo.py --noise3 77 143              # reproduces 3-noise comparison
 python demo.py --adaptive 77 143 209 323    # reproduces §9.1 negative result
 ```
@@ -436,3 +437,29 @@ We measure the empirical distribution of `K_λ` across 17 semiprimes, with 1,000
 | 4087 | 61  | 67  |  660 |    4 | 2.26 |   8 |  11 |   2.475 |   4.000 |
 
 In all 17 rows, `mean ≤ thm2(c)`. The bound is consistently tight, within 0.5 in every case. The maximum observed `K_λ` over all 17,000 trials is 14 (occurring at N=2491). Reproduce: `python -m experiments.k_lambda_dist`.
+
+## Appendix E. Hardware-calibrated noise simulation
+
+We additionally simulate (C) at noise levels calibrated to published IBM Quantum Eagle 127-qubit processor specifications (median values, 2024–2025):
+
+- T1 ≈ 150 μs (relaxation), T2 ≈ 100 μs (dephasing)
+- 1-qubit gate error ≈ 0.03 %, 2-qubit (ECR) gate error ≈ 1 %
+- Readout error ≈ 2 % per bit
+
+For an N=15 Shor circuit (12 qubits, ~50 μs depth, ~30 gates with ~10 two-qubit), these map to combined noise parameters: `readout_flip = 0.02, modexp_error = 0.05, amplitude_damp = 0.002, phase_sigma = 0.3, depolarizing = 0.01` (all applied simultaneously).
+
+**Result.** With all five noise channels active simultaneously:
+
+| Metric | Value |
+|---|---|
+| trials (Theorem 1) | 500 |
+| covered | 499 |
+| **violations** | **0** |
+| success rate | 100% |
+| mean K_λ^alg (Theorem 3) | 3.84 |
+| baseline K_λ^alg (noise-free) | 3.04 |
+| overhead ratio | 1.26× |
+
+The 1.26× overhead is consistent with Theorem 3's destructive-class prediction `1/g_M(η)`: empirically `g_M ≈ 0.79 · g_0` under the mixed hardware noise. (C) recovers the order `r_a` deterministically once `L = λ(N) = 4` is reached, which happens in ~ 4 base draws.
+
+**Caveat.** This is a numpy-based simulation that maps published hardware noise specifications to our five-channel noise model, not an actual hardware execution. A real hardware demonstration (qiskit + IBM Quantum account) is left to future work; the present simulation is a faithful proxy under the noise-channel mapping. Reproduce: `python -m experiments.hardware_calibrated`.

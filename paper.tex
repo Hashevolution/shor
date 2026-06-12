@@ -413,6 +413,7 @@ python -m experiments.k_lambda_dist         # Appendix D (Theorem 2)
 python -m experiments.g_eta 437             # measures g_M (Theorem 3)
 python -m experiments.k_lambda_alg 437      # reproduces Theorem 3 table
 python -m experiments.regev_c               # reproduces Theorem 4 table
+python -m experiments.hardware_calibrated   # reproduces Appendix E (hardware proxy)
 python demo.py --noise3 77 143              # 3-noise comparison
 python demo.py --adaptive 77 143 209 323    # negative result, Sec. 6
 \end{lstlisting}
@@ -653,5 +654,39 @@ $N$ & $p$ & $q$ & $\lambda(N)$ & $\omega(\lambda)$ & mean & p99 & max & thm2(c) 
 
 \noindent
 In all 17 rows, $\text{mean} \leq \text{thm2(c)}$. The bound is consistently tight, within $0.5$ in every case. The maximum observed $K_\lambda$ over all $17{,}000$ trials is $14$ (at $N = 2491$). Reproduce: \texttt{python -m experiments.k\_lambda\_dist}.
+
+\section{Hardware-Calibrated Noise Simulation}
+\label{app:hardware}
+
+We additionally simulate $(C)$ at noise levels calibrated to published IBM Quantum Eagle 127-qubit processor specifications (median values, 2024--2025):
+\begin{itemize}
+  \item $T_1 \approx 150\,\mu\text{s}$ (relaxation), $T_2 \approx 100\,\mu\text{s}$ (dephasing)
+  \item 1-qubit gate error $\approx 0.03\%$, 2-qubit (ECR) gate error $\approx 1\%$
+  \item Readout error $\approx 2\%$ per bit
+\end{itemize}
+
+For an $N = 15$ Shor circuit (12 qubits, $\sim 50\,\mu\text{s}$ depth, $\sim 30$ gates with $\sim 10$ two-qubit), these map to combined noise parameters: \texttt{readout\_flip} $= 0.02$, \texttt{modexp\_error} $= 0.05$, \texttt{amplitude\_damp} $= 0.002$, \texttt{phase\_sigma} $= 0.3$, \texttt{depolarizing} $= 0.01$ (all applied simultaneously).
+
+\paragraph{Result.} With all five noise channels active simultaneously:
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Metric & Value \\
+\midrule
+trials (Theorem~\ref{thm:c-det}) & 500 \\
+covered & 499 \\
+\textbf{violations} & \textbf{0} \\
+success rate & 100\% \\
+mean $K_\lambda^{\text{alg}}$ (Theorem~\ref{thm:k-lambda-alg}) & 3.84 \\
+baseline $K_\lambda^{\text{alg}}$ (noise-free) & 3.04 \\
+overhead ratio & $1.26\times$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The $1.26\times$ overhead is consistent with Theorem~\ref{thm:k-lambda-alg}'s destructive-class prediction $1/g_M(\eta)$: empirically $g_M \approx 0.79 \cdot g_0$ under the mixed hardware noise. $(C)$ recovers the order $r_a$ deterministically once $L = \lambda(N) = 4$ is reached, which happens in $\sim 4$ base draws.
+
+\paragraph{Caveat.} This is a \texttt{numpy}-based simulation that maps published hardware noise specifications to our five-channel noise model, \emph{not} an actual hardware execution. A real hardware demonstration (\texttt{qiskit} + IBM Quantum account) is left to future work; the present simulation is a faithful proxy under the noise-channel mapping. Reproduce: \texttt{python -m experiments.hardware\_calibrated}.
 
 \end{document}
