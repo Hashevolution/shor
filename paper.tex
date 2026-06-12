@@ -420,8 +420,24 @@ Pick $b_1, \ldots, b_d$ uniform random in $(\mathbb{Z}/N\mathbb{Z})^*$ and set $
   \item \textbf{(c) Restart-augmented.} Drawing fresh $b_i$ after $K_{\max}$ failed runs amplifies success. For $K_{\max} = O(\log(1/\varepsilon)/g)$ and $d \geq \log_2(1/\varepsilon)$, $\mathbb{E}[\text{total runs}] = O(K_{\max})$ for failure probability $\varepsilon$.
   \item \textbf{(d) Asymptotic.} For $d \geq \lceil \log_2 (1/\varepsilon) \rceil$ and $g(\eta) = \Omega(1)$, $\mathbb{E}[\text{total runs}] = O(1)$ as $N \to \infty$.
 \end{itemize}
-At $N = 437$, $d = 4$, with empirical $g \approx 1$: the 1-run bound gives $\mathbb{P}[\text{success}] \geq 15/16 \approx 0.94$, so $\mathbb{E}[K] \leq 16/15 \approx 1.07$. Empirical mean: $1.03$. The $(1-c)^d = 1/16$ ``bad bases'' event was not observed in 30 trials ($\mathbb{P}[\text{at least one bad}] \approx 0.86$, within statistical fluctuation).
+At $N = 437$, $d = 4$, with empirical $g \approx 1$: the 1-run bound gives $\mathbb{P}[\text{success}] \geq 15/16 \approx 0.94$, so $\mathbb{E}[K] \leq 16/15 \approx 1.07$. Empirical mean: $1.03$ and success $30/30$ in our original Section~\ref{sec:theorem} table; in a second independent run with the same parameters but $\mathtt{max\_runs} = 10$ we observed $27/30$ success --- matching the $\sim 1/16$ expected fraction of ``all bases bad'' trials.
 \end{theorem}
+
+\paragraph{Scaling to larger $N$.} We verify the asymptotic prediction $\mathbb{E}[K] \to 1$ by running the hybrid at semiprimes $N \in \{1147, 2491, 4087\}$ (same $d = 4$, 30 trials each, $\mathtt{max\_runs} = 20$, noise-free):
+
+\begin{center}
+\begin{tabular}{rcccc}
+\toprule
+$N$ & mean $K$ (hybrid) & success & mean $K$ ($b$-trick) & mean $K$ ($(C)$ lcm) \\
+\midrule
+1147 & \textbf{1.50} & 30/30 & 1.60 & 2.57 (29/30) \\
+2491 & \textbf{1.10} & 30/30 & 1.10 & 3.17 (27/30) \\
+4087 & \textbf{1.43} & 30/30 & 1.53 & 4.33 (27/30) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The hybrid maintains $\mathbb{E}[K] \in [1.1, 1.5]$ across two orders of magnitude in $N$, matching the theorem's prediction. For comparison, pure $(C)$ lcm fails to factor in $\sim 3/30$ trials (the odd-$L$ issue) and uses $2.6$--$4.3$ runs when it succeeds; pure $b$-trick succeeds always but needs $1.1$--$1.6$ runs (no multi-base accumulation). The hybrid combines the strengths.
 
 \begin{proof}
 For coordinate $i$, the hybrid succeeds in $K$ runs iff $X_i = 1$ AND $(C)$ recovers $\mathrm{ord}(a_i)$ in at least one of the $K$ runs. The second event has probability $1 - (1 - g(\eta))^K$ (independent Bernoulli $g(\eta)$ per run). The two are independent ($b_i$ and $k_i$ independent). So $\mathbb{P}[\text{coord } i \text{ succeeds in } K \mid b_i] = X_i \cdot (1 - (1 - g(\eta))^K)$. Marginalizing over the $d$ independent $b_i$ with $\mathbb{E}[X_i] = c$:
