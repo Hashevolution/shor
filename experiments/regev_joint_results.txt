@@ -1,0 +1,23 @@
+# Joint-constrained Regev + (C) 좌표별 vs 독립 Shor + (C) 좌표별
+# trials = 200, noise-free, 제약 = Σ b_i k_i ≡ 0 mod λ(N)
+
+      N   d  indep mean  joint mean   ratio   indep/joint max
+     77   3        2.41        2.23   0.927       12/8
+    143   3        3.02        3.12   1.031       11/10
+    437   4        1.75        1.66   0.946        7/5
+   1147   4        2.50        2.38   0.956        9/10
+
+# 핵심 발견:
+# - Joint constraint (Σ b_i k_i ≡ 0 mod λ(N)) 가 (C) 좌표별 성능을 거의
+#   영향 없음 (±7% 범위 내).
+# - 4개 N 중 3개에서 joint 가 indep 보다 약간 *나음* — projection 이
+#   convergent 의 우연한 정렬을 만들 가능성.
+# - Theorem 4 의 marginal-Shor-like 가정이 *경험적으로 robust* — joint
+#   correlation 이 좌표별 회수율을 망가뜨리지 않음.
+
+# 모델 한계:
+# - 본 시뮬은 b_i 를 uniform random Z/N 으로 근사 (Regev 는 quadratic
+#   character).
+# - target_r = λ(N) 으로 설정 (Regev 의 r 정의가 약간 다를 수 있음).
+# - 따라서 정성적 결과 (joint constraint 가 (C) 를 못 망가뜨림) 는 robust 하나
+#   정확한 효율 수치는 Regev 의 정확한 회로 시뮬이 필요.

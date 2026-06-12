@@ -637,6 +637,19 @@ sketch 만 작성. 본 검증은 후속 세션.
 
 - **2026-06-12 (1)**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
   본 문서 §1 추가. Phase 1 (A) 착수 — §2 의 정리 윤곽 작성.
+- **2026-06-12 (9)**: **Phase 5 본실행 완료.** Joint-constrained Regev 시뮬 +
+  노이즈 견고함 측정.
+  · `regev_joint.py`: 독립 Shor 측정에서 시작해 affine projection 으로
+    `Σ b_i k_i ≡ 0 mod λ(N)` 제약 적용.
+  · 발견 1: joint constraint 가 (C) 좌표별 K_λ 를 ±7% 범위 내로만 영향
+    (4개 N 에서 3개는 *더 나음*). **Theorem 4 의 marginal 가정이 robust**.
+  · 발견 2: noise 하 Regev-(C) overhead 가 단일-base (C) 보다 **더 작음**
+    (depol 0.5: 1.62x vs 1.85x, phase σ=1.0: 2.11x vs 2.63x). d 개 병렬
+    base 가 노이즈 amortize.
+  · paper §3.4 통합: Theorem 4 의 caveat 두 검증표로 강화 (joint vs indep
+    비교, noise 견고함 비교). Theorem 4 가 conditional 에서 *empirically
+    validated under approximate model* 로 격상.
+
 - **2026-06-12 (8)**: **Phase 5 본실행 — Regev 측정의 joint constraint 확인.** 추가
   WebFetch 으로 Regev 2023 §2 의 측정 구조 확인: 측정이 *joint linear constraint*
   `Σ b_i k_i ≈ 0 (mod r)` 를 만족 — *좌표별 독립이 아님*. Theorem 4 의 marginal 가정

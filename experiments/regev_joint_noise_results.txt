@@ -1,0 +1,19 @@
+# Joint Regev + (C) 좌표별 — 노이즈 견고함, N=437, d=4, 100 trials
+
+  noise                mean runs   max
+  noise-free                1.59     4
+  depol p=0.3               2.24    10
+  depol p=0.5               2.58    10
+  modexp q=0.3              3.26    13
+  phase σ=1.0               3.36    12
+
+# 단일-base (C) (Phase 2 k_lambda_alg 결과) 와 비교:
+# Regev-(C) overhead vs noise-free | 단일-base (C) overhead vs noise-free
+# depol p=0.5: 1.62x | 1.85x
+# modexp q=0.3: 2.05x | 2.31x
+# phase σ=1.0: 2.11x | 2.63x
+
+# 발견: Regev-(C) 의 노이즈 오버헤드가 단일-base (C) 보다 *더 작음*.
+# 매 run 의 d 개 base 가 측정 노이즈의 영향을 amortize.
+# Theorem 4(c) (noise invariance) 의 실용적 의미: Regev-(C) 가 hardware-
+# 실용 환경에서 단일-base (C) 보다 더 견고할 가능성.
