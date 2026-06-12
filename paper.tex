@@ -75,7 +75,7 @@ Post-Processing in Shor's Order Finding}
 \maketitle
 
 \begin{abstract}
-We give four theorems and one conditional compatibility observation about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. \textbf{(1) Noise-invariant determinism}: maintaining an accumulated exponent candidate $L$ --- the least common multiple of orders recovered from previous bases --- and augmenting standard continued-fraction post-processing with a divisor search over $L$ yields a procedure (which we call $(C)$) that recovers the order $r_a$ of any new base $a$ deterministically whenever $r_a \mid L$, \emph{independent of the measurement distribution}. \textbf{(2) Logarithmic coverage time (ideal)}: for a semiprime $N = pq$, the expected number of independent uniform bases $K_\lambda$ required for $L = \lambda(N)$ satisfies $\mathbb{E}[K_\lambda] \leq 1 + \sum_{\ell \mid \lambda(N)} 1/(\ell^{s_\ell} - 1)$, where $s_\ell \in \{1, 2\}$ records the $\ell$-Sylow overlap of $(\mathbb{Z}/p)^*$ and $(\mathbb{Z}/q)^*$ (refining a corollary of Pomerance et al.~2017). \textbf{(3) Noise scaling}: under a class of ``destructive'' noise models (depolarizing, bias, modexp), the actual algorithm $K_\lambda$ scales exactly as $\mathbb{E}[K_\lambda^{\text{alg}}(\eta)] = \mathbb{E}[K_\lambda^{\text{ideal}}] / g_M(\eta)$ where $g_M(\eta)$ is the per-base extraction probability. Together: a noise-adjusted logarithmic number of measurements suffice to enter the noise-immune regime of (1). We verify (1) across $17{,}700$ measurements (zero violations), (2) across $17{,}000$ trials (mean within bound), and (3) across 9 noise setups on $N = 437$ (mean error $\sim 11\%$ for the destructive class). Theorem~\ref{thm:regev-c} additionally demonstrates conditional compatibility with Regev's 2023 multi-base framework (\texttt{numpy} simulation, 200 trials $\times$ 4 $N$), provided each measurement coordinate's marginal is Shor-like. Theorem~\ref{thm:hybrid} introduces the \textbf{$(C)$ + Regev $b$-trick hybrid}: applying $(C)$ per coordinate while immediately checking each newly-recovered $\mathrm{ord}(a_i)$ for a nontrivial square root via $b_i^{\mathrm{ord}(a_i)}$. Empirically, the hybrid factors $N = 437$ in $1.03$--$1.70$ runs ($100\%$ success across 5 noise/corruption conditions $\times$ 30 trials), versus $6.7$--$7.1$ ($70\%$) for $(C)$ alone and $3.1$--$4.0$ ($90\%$) for pure $b$-trick. We discuss the theorem's relation to prior work --- Knill's lcm trick (1995), McAnally's larger-$Q$ convergent enumeration (2001), the Bach--Shallit textbook treatment of $r \mid \lambda(N)$, and the quantum algorithm for computing the Carmichael function (2021) --- and conclude that while every individual ingredient is folklore, the \emph{clean statement of the noise-invariance corollary} appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme --- adaptive base selection and lattice-based joint post-processing --- yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale.
+We give five theorems and one conditional compatibility observation about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. \textbf{(1) Noise-invariant determinism}: maintaining an accumulated exponent candidate $L$ --- the least common multiple of orders recovered from previous bases --- and augmenting standard continued-fraction post-processing with a divisor search over $L$ yields a procedure (which we call $(C)$) that recovers the order $r_a$ of any new base $a$ deterministically whenever $r_a \mid L$, \emph{independent of the measurement distribution}. \textbf{(2) Logarithmic coverage time (ideal)}: for a semiprime $N = pq$, the expected number of independent uniform bases $K_\lambda$ required for $L = \lambda(N)$ satisfies $\mathbb{E}[K_\lambda] \leq 1 + \sum_{\ell \mid \lambda(N)} 1/(\ell^{s_\ell} - 1)$, where $s_\ell \in \{1, 2\}$ records the $\ell$-Sylow overlap of $(\mathbb{Z}/p)^*$ and $(\mathbb{Z}/q)^*$ (refining a corollary of Pomerance et al.~2017). \textbf{(3) Noise scaling}: under a class of ``destructive'' noise models (depolarizing, bias, modexp), the actual algorithm $K_\lambda$ scales exactly as $\mathbb{E}[K_\lambda^{\text{alg}}(\eta)] = \mathbb{E}[K_\lambda^{\text{ideal}}] / g_M(\eta)$ where $g_M(\eta)$ is the per-base extraction probability. Together: a noise-adjusted logarithmic number of measurements suffice to enter the noise-immune regime of (1). We verify (1) across $17{,}700$ measurements (zero violations), (2) across $17{,}000$ trials (mean within bound), and (3) across 9 noise setups on $N = 437$ (mean error $\sim 11\%$ for the destructive class). Theorem~\ref{thm:regev-c} additionally demonstrates conditional compatibility with Regev's 2023 multi-base framework (\texttt{numpy} simulation, 200 trials $\times$ 4 $N$), provided each measurement coordinate's marginal is Shor-like. Theorem~\ref{thm:hybrid} introduces the \textbf{$(C)$ + Regev $b$-trick hybrid}: applying $(C)$ per coordinate while immediately checking each newly-recovered $\mathrm{ord}(a_i)$ for a nontrivial square root via $b_i^{\mathrm{ord}(a_i)}$. Empirically, the hybrid factors $N = 437$ in $1.03$--$1.70$ runs ($100\%$ success across 5 noise/corruption conditions $\times$ 30 trials), versus $6.7$--$7.1$ ($70\%$) for $(C)$ alone and $3.1$--$4.0$ ($90\%$) for pure $b$-trick. We formalize this with \textbf{Lemma~\ref{lem:b-sqrt}} (per-$b$ nontrivial-sqrt probability $\geq 1/2$ for any semiprime) and a closed-form bound $\mathbb{E}[K] \leq 1/(1 - (1 - g(\eta) \cdot c)^d)$ matching the empirical mean within 4\%. We discuss the theorem's relation to prior work --- Knill's lcm trick (1995), McAnally's larger-$Q$ convergent enumeration (2001), the Bach--Shallit textbook treatment of $r \mid \lambda(N)$, and the quantum algorithm for computing the Carmichael function (2021) --- and conclude that while every individual ingredient is folklore, the \emph{clean statement of the noise-invariance corollary} appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme --- adaptive base selection and lattice-based joint post-processing --- yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale.
 \end{abstract}
 
 \section{Background and Notation}
@@ -386,7 +386,49 @@ Values are mean $K$ (runs to factor) and success / 30 trials. The hybrid achieve
 \paragraph{Interpretation.}
 The hybrid is \emph{strictly stronger} than either ingredient alone in this setting: $(C)$ alone fails on Regev's setup (odd $L$), pure $b$-trick recovers each order independently (no multi-base speedup), and the hybrid combines $(C)$'s multi-base efficiency with the $b$-trick's direct factor route. This is a concrete operational benefit of the $(C)$ framework specifically inside Regev's circuit.
 
-\paragraph{Caveat.} Theorem~\ref{thm:hybrid} is \emph{empirical}; we do not prove an asymptotic bound on the hybrid's success probability. The $b$-trick step succeeds when $b_i^{\mathrm{ord}(a_i)}$ is a nontrivial square root of $1$, which happens with probability $\approx 1/2$ per $b_i$ for semiprime $N$, amplifying across multiple $(b_i, \mathrm{ord}(a_i))$ pairs to $\approx 1$ quickly. A formal analysis is left to future work. Reproduce: \texttt{python -m experiments.rv\_filter\_lll factor}.
+\paragraph{Formal analysis.} We sharpen the empirical statement with two analytical bounds. Let $v_p := v_2(p - 1)$, $v_q := v_2(q - 1)$ (the 2-adic valuations of $p-1, q-1$; both $\geq 1$ since $p, q$ are odd). Decompose $(\mathbb{Z}/N\mathbb{Z})^* \cong C_{p-1} \times C_{q-1}$ via CRT, and for $b \in (\mathbb{Z}/N\mathbb{Z})^*$ let $\alpha_p := v_2(\mathrm{ord}(b \bmod p))$, $\alpha_q := v_2(\mathrm{ord}(b \bmod q))$.
+
+\begin{lemma}[per-$b_i$ nontrivial sqrt probability]\label{lem:b-sqrt}
+For uniform random $b \in (\mathbb{Z}/N\mathbb{Z})^*$,
+\[
+  \mathbb{P}[b^{\mathrm{ord}(b^2)}\ \text{is a nontrivial sqrt of 1 mod}\ N]
+    \;=\; \mathbb{P}[\alpha_p \neq \alpha_q]
+    \;=\; 1 - 2^{-(v_p + v_q)} \cdot \frac{4^{\min(v_p, v_q)} + 2}{3}
+    \;\geq\; \tfrac{1}{2},
+\]
+with equality at $v_p = v_q = 1$ and approaching $2/3$ as $\min(v_p, v_q) \to \infty$.
+\end{lemma}
+
+\begin{proof}
+Let $a = b^2 \bmod N$, so $\mathrm{ord}(a) = \mathrm{ord}(b) / \gcd(2, \mathrm{ord}(b))$. If $\mathrm{ord}(b)$ is odd ($\alpha_p = \alpha_q = 0$), $b^{\mathrm{ord}(a)} = b^{\mathrm{ord}(b)} = 1$ --- trivial.
+
+Otherwise (at least one $\alpha \geq 1$), $\mathrm{ord}(a) = \mathrm{ord}(b)/2$:
+\begin{itemize}
+  \item If $\alpha_p < \alpha_q$: $\mathrm{ord}(b \bmod p) = 2^{\alpha_p} m_p$ divides $\mathrm{ord}(a) = 2^{\alpha_q - 1} \mathrm{lcm}(m_p, m_q)$, so $b^{\mathrm{ord}(a)} \equiv 1 \bmod p$. In $C_{q-1}$, $b^{\mathrm{ord}(a)}$ has order 2 ($2 \mathrm{ord}(a) = \mathrm{ord}(b)$ is a multiple of $\mathrm{ord}(b \bmod q)$, but $\mathrm{ord}(a)$ alone is not), so $b^{\mathrm{ord}(a)} \equiv -1 \bmod q$. By CRT: $b^{\mathrm{ord}(a)} \equiv (1, -1)$ --- a nontrivial sqrt of 1 mod $N$.
+  \item $\alpha_p > \alpha_q$: symmetric, $(-1, 1)$, nontrivial.
+  \item $\alpha_p = \alpha_q \geq 1$: both coordinates yield $-1$, so $b^{\mathrm{ord}(a)} \equiv -1 \bmod N$ --- trivial.
+\end{itemize}
+
+Hence $\mathbb{P}[\text{nontrivial}] = \mathbb{P}[\alpha_p \neq \alpha_q]$. Standard cyclic-group analysis gives the marginals: in $C_n$ with $n = 2^v \cdot m$ ($m$ odd), elements with $v_2(\mathrm{ord}) \leq j$ form the unique subgroup of order $2^j m$. So $\mathbb{P}[\alpha_p = 0] = 2^{-v_p}$ and $\mathbb{P}[\alpha_p = j] = 2^{j - 1 - v_p}$ for $1 \leq j \leq v_p$. $\alpha_p, \alpha_q$ independent (CRT). Summing $\mathbb{P}[\alpha_p = \alpha_q]$ and using $\sum_{j=1}^{m} 4^j = \tfrac{4(4^m - 1)}{3}$ gives the closed form.
+\end{proof}
+
+\begin{theorem}[Hybrid factoring --- formal]\label{thm:hybrid-formal}
+Pick $b_1, \ldots, b_d$ uniform random in $(\mathbb{Z}/N\mathbb{Z})^*$ and set $a_i = b_i^2 \bmod N$. Let $g(\eta)$ denote the per-coordinate $(C)$ recovery probability at $L = 1$ under noise $\eta$ (the $g_M(\eta)$ of Section~\ref{sec:theorem}). Let $c := \mathbb{P}[\text{nontrivial sqrt}]$ from Lemma~\ref{lem:b-sqrt} ($c \geq 1/2$). Then:
+\[
+  \mathbb{P}[\text{hybrid factors $N$ in $K$ runs}] \;\geq\; 1 - (1 - g(\eta) \cdot c)^{K \cdot d},
+\]
+and the expected number of runs satisfies
+\[
+  \mathbb{E}[K] \;\leq\; \frac{1}{1 - (1 - g(\eta) \cdot c)^d}.
+\]
+For $d = \sqrt{\log N}$ and any $\eta$ with $g(\eta) > 0$, $\mathbb{E}[K] \to 1$ as $N \to \infty$. At $N = 437$, $d = 4$, with per-coordinate recovery $\approx 1$ (small orders), the prediction $\mathbb{E}[K] \leq 1/(1 - (1/2)^4) \approx 1.07$ matches the empirical mean $1.03$.
+\end{theorem}
+
+\begin{proof}
+Per Regev run, the $d$ coordinates provide independent chances. For each, hybrid succeeds iff $(C)$ recovers $\mathrm{ord}(a_i)$ from $k_i$ (probability $g(\eta)$) AND $b_i^{\mathrm{ord}(a_i)}$ is a nontrivial sqrt of 1 (probability $c$ by Lemma~\ref{lem:b-sqrt}, independent of $k_i$). Per-coordinate success $\geq g(\eta) \cdot c$. Per-run failure $\leq (1 - g(\eta) c)^d$, giving the bounds.
+\end{proof}
+
+Reproduce: \texttt{python -m experiments.rv\_filter\_lll factor}.
 
 \subsection{Joint interpretation}
 
