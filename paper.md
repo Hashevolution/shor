@@ -270,7 +270,19 @@ We outline how Theorem 1 relates to existing literature, including which ingredi
 
 **Pomerance et al. (2017, arXiv 1707.07193) — *The expected number of elements to generate a finite group*.** Shows `e(G) ≤ d + 2.752...` where `d` is the maximum Sylow generator count. For semiprime `(Z/NZ)*`, this gives constant-bounded expected number of bases to *generate* the group (hence reach `λ(N)` via lcm).
 
-**Position of our contribution.** Every individual ingredient — `r | λ(N)`, multi-base lcm, divisor search given exponent, continued fractions, factor_from_exponent — is folklore or established in the references above. The *clean separation theorem* (noise invariance via the classical verification gate, formalized as Theorem 1) and its corollaries appear to not be stated explicitly. We propose Theorem 1 as the *folklore packaged* result that gives a uniform explanation for the empirical robustness of multi-base post-processing.
+### Three approaches to noise-tolerant Regev factoring
+
+The Regev 2023 algorithm (Regev, JACM 2025) factors n-bit integers via `~√n` runs of a multi-base circuit followed by lattice post-processing. Regev's own analysis requires all runs to be uncorrupted. Three independent approaches to handling corrupted runs have appeared:
+
+**Ragavan-Vaikuntanathan (2023/2025, arXiv 2310.00899) — *Space-Efficient and Noise-Robust Quantum Factoring*.** Extends Regev's lattice post-processing with a *filter-then-LLL* stage: corrupted samples are detected via short-vector search on a constructed lattice and discarded; standard Regev LLL post-processing then runs on the uncorrupted survivors. Requires a "well-spread" noise distribution assumption. Operates entirely within Regev's lattice framework.
+
+**Ekerå-Gärtner (2024) — concurrent with the above.** Shows that under a different (stronger) assumption on the corruption distribution, *standard* Regev post-processing already tolerates a constant fraction of corrupted samples without filtering. Lattice framework preserved; analysis-only contribution.
+
+**This work (Theorem 4, conditional).** Replaces Regev's lattice post-processing with `(C)` *coordinate-wise* — each measurement coordinate `k_i` is processed independently via standard Shor-style continued-fraction recovery plus the divisor search of the accumulated exponent `L`. Output is `λ(N)`, from which factorization follows by standard methods (Miller–Rabin reduction on a known exponent). Requires the *marginal Shor-likeness* of each `k_i` (verified empirically against a joint-constrained model in §3.4). Noise-tolerance inherits Theorem 1's noise invariance per coordinate without needing a filter or distribution assumption.
+
+The three approaches are *orthogonal*: RV adds a filter on top of LLL; EG24 modifies the assumption while keeping the algorithm; our work replaces the post-processing entirely. Direct head-to-head empirical comparison (RV's Algorithm 6.1 vs (C) coordinate-wise on Regev measurements, under matched noise) is a natural next step but is not performed here.
+
+**Position of our contribution.** Every individual ingredient — `r | λ(N)`, multi-base lcm, divisor search given exponent, continued fractions, factor_from_exponent — is folklore or established in the references above. The *clean separation theorem* (noise invariance via the classical verification gate, formalized as Theorem 1) and its corollaries appear to not be stated explicitly; nor does the *application of multi-base lcm post-processing to Regev's coordinate-wise measurements* (Theorem 4) appear in the noise-tolerant-Regev literature surveyed above. We propose Theorems 1–4 as: (i) the folklore packaging that gives a uniform explanation for the empirical robustness of multi-base post-processing (Theorems 1–3), and (ii) an alternative post-processing approach for Regev's framework, distinct from the lattice-based methods of RV and EG24 (Theorem 4).
 
 ## 6. Limitations and discussion
 
@@ -332,7 +344,9 @@ The work is best viewed as expository and a foundation for explorations of more 
 8. Bach, E. & Shallit, J. (1996). *Algorithmic Number Theory*, Vol. 1. MIT Press.
 9. Erdős, P., Pomerance, C., & Schmutz, E. (1991). *Carmichael's lambda function*. Acta Arithmetica 58(4), 363-385.
 10. Pomerance, C. et al. (2017). *The expected number of elements to generate a finite group with d-generated Sylow subgroups*. arXiv:1707.07193.
-11. Regev, O. (2023). *An efficient quantum factoring algorithm*. arXiv:2308.06572.
+11. Regev, O. (2023, JACM 2025). *An efficient quantum factoring algorithm*. arXiv:2308.06572.
+13. Ragavan, S. & Vaikuntanathan, V. (2023). *Space-Efficient and Noise-Robust Quantum Factoring*. arXiv:2310.00899 / eprint 2023/1559.
+14. Ekerå, M. & Gärtner, J. (2024). *Extending Regev's factoring algorithm to compute discrete logarithms.* (See discussion in [13].)
 12. *A quantum algorithm for computing the Carmichael function* (2021). arXiv:2111.02488.
 
 ---

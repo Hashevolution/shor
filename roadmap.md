@@ -637,6 +637,23 @@ sketch 만 작성. 본 검증은 후속 세션.
 
 - **2026-06-12 (1)**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
   본 문서 §1 추가. Phase 1 (A) 착수 — §2 의 정리 윤곽 작성.
+- **2026-06-12 (10)**: **RV 2023/2025 정밀 정독 + paper positioning 안정화.** 사용자
+  업로드한 RV paper (Space-Efficient and Noise-Robust Quantum Factoring) 정독으로
+  noise-tolerant Regev 영역의 정확한 landscape 확인:
+  · RV (2023/2025): filter-then-LLL — corrupted 샘플 탐지+제거 후 표준 Regev LLL.
+    "well-spread" 가정 필요. lattice framework 안.
+  · EG24 (concurrent): stronger 가정 하 standard Regev LLL 이 그대로 동작.
+    Analysis-only contribution.
+  · 본 paper (Theorem 4): post-processing 자체 교체 (LLL → (C) 좌표별).
+    "marginal Shor-like" 가정 필요. lattice framework 밖.
+  세 접근은 **직교 (orthogonal)**.
+  paper §5 (Related Work) 에 "Three approaches to noise-tolerant Regev factoring"
+  subsection 추가. Theorem 4 의 contribution 위치 명확화.
+  bibliography 에 RV 2023, EG24 추가.
+  실험 stub `experiments/rv_filter_lll.py` 작성 (sympy LLL 기반). 데모: precision 75%.
+  정밀 구현 (RV Algorithm 6.1 의 정확한 격자 구성 + Regev LLL 후처리 + 우리 (C) 와
+  head-to-head 비교) 은 후속 multi-week 작업.
+
 - **2026-06-12 (9)**: **Phase 5 본실행 완료.** Joint-constrained Regev 시뮬 +
   노이즈 견고함 측정.
   · `regev_joint.py`: 독립 Shor 측정에서 시작해 affine projection 으로

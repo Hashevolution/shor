@@ -402,8 +402,23 @@ Foundational textbook coverage of $r \mid \lambda(N)$, multi-element lcm converg
 \paragraph{Pomerance et al.\ (2017)~\cite{pomerance2017}.}
 Shows $e(G) \leq d + 2.752\ldots$ where $d$ is the maximum Sylow generator count. For semiprime $(\mathbb{Z}/N\mathbb{Z})^*$, this gives constant-bounded expected number of bases to \emph{generate} the group (hence reach $\lambda(N)$ via lcm).
 
+\subsection{Three approaches to noise-tolerant Regev factoring}
+
+The Regev 2023 algorithm~\cite{regev2023} (JACM 2025) factors $n$-bit integers via $\sim \sqrt{n}$ runs of a multi-base circuit followed by lattice post-processing. Regev's own analysis requires all runs to be uncorrupted. Three independent approaches to handling corrupted runs have appeared:
+
+\paragraph{Ragavan--Vaikuntanathan (2023/2025)~\cite{ragavan2023}.}
+Extends Regev's lattice post-processing with a \emph{filter-then-LLL} stage: corrupted samples are detected via short-vector search on a constructed lattice and discarded; standard Regev LLL post-processing then runs on the uncorrupted survivors. Requires a ``well-spread'' noise distribution assumption. Operates entirely within Regev's lattice framework.
+
+\paragraph{Ekerå--Gärtner (2024)~\cite{ekeragartner2024} --- concurrent with the above.}
+Shows that under a different (stronger) assumption on the corruption distribution, \emph{standard} Regev post-processing already tolerates a constant fraction of corrupted samples without filtering. Lattice framework preserved; analysis-only contribution.
+
+\paragraph{This work (Theorem~\ref{thm:regev-c}, conditional).}
+Replaces Regev's lattice post-processing with $(C)$ \emph{coordinate-wise} --- each measurement coordinate $k_i$ is processed independently via standard Shor-style continued-fraction recovery plus the divisor search of the accumulated exponent $L$. Output is $\lambda(N)$, from which factorization follows by standard methods (Miller--Rabin reduction on a known exponent). Requires the \emph{marginal Shor-likeness} of each $k_i$ (verified empirically against a joint-constrained model in Section~\ref{sec:theorem}). Noise-tolerance inherits Theorem~\ref{thm:c-det}'s noise invariance per coordinate without needing a filter or distribution assumption.
+
+The three approaches are \emph{orthogonal}: RV~\cite{ragavan2023} adds a filter on top of LLL; EG24~\cite{ekeragartner2024} modifies the assumption while keeping the algorithm; our work replaces the post-processing entirely. Direct head-to-head empirical comparison (RV's Algorithm~6.1 vs.\ $(C)$ coordinate-wise on Regev measurements, under matched noise) is a natural next step but is not performed here.
+
 \paragraph{Position of our contribution.}
-Every individual ingredient --- $r \mid \lambda(N)$, multi-base lcm, divisor search given exponent, continued fractions, factoring from exponent --- is folklore or established in the references above. The \emph{clean separation theorem} (noise invariance via the classical verification gate, formalized as Theorem~\ref{thm:c-det}) and its corollaries appear to not be stated explicitly. We propose Theorem~\ref{thm:c-det} as the \emph{folklore packaged} result that gives a uniform explanation for the empirical robustness of multi-base post-processing.
+Every individual ingredient --- $r \mid \lambda(N)$, multi-base lcm, divisor search given exponent, continued fractions, factoring from exponent --- is folklore or established in the references above. The \emph{clean separation theorem} (noise invariance via the classical verification gate, formalized as Theorem~\ref{thm:c-det}) and its corollaries appear to not be stated explicitly; nor does the \emph{application of multi-base lcm post-processing to Regev's coordinate-wise measurements} (Theorem~\ref{thm:regev-c}) appear in the noise-tolerant-Regev literature surveyed above. We propose Theorems~\ref{thm:c-det}--\ref{thm:regev-c} as: (i) the folklore packaging that gives a uniform explanation for the empirical robustness of multi-base post-processing (Theorems~\ref{thm:c-det}--\ref{thm:k-lambda-alg}), and (ii) an alternative post-processing approach for Regev's framework, distinct from the lattice-based methods of RV and EG24 (Theorem~\ref{thm:regev-c}).
 
 \section{Limitations and Discussion}
 \label{sec:limitations}
@@ -519,7 +534,18 @@ C.~Pomerance et~al.
 \bibitem{regev2023}
 O.~Regev.
 \newblock An efficient quantum factoring algorithm.
-\newblock arXiv:2308.06572, 2023.
+\newblock \emph{Journal of the ACM}, 2025.
+\newblock arXiv:2308.06572.
+
+\bibitem{ragavan2023}
+S.~Ragavan and V.~Vaikuntanathan.
+\newblock Space-Efficient and Noise-Robust Quantum Factoring.
+\newblock arXiv:2310.00899, 2023.
+
+\bibitem{ekeragartner2024}
+M.~Ekerå and J.~Gärtner.
+\newblock Extending Regev's factoring algorithm to compute discrete logarithms.
+\newblock 2024. (See discussion in~\cite{ragavan2023}.)
 
 \bibitem{carmichaelquantum2021}
 A quantum algorithm for computing the {C}armichael function.
