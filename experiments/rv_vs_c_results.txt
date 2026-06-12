@@ -1,0 +1,27 @@
+# (C) 좌표별 vs RV filter 부분 비교, N=437, d=4, 50 trials
+# 우리 (C): L=λ(N) 도달 평균 # runs
+# RV filter: 4 samples 선택 후 precision (1.00 = 모두 uncorrupted)
+   corrupt_p    (C) runs    RV precision
+        0.00        1.72         100.00%
+        0.10        1.86          88.50%
+        0.20        2.08          78.00%
+        0.30        2.10          66.50%
+
+# 해석:
+# - (C) 좌표별: corrupt rate 0→30% 에서 runs 1.72→2.10 (+22% degradation)
+# - RV filter (단순화): precision 100→67% (33pp drop)
+# - (C) 가 corruption 에 더 graceful 하게 degrade
+
+# 중요 caveat:
+# 1. 본 RV 구현은 S 를 단순 정수로 설정. RV 원본의 S = 2^(An/d) 가 더 좋은
+#    precision 줄 가능성. 정확한 RV 구현은 미수행.
+# 2. RV 의 알고리즘은 filter 후 추가 LLL 후처리. Regev LLL 미구현으로 RV 의
+#    end-to-end 성공률 측정 불가.
+# 3. RV 의 분석 (Lemma 6.3) 은 filter 후 일부 corrupted 가 남아도 동작 보장 —
+#    precision 100% 가 요구 사항이 아님.
+
+# 따라서 본 비교는 *부분적* — 두 접근의 *질적* 차이만 시사.
+# 본격 head-to-head 는 후속:
+# - RV 원본 S, α 매개변수 정확화
+# - Regev LLL 후처리 구현
+# - 인수 성공률 측정 (filter 후 LLL → factor)

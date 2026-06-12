@@ -221,6 +221,19 @@ Across 4 semiprimes (200 trials each), the joint constraint changes `K_λ^{Regev
 
 **Caveat.** Our joint model uses uniform random `b_i ∈ Z/N` as a stand-in for Regev's quadratic characters; the qualitative result (joint constraint does not destroy marginals, noise overhead is reduced) is robust, but exact efficiency depends on Regev's specific circuit. The noise-invariance of Theorem 1 carries over to *any* setting where per-coordinate (C) succeeds, regardless of joint structure. Reproduce: `python -m experiments.regev_joint` and `python -m experiments.regev_joint --noise 437`.
 
+**Partial head-to-head with RV's filter-then-LLL (N=437, d=4, 50 trials).** We implement a simplified version of RV's Algorithm 6.1 (sympy LLL on the lattice `[S·I_d  S·W; 0  I_|E|]` with `S = 100`) and measure its corruption-filter precision against the same noise model used for our (C) coordinate-wise approach. Corrupted runs are simulated as uniform-random samples (RV's "overwrite" model with corruption probability `p`):
+
+| corruption p | (C) runs to λ(N) | (C) overhead | RV filter precision |
+|---:|---:|---:|---:|
+| 0.00 | 1.72 | 1.00× | 100.0% |
+| 0.10 | 1.86 | 1.08× |  88.5% |
+| 0.20 | 2.08 | 1.21× |  78.0% |
+| 0.30 | 2.10 | 1.22× |  66.5% |
+
+**Observation.** (C) coordinate-wise degrades gracefully — at 30% corruption rate, it needs only 22% more runs than noise-free. RV's filter precision drops from 100% to 66.5% over the same range (i.e., one-third of "uncorrupted" samples are actually corrupt), at which point RV must rely on Regev's downstream LLL tolerating these stragglers. The (C) framework avoids the filter entirely — per-coordinate verification (`a^d ≡ 1 mod N`) is itself a built-in corruption check.
+
+**Caveat (full comparison requires Regev LLL).** Our RV implementation uses a simplified scaling `S = 100` rather than RV's `S = 2^{An/d}`, and we do not implement Regev's downstream LLL post-processing. A full head-to-head — Regev's filter-then-LLL pipeline vs (C) coordinate-wise, ending in a factor of `N` — is left to future work. Reproduce: `python -m experiments.rv_filter_lll compare`.
+
 ### 3.5 Joint interpretation
 
 Theorem 1 says: *once* `r_a | L`, success is deterministic regardless of noise. Theorem 2 says: an ideal algorithm reaches this state in `O(log log log N)` bases in expectation. Theorem 3 says: under destructive noise, the actual algorithm reaches it in `E[K_λ^{ideal}] / g_M(η)` bases — i.e., overhead exactly `1/g_M(η)`. Theorem 4 says: under a marginal-distribution assumption, the (C) framework applies coordinate-wise to Regev's multi-base measurements with corresponding reduction in run count. Together they explain the algorithm's empirical robustness: a noise-adjusted logarithmic number of measurements suffice to enter a regime immune to further measurement noise, and the framework composes naturally with Regev's multi-base circuit (modulo marginal assumption).

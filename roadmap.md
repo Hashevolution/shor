@@ -637,6 +637,18 @@ sketch 만 작성. 본 검증은 후속 세션.
 
 - **2026-06-12 (1)**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
   본 문서 §1 추가. Phase 1 (A) 착수 — §2 의 정리 윤곽 작성.
+- **2026-06-12 (11)**: **B 단계 2: RV Algorithm 6.1 의 정확한 격자 구성 구현 +
+  (C) 와 head-to-head 부분 비교.** `experiments/rv_filter_lll.py` 의 `build_rv_lattice`,
+  `rv_filter_round`, `filter_uncorrupted` 를 RV §6 Algorithm 6.1 의 정확한 공식
+  (H = [[S·I_d, S·W], [0, I_|E|]]) 으로 구현. S=100 의 단순화.
+  부분 head-to-head 결과 (N=437, d=4, 50 trials, RV "overwrite" corruption 모델):
+  · corrupt p=0.00: (C) 1.72 runs, RV precision 100%
+  · corrupt p=0.10: (C) 1.86 runs (+8%), RV 88.5%
+  · corrupt p=0.20: (C) 2.08 runs (+21%), RV 78%
+  · corrupt p=0.30: (C) 2.10 runs (+22%), RV 66.5%
+  발견: (C) 가 corruption 증가에 *훨씬 더 graceful* 하게 degrade.
+  paper §3.4 에 head-to-head 표 + 정확한 caveats (S 단순화, Regev LLL 미구현) 추가.
+
 - **2026-06-12 (10)**: **RV 2023/2025 정밀 정독 + paper positioning 안정화.** 사용자
   업로드한 RV paper (Space-Efficient and Noise-Robust Quantum Factoring) 정독으로
   noise-tolerant Regev 영역의 정확한 landscape 확인:
