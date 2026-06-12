@@ -1,0 +1,34 @@
+# End-to-end 인수 비교 v2 (3-way): N=437, d=4, 30 trials each
+# 측정 횟수까지 인수 회수 # runs (실패시 max=20)
+
+조건                | (C) lcm only      | Regev b-trick     | (C)+b-trick hybrid
+                    | mean K | succ     | mean K | succ     | mean K | succ
+--------------------|--------|----------|--------|----------|--------|--------
+noise-free          | 6.70   | 21/30    | 3.13   | 27/30    | 1.03   | 30/30
+corrupt_p=0.2       | 6.77   | 21/30    | 3.27   | 27/30    | 1.10   | 30/30
+corrupt_p=0.3       | 6.87   | 21/30    | 3.50   | 27/30    | 1.27   | 30/30
+depol p=0.3         | 6.73   | 21/30    | 3.37   | 27/30    | 1.10   | 30/30
+phase σ=1.0         | 7.10   | 21/30    | 4.00   | 27/30    | 1.70   | 30/30
+
+# 핵심 발견:
+# 1. **(C) lcm only 가 Regev setup (a_i = b_i²) 에서 30% 실패**:
+#    이유: ord(a_i) 가 λ(N) 의 odd part 만 학습. L 누적이 짝수 안 되어
+#    factor_from_exponent 의 Miller-Rabin 환원 실패.
+#
+# 2. **Regev b-trick 가 90% 성공, ~3 runs 평균**:
+#    각 a_i 의 ord 회수시 b_i^ord 의 nontrivial sqrt(1) 확인. 50% 확률로
+#    nontrivial → factor. 여러 base 누적시 90% 도달.
+#
+# 3. **(C)+b-trick hybrid 가 100% 성공, ~1 run 평균** ← 최강:
+#    - (C) 의 noise-tolerant per-coordinate recovery 가 ord(a_i) 회수
+#    - b-trick 이 매 ord 회수시 즉시 factor 시도
+#    - (C) 의 다중 base 누적 (multi-base lcm) + b-trick 의 각 base 인수 시도가
+#      직교 결합 → 1-2 runs 면 충분
+#
+# 4. **노이즈 robustness (Theorem 1 corollary)**:
+#    corruption 30% 또는 phase σ=1.0 노이즈에서도 hybrid 1.27-1.70 runs.
+#    (C) 의 per-coordinate verification a^d ≡ 1 mod N 이 noise 영향 제거.
+
+# Hybrid 알고리즘의 의의 — 새 Theorem 5 후보:
+# Regev's quantum circuit + (C) coordinate-wise + b_i^r nontrivial sqrt check
+# → 최단 K runs 로 noise-tolerant factoring.

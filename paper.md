@@ -5,7 +5,7 @@
 
 ## Abstract
 
-We give three theorems and one conditional compatibility observation about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. (1) **Noise-invariant determinism**: maintaining an accumulated exponent candidate `L` — the least common multiple of orders recovered from previous bases — and augmenting standard continued-fraction post-processing with a divisor search over `L` yields a procedure (which we call (C)) that recovers the order `r_a` of any new base `a` deterministically whenever `r_a | L`, *independent of the measurement distribution*. (2) **Logarithmic coverage time (ideal)**: for a semiprime `N = pq`, the expected number of independent uniform bases `K_λ` required for `L = λ(N)` satisfies `E[K_λ] ≤ 1 + Σ_{ℓ | λ(N)} 1/(ℓ^{s_ℓ} - 1)`, where `s_ℓ ∈ {1, 2}` records the ℓ-Sylow overlap of `(Z/p)*` and `(Z/q)*`. (3) **Noise scaling**: under a class of "destructive" noise models (depolarizing, bias, modexp), the actual algorithm K_λ scales exactly as `E[K_λ^{alg}(η)] = E[K_λ^{ideal}] / g_M(η)` where `g_M(η)` is the per-base extraction probability. Together: a noise-adjusted logarithmic number of measurements suffice to enter the noise-immune regime of (1). We verify (1) across 17,700 measurements (zero violations), (2) across 17,000 trials (mean within bound), and (3) across 9 noise setups on N=437 (mean error ~11% for the destructive class). Theorem 4 demonstrates conditional compatibility with Regev's 2023 multi-base framework (numpy simulation, 200 trials × 4 N), provided each measurement coordinate's marginal is Shor-like. We discuss the theorem's relation to prior work — Knill's lcm trick (1995), McAnally's larger-Q convergent enumeration (2001), the Bach-Shallit textbook treatment of `r | λ(N)`, and the quantum algorithm for computing the Carmichael function (2021) — and conclude that while every individual ingredient is folklore, the *clean statement of the noise-invariance corollary* appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme — adaptive base selection and lattice-based joint post-processing — yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale.
+We give four theorems and one conditional compatibility observation about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. (1) **Noise-invariant determinism**: maintaining an accumulated exponent candidate `L` — the least common multiple of orders recovered from previous bases — and augmenting standard continued-fraction post-processing with a divisor search over `L` yields a procedure (which we call (C)) that recovers the order `r_a` of any new base `a` deterministically whenever `r_a | L`, *independent of the measurement distribution*. (2) **Logarithmic coverage time (ideal)**: for a semiprime `N = pq`, the expected number of independent uniform bases `K_λ` required for `L = λ(N)` satisfies `E[K_λ] ≤ 1 + Σ_{ℓ | λ(N)} 1/(ℓ^{s_ℓ} - 1)`, where `s_ℓ ∈ {1, 2}` records the ℓ-Sylow overlap of `(Z/p)*` and `(Z/q)*`. (3) **Noise scaling**: under a class of "destructive" noise models (depolarizing, bias, modexp), the actual algorithm K_λ scales exactly as `E[K_λ^{alg}(η)] = E[K_λ^{ideal}] / g_M(η)` where `g_M(η)` is the per-base extraction probability. Together: a noise-adjusted logarithmic number of measurements suffice to enter the noise-immune regime of (1). We verify (1) across 17,700 measurements (zero violations), (2) across 17,000 trials (mean within bound), and (3) across 9 noise setups on N=437 (mean error ~11% for the destructive class). Theorem 4 demonstrates conditional compatibility with Regev's 2023 multi-base framework (numpy simulation, 200 trials × 4 N), provided each measurement coordinate's marginal is Shor-like. Theorem 5 introduces the **(C) + Regev b-trick hybrid**: applying (C) per coordinate while immediately checking each newly-recovered `ord(a_i)` for a nontrivial square root via `b_i^{ord(a_i)}`. Empirically, the hybrid factors N=437 in 1.03-1.70 runs (100% success across 5 noise/corruption conditions × 30 trials), versus 6.7-7.1 (70%) for (C) alone and 3.1-4.0 (90%) for pure b-trick. We discuss the theorem's relation to prior work — Knill's lcm trick (1995), McAnally's larger-Q convergent enumeration (2001), the Bach-Shallit textbook treatment of `r | λ(N)`, and the quantum algorithm for computing the Carmichael function (2021) — and conclude that while every individual ingredient is folklore, the *clean statement of the noise-invariance corollary* appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme — adaptive base selection and lattice-based joint post-processing — yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale.
 
 ## 1. Background and notation
 
@@ -234,7 +234,44 @@ Across 4 semiprimes (200 trials each), the joint constraint changes `K_λ^{Regev
 
 **Caveat (full comparison requires Regev LLL).** Our RV implementation uses a simplified scaling `S = 100` rather than RV's `S = 2^{An/d}`. We also implement a skeleton of Regev's downstream Algorithm B.1 (`regev_algorithm_b1` in the companion code: builds the lattice `[I_d  ε^{-1} W; 0  I_k]` and LLL-reduces it). The skeleton's output (LLL-reduced basis) does not currently translate to a nontrivial factor of `N` without the full lattice `L` construction over Regev's quadratic characters `b_i` (with `b_i^2 ≡ a_i mod N`) — only with that construction can short vectors give rise to nontrivial square roots and hence factors. The (C) framework bypasses this step entirely: `λ(N)` recovery suffices via Miller-Rabin reduction. A full head-to-head — Regev's filter-then-LLL pipeline (with proper `b_i` and `S = 2^{An/d}`) vs (C) coordinate-wise, both ending in a factor of `N` — is left to future work. Reproduce: `python -m experiments.rv_filter_lll compare`.
 
-### 3.5 Joint interpretation
+### 3.5 Theorem 5: Hybrid (C) + Regev b-trick (factoring)
+
+The empirical comparison in §3.4 reveals an unexpected consequence of Regev's setup. In Regev's framework, the bases used by the quantum circuit are `a_i = b_i² mod N`, where `b_i` are chosen *first* (random in `(Z/N)*`) and known to the algorithm. This is the key structural feature that lets Regev's classical post-processing extract a nontrivial square root of `1` from a short vector `z ∈ L = {z : ∏ a_i^z_i ≡ 1 mod N}`: with `z` in hand, one computes `b = ∏ b_i^z_i mod N`, and `b² ≡ 1 mod N` automatically; if also `b ≢ ±1`, then `gcd(b ± 1, N)` gives a factor.
+
+A purely (C)-based extraction misses this: in Regev's setup, the orders `ord(a_i) = ord(b_i² mod N)` are the *odd part* of `ord(b_i)` — they never contain the factor of 2 that `λ(N)` does for typical semiprimes. Hence pure (C) accumulates `L = lcm(\mathrm{ord}(a_i)) \leq \lambda(N)/2`, and the standard Miller–Rabin reduction (`factor_from_exponent` on `L`) fails because `L` is odd. Pure Regev's b-trick succeeds but requires recovering individual orders `ord(a_i)` independently (no multi-base accumulation gain).
+
+Combining the two: apply (C) coordinate-wise for noise-tolerant per-base order recovery, and on each newly-recovered `ord(a_i)`, immediately compute `b_i^{ord(a_i)} mod N` and check for a nontrivial square root. We call this `(C) + b-trick`.
+
+**Theorem 5 ((C) + Regev b-trick hybrid factoring — empirical).** For semiprime `N` with `λ(N)` even and Regev's setup (`a_i = b_i² mod N`, `b_i` random), the hybrid algorithm:
+
+```
+For each Regev run:
+  For each coordinate (a_i, b_i, k_i):
+    Apply (C) post-processing to (a_i, k_i, L)
+    If a new r = ord(a_i) is recovered:
+      Set L ← lcm(L, r)
+      Compute b ← b_i^r mod N
+      If b ∉ {1, N-1} and b² ≡ 1 (mod N):
+        Return gcd(b ± 1, N) as a factor.
+```
+
+inherits both: (a) Theorem 1's noise-invariance per coordinate, and (b) Regev's b-trick's ability to factor without requiring `L = λ(N)`. Empirically (N = 437, d = 4, 30 trials each):
+
+| Condition          | (C) lcm only   | Regev b-trick | (C)+b-trick hybrid |
+|--------------------|---------------:|--------------:|-------------------:|
+| noise-free         | 6.70 (21/30)   | 3.13 (27/30)  | **1.03 (30/30)**   |
+| corruption p=0.2   | 6.77 (21/30)   | 3.27 (27/30)  | **1.10 (30/30)**   |
+| corruption p=0.3   | 6.87 (21/30)   | 3.50 (27/30)  | **1.27 (30/30)**   |
+| depol p=0.3        | 6.73 (21/30)   | 3.37 (27/30)  | **1.10 (30/30)**   |
+| phase σ=1.0        | 7.10 (21/30)   | 4.00 (27/30)  | **1.70 (30/30)**   |
+
+Values are mean `K` (runs to factor) and success / 30 trials. The hybrid achieves 100% success in 1–2 runs across all noise/corruption conditions tested.
+
+**Interpretation.** The hybrid is *strictly stronger* than either ingredient alone in this setting: (C) alone fails on the Regev setup (odd `L`), pure b-trick recovers each order independently (no multi-base speedup), and the hybrid combines (C)'s multi-base efficiency with the b-trick's direct factor route. This is a concrete operational benefit of the (C) framework specifically inside Regev's circuit.
+
+**Caveat.** Theorem 5 is *empirical*; we do not prove an asymptotic bound on the hybrid's success probability. The success probability of the b-trick step depends on whether `b_i^{ord(a_i)}` lands on a nontrivial square root of 1 — for semiprime `N = pq`, this happens with probability roughly 1/2 per `b_i`, and accumulating across multiple `(b_i, ord(a_i))` pairs amplifies this to ≈ 1 quickly. A formal analysis is left to future work. Reproduce: `python -m experiments.rv_filter_lll factor`.
+
+### 3.6 Joint interpretation
 
 Theorem 1 says: *once* `r_a | L`, success is deterministic regardless of noise. Theorem 2 says: an ideal algorithm reaches this state in `O(log log log N)` bases in expectation. Theorem 3 says: under destructive noise, the actual algorithm reaches it in `E[K_λ^{ideal}] / g_M(η)` bases — i.e., overhead exactly `1/g_M(η)`. Theorem 4 says: under a marginal-distribution assumption, the (C) framework applies coordinate-wise to Regev's multi-base measurements with corresponding reduction in run count. Together they explain the algorithm's empirical robustness: a noise-adjusted logarithmic number of measurements suffice to enter a regime immune to further measurement noise, and the framework composes naturally with Regev's multi-base circuit (modulo marginal assumption).
 
@@ -332,6 +369,7 @@ python -m experiments.k_lambda_dist         # reproduces Appendix D (Theorem 2)
 python -m experiments.g_eta 437             # measures g_M(η) per noise model (Theorem 3)
 python -m experiments.k_lambda_alg 437      # reproduces §3.3 table (Theorem 3)
 python -m experiments.regev_c               # reproduces §3.4 table (Theorem 4)
+python -m experiments.rv_filter_lll factor  # reproduces §3.5 table (Theorem 5 hybrid)
 python -m experiments.hardware_calibrated   # reproduces Appendix E (hardware proxy)
 python demo.py --noise3 77 143              # reproduces 3-noise comparison
 python demo.py --adaptive 77 143 209 323    # reproduces §9.1 negative result

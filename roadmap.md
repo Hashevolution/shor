@@ -637,6 +637,18 @@ sketch 만 작성. 본 검증은 후속 세션.
 
 - **2026-06-12 (1)**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
   본 문서 §1 추가. Phase 1 (A) 착수 — §2 의 정리 윤곽 작성.
+- **2026-06-12 (13)**: **B-4 본실행 — 정리 5 (hybrid) 발견 + 검증.** Regev 의 quadratic
+  character 트릭 정확 구현: `b_i` random 으로 고른 후 `a_i = b_i² mod N`. 알려진 b_i 로
+  `b = ∏ b_i^z_i` 의 nontrivial sqrt(1) 검증 → 인수.
+  N=437 직접 검증 성공: b_0^99 mod 437 = 229, 229²=1, gcd(228,437)=19. **인수 추출 완료**.
+  3-way 비교 (N=437, d=4, 30 trials each, 5 조건):
+  - (C) lcm only: ~6.8 runs, 70% 성공 — Regev setup 의 a_i = b_i² 가 odd part 만 학습.
+  - Regev b-trick: ~3.3 runs, 90% 성공.
+  - **(C) + b-trick hybrid: ~1.2 runs, 100% 성공** ← 모든 조건 (corruption 30%, phase σ=1.0)에서.
+  정리 5 (hybrid) 신설 — paper §3.5. abstract / conclusion / reproducibility 모두 갱신.
+  의의: (C) 와 Regev 의 직교 결합이 *strictly better than either alone*. 본 paper 의
+  central empirical finding.
+
 - **2026-06-12 (12)**: **B 단계 3: Regev Algorithm B.1 skeleton 구현 시도.**
   `experiments/rv_filter_lll.py` 에 `regev_algorithm_b1`, `try_factor_from_relations`
   추가. Regev §3 의 lattice 정의 `L₀ = {z ∈ Z^d : ∏ a_i^z_i ≡ 1 mod N}` 정독 후

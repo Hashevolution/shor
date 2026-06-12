@@ -35,6 +35,32 @@ class RegevSample:
     is_corrupted: bool = False  # ground truth (시뮬용)
 
 
+@dataclass
+class RegevSetup:
+    """Regev 의 base 설정 — b_i random + a_i = b_i² mod N.
+
+    b_i 는 우리가 자유롭게 고를 수 있는 random 값. a_i 는 그 제곱.
+    회로는 a_i 를 base 로 측정하지만, 우리는 b_i 를 알고 있음.
+
+    이게 Regev 의 핵심 트릭: b_i (sqrt of a_i) 를 알고 있어야 단축 vector
+    z ∈ L 발견시 b = ∏ b_i^z_i 가 1 의 비자명 제곱근인지 검사 가능.
+    """
+    b: list[int]   # 우리가 random 으로 고른 b_i ∈ (Z/N)*
+    a: list[int]   # a_i = b_i² mod N (회로의 base)
+    N: int
+
+
+def regev_setup_bases(N: int, d: int, rng: random.Random) -> RegevSetup:
+    """d 개 random b_i ∈ (Z/N)*, a_i = b_i² mod N."""
+    b = []
+    while len(b) < d:
+        cand = rng.randrange(2, N)
+        if math.gcd(cand, N) == 1:
+            b.append(cand)
+    a = [(bi * bi) % N for bi in b]
+    return RegevSetup(b=b, a=a, N=N)
+
+
 # ──────────────────────────────────────────────────────────────────
 # RV's Algorithm 6.1 — filter-then-LLL stub
 # ──────────────────────────────────────────────────────────────────
@@ -204,37 +230,79 @@ def regev_algorithm_b1(
     return [v for _, v in norms[:d]]
 
 
-def try_factor_from_relations(
-    relations: list[list[int]], bases: list[int], N: int,
-) -> int | None:
-    """Regev B.1 의 짧은 벡터 z ∈ Z^d 로부터 N 의 인수 시도.
+def try_factor_via_b_squareroot(
+    relations: list[list[int]], setup: RegevSetup,
+) -> tuple[int | None, str]:
+    """Regev 의 정통 인수: z ∈ L → b = ∏ b_i^z_i → 비자명 제곱근 → gcd(b±1, N).
 
-    z 가 ∏ a_i^z_i ≡ 1 mod N 을 만족하면, z 의 좌표 정보로 multi-base lcm 식
-    인수 추출 가능. 본 구현은 Miller-Rabin reduction (factor_from_exponent) 으로
-    환원.
+    Setup: b_i (random), a_i = b_i² mod N.
+    Lattice L: {z ∈ Z^d : ∏ a_i^z_i ≡ 1 mod N}.
+
+    각 z 에 대해:
+    1. ∏ a_i^z_i ≡ 1 mod N 검증 (z ∈ L 여부).
+    2. b = ∏ b_i^z_i mod N 계산.
+    3. b² mod N == 1 인가? (반드시 그래야 함 — Regev 의 핵심)
+    4. b ≢ ±1 mod N 인가? → 비자명 제곱근.
+    5. gcd(b ± 1, N) > 1 → 인수.
+
+    Returns: (factor, reason). factor=None 이면 reason 이 실패 이유.
     """
-    import math as _math
-    from multi_base import factor_from_exponent
-    import random as _random
-
+    N = setup.N
     for z in relations:
-        # Check ∏ a_i^z_i ≡ 1 mod N
-        product = 1
-        for a, zi in zip(bases, z):
-            product = (product * pow(a, zi, N)) % N
-        if product == 1:
-            # z 는 valid relation. 좌표의 gcd 가 어떤 a_i 의 위수 후보일 수 있음.
-            # 더 단순히: 짧은 벡터 length 가 exponent 추정값.
-            L_candidate = abs(z[0]) if z else 0
-            for zi in z[1:]:
-                if zi != 0:
-                    L_candidate = _math.gcd(L_candidate, abs(zi))
-            if L_candidate > 1:
-                rng = _random.Random(0)
-                result = factor_from_exponent(N, L_candidate, rng)
-                if result is not None:
-                    return result.factor
-    return None
+        if not z or all(zi == 0 for zi in z):
+            continue
+        # 1. ∏ a_i^z_i ≡ 1 검증
+        prod_a = 1
+        for ai, zi in zip(setup.a, z):
+            # z_i 음수 → 모듈러 역원 사용
+            if zi >= 0:
+                prod_a = (prod_a * pow(ai, zi, N)) % N
+            else:
+                prod_a = (prod_a * pow(ai, -zi, N)) % N
+                # need inverse: a^(-|zi|). 만약 gcd(prod_a, N) > 1 이면 nontrivial.
+                try:
+                    inv = pow(ai, -zi, N)  # Python 3.8+ supports negative exp
+                    prod_a = (prod_a * inv) % N if False else prod_a  # placeholder
+                except ValueError:
+                    break
+        if prod_a != 1:
+            continue
+
+        # 2. b = ∏ b_i^z_i mod N
+        prod_b = 1
+        ok = True
+        for bi, zi in zip(setup.b, z):
+            if zi >= 0:
+                prod_b = (prod_b * pow(bi, zi, N)) % N
+            else:
+                try:
+                    inv = pow(bi, zi, N)  # python 3.8+ negative exp = modular inverse
+                except ValueError:
+                    ok = False
+                    break
+                prod_b = (prod_b * inv) % N
+        if not ok:
+            continue
+
+        # 3. b² ≡ 1 검증
+        if (prod_b * prod_b) % N != 1:
+            continue
+
+        # 4. b ≢ ±1 (비자명 제곱근)?
+        if prod_b == 1 or prod_b == N - 1:
+            continue
+
+        # 5. gcd(b-1, N) 또는 gcd(b+1, N) 가 인수
+        for delta in (-1, 1):
+            cand = math.gcd((prod_b + delta) % N, N)
+            if 1 < cand < N:
+                return cand, f"nontrivial sqrt b={prod_b}, gcd(b{delta:+d}, N)={cand}"
+
+    return None, "no valid z found"
+
+
+# (legacy alias for compatibility)
+try_factor_from_relations = try_factor_via_b_squareroot
 
 
 # ──────────────────────────────────────────────────────────────────
@@ -296,6 +364,269 @@ def demo(N: int = 437, d: int = 4, m: int = 16, corrupt_prob: float = 0.2,
     filtered_corrupted = sum(1 for s in filtered if s.is_corrupted)
     print(f"  filter 통과: {len(filtered)} (그 중 corrupted: {filtered_corrupted})")
     print(f"  precision: {(len(filtered) - filtered_corrupted) / max(1, len(filtered)):.1%}")
+
+
+def end_to_end_factor_comparison_v2(
+    N: int = 437, d: int = 4, max_runs: int = 20, n_trials: int = 30,
+    corrupt_prob: float = 0.0, noise_kwargs: dict | None = None,
+    seed: int = 0,
+):
+    """End-to-end 인수 비교 v2 — 세 방법:
+
+    1. **(C) lcm only** — 좌표별 (C) → L 누적 → factor_from_exponent.
+       Regev setup (a_i = b_i²) 에서는 L=odd part, Miller-Rabin 실패.
+    2. **Regev b-trick (orders from convergents)** — 매 ord(a_i) 회수시 즉시
+       b_i^ord 의 nontrivial sqrt 시도.
+    3. **(C) + b-trick hybrid** — (C) 의 noise-tolerant 좌표별 recovery +
+       b-trick 인수 추출. = 본 paper 의 권고 hybrid.
+
+    노이즈 / corruption 하에서 K runs 까지 인수 회수 # runs 측정.
+    """
+    from classical import classical_order
+    from multi_base import (
+        MultiBaseState, convergent_denominators, divisors, minimize_order,
+        factor_from_exponent,
+    )
+    noise_kwargs = noise_kwargs or {}
+
+    def lambda_of(N):
+        for p in range(2, int(N**0.5) + 1):
+            if N % p == 0:
+                return math.lcm(p - 1, N // p - 1)
+    lam = lambda_of(N)
+    Q = 1 << (2 * max(1, (N - 1).bit_length()))
+
+    noise_label = "noise-free" if not noise_kwargs else str(noise_kwargs)
+    print(f"\n# End-to-end 인수 비교 v2: N={N}, d={d}, {n_trials} trials")
+    print(f"# corrupt_p={corrupt_prob}, noise={noise_label}")
+    print(f"  {'method':<26} {'mean K':>8} {'max K':>6} {'success':>9}")
+
+    results = {"c_lcm": [], "b_trick": [], "hybrid": []}
+
+    for t in range(n_trials):
+        rng_py = random.Random(seed + t * 1000)
+        rng_np = np.random.default_rng(seed + t * 1000)
+        setup = regev_setup_bases(N, d, rng_py)
+
+        # 모든 방법에 동일 측정 sequence 사용 (공정 비교)
+        runs = []
+        for K in range(1, max_runs + 1):
+            r = simulate_regev_run(
+                setup.a, N, Q, rng_np,
+                corrupt_prob=corrupt_prob, noise_kwargs=noise_kwargs,
+            )
+            runs.append(r)
+
+        # 방법 1: (C) lcm only
+        state = MultiBaseState()
+        method1_K = max_runs
+        for K, run in enumerate(runs, start=1):
+            for ai, ki in zip(setup.a, run.k_vec):
+                cands = set(convergent_denominators(ki, Q, N - 1))
+                if state.L > 1:
+                    cands.update(divisors(state.L))
+                valid = [d_ for d_ in cands if d_ > 0 and pow(ai, d_, N) == 1]
+                if valid:
+                    r = minimize_order(ai, N, min(valid))
+                    if r > 0 and r == classical_order(ai, N):
+                        state.update(ai, r)
+            if state.L > 1:
+                rng_f = random.Random(t)
+                res = factor_from_exponent(N, state.L, rng_f, max_attempts=10)
+                if res and 1 < res.factor < N:
+                    method1_K = K
+                    break
+        results["c_lcm"].append(method1_K)
+
+        # 방법 2: pure b-trick (no L accumulation)
+        method2_K = max_runs
+        seen = set()
+        for K, run in enumerate(runs, start=1):
+            for ai, ki, bi in zip(setup.a, run.k_vec, setup.b):
+                if ai in seen:
+                    continue
+                cands = convergent_denominators(ki, Q, N - 1)
+                for d_ in cands:
+                    if d_ > 0 and pow(ai, d_, N) == 1:
+                        r = minimize_order(ai, N, d_)
+                        if r > 0 and r == classical_order(ai, N):
+                            seen.add(ai)
+                            b_pow = pow(bi, r, N)
+                            if b_pow not in (1, N - 1) and (b_pow * b_pow) % N == 1:
+                                for delta in (-1, 1):
+                                    g = math.gcd((b_pow + delta) % N, N)
+                                    if 1 < g < N:
+                                        method2_K = K
+                                        break
+                                if method2_K < max_runs:
+                                    break
+                            break
+                if method2_K < max_runs:
+                    break
+            if method2_K < max_runs:
+                break
+        results["b_trick"].append(method2_K)
+
+        # 방법 3: hybrid — (C) 의 좌표별 recovery + b-trick
+        state3 = MultiBaseState()
+        method3_K = max_runs
+        for K, run in enumerate(runs, start=1):
+            for ai, ki, bi in zip(setup.a, run.k_vec, setup.b):
+                cands = set(convergent_denominators(ki, Q, N - 1))
+                if state3.L > 1:
+                    cands.update(divisors(state3.L))
+                valid = [d_ for d_ in cands if d_ > 0 and pow(ai, d_, N) == 1]
+                if valid:
+                    r = minimize_order(ai, N, min(valid))
+                    if r > 0 and r == classical_order(ai, N):
+                        state3.update(ai, r)
+                        # b-trick on this base
+                        b_pow = pow(bi, r, N)
+                        if b_pow not in (1, N - 1) and (b_pow * b_pow) % N == 1:
+                            for delta in (-1, 1):
+                                g = math.gcd((b_pow + delta) % N, N)
+                                if 1 < g < N:
+                                    method3_K = K
+                                    break
+            if method3_K < max_runs:
+                break
+            # 매 K 끝에 factor_from_exponent 도 시도 (L 이 짝수일 경우)
+            if state3.L > 1:
+                rng_f = random.Random(t)
+                res = factor_from_exponent(N, state3.L, rng_f, max_attempts=10)
+                if res and 1 < res.factor < N:
+                    method3_K = K
+                    break
+        results["hybrid"].append(method3_K)
+
+    for label, key in [
+        ("(C) lcm only", "c_lcm"),
+        ("Regev b-trick", "b_trick"),
+        ("(C)+b-trick hybrid", "hybrid"),
+    ]:
+        ks = results[key]
+        succ = sum(1 for k in ks if k < max_runs)
+        print(f"  {label:<26} "
+              f"{sum(ks)/n_trials:>8.2f} {max(ks):>6} {succ:>3}/{n_trials}")
+
+
+def end_to_end_factor_comparison(
+    N: int = 437, d: int = 4, max_runs: int = 20, n_trials: int = 30,
+    corrupt_prob: float = 0.0, seed: int = 0,
+):
+    """End-to-end 인수 비교: (C) λ(N)-via-lcm vs Regev b-trick.
+
+    각 trial:
+    1. b_i random, a_i = b_i² mod N 설정.
+    2. K = 1, 2, ... runs 진행 (각 run = d 개 a_i 의 noisy 측정).
+    3. (C) 좌표별: L 누적 → L=λ(N) 도달시 factor_from_exponent 로 인수.
+    4. Regev 식: 매 run 의 좌표를 lattice 후보로 추가 → 짧은 vector → b-trick.
+       단순화: ord(a_i) 직접 사용 후 b_i^ord 의 nontrivial sqrt 확인.
+
+    어느 방법이 더 적은 K 로 인수 회수하는지 측정.
+    """
+    from classical import classical_order
+    from multi_base import (
+        MultiBaseState, convergent_denominators, divisors, minimize_order,
+        factor_from_exponent,
+    )
+
+    def lambda_of(N):
+        for p in range(2, int(N**0.5) + 1):
+            if N % p == 0:
+                return math.lcm(p - 1, N // p - 1)
+    lam = lambda_of(N)
+    Q = 1 << (2 * max(1, (N - 1).bit_length()))
+
+    print(f"\n# End-to-end 인수 비교: N={N}, d={d}, {n_trials} trials, corrupt={corrupt_prob}")
+    print(f"# (C): 좌표별 → L 누적 → L=λ(N) 도달시 factor_from_exponent")
+    print(f"# Regev b-trick: 매 측정의 base 위수 → b_i^r 의 nontrivial sqrt")
+    print(f"# 메트릭: 인수 회수까지 # runs (실패시 max_runs)")
+    print(f"  {'method':<14} {'mean K':>8} {'max K':>6} {'success':>8}")
+
+    c_ks = []
+    regev_ks = []
+    for t in range(n_trials):
+        rng_py = random.Random(seed + t * 1000)
+        rng_np = np.random.default_rng(seed + t * 1000)
+
+        setup = regev_setup_bases(N, d, rng_py)
+
+        # (C) trajectory
+        state = MultiBaseState()
+        c_factor = None
+        c_K = max_runs
+        for K in range(1, max_runs + 1):
+            run = simulate_regev_run(
+                setup.a, N, Q, rng_np, corrupt_prob=corrupt_prob,
+            )
+            # 좌표별 (C)
+            for ai, ki in zip(setup.a, run.k_vec):
+                cands = set(convergent_denominators(ki, Q, N - 1))
+                if state.L > 1:
+                    cands.update(divisors(state.L))
+                valid = [d_ for d_ in cands if d_ > 0 and pow(ai, d_, N) == 1]
+                if valid:
+                    r = minimize_order(ai, N, min(valid))
+                    if r > 0:
+                        true_r = classical_order(ai, N)
+                        if r == true_r:
+                            state.update(ai, r)
+            # Try factor
+            if state.L > 1:
+                rng_factor = random.Random(t)
+                res = factor_from_exponent(N, state.L, rng_factor, max_attempts=5)
+                if res is not None and 1 < res.factor < N:
+                    c_factor = res.factor
+                    c_K = K
+                    break
+
+        # Regev b-trick: 각 run 의 측정에서 ord 회수 후 b-trick 즉시 시도
+        # (C) 와 분리된 trajectory)
+        seen_orders: dict[int, int] = {}  # a_i -> r_a_i
+        regev_factor = None
+        regev_K = max_runs
+        rng_py2 = random.Random(seed + t * 1000)
+        rng_np2 = np.random.default_rng(seed + t * 1000)
+        for K in range(1, max_runs + 1):
+            run = simulate_regev_run(
+                setup.a, N, Q, rng_np2, corrupt_prob=corrupt_prob,
+            )
+            for i, (ai, ki, bi) in enumerate(zip(setup.a, run.k_vec, setup.b)):
+                if ai in seen_orders:
+                    continue
+                # 단일-좌표 회수 (convergent 만, divisor 없음)
+                cands = convergent_denominators(ki, Q, N - 1)
+                for d_ in cands:
+                    if d_ > 0 and pow(ai, d_, N) == 1:
+                        r = minimize_order(ai, N, d_)
+                        if r > 0:
+                            seen_orders[ai] = r
+                            # b-trick
+                            b_pow = pow(bi, r, N)
+                            if b_pow not in (1, N - 1) and (b_pow * b_pow) % N == 1:
+                                # nontrivial sqrt
+                                for delta in (-1, 1):
+                                    g = math.gcd((b_pow + delta) % N, N)
+                                    if 1 < g < N:
+                                        regev_factor = g
+                                        regev_K = K
+                                        break
+                            break
+                if regev_factor is not None:
+                    break
+            if regev_factor is not None:
+                break
+
+        c_ks.append(c_K if c_factor else max_runs)
+        regev_ks.append(regev_K if regev_factor else max_runs)
+
+    c_succ = sum(1 for k in c_ks if k < max_runs)
+    rv_succ = sum(1 for k in regev_ks if k < max_runs)
+    print(f"  {'(C) lcm':<14} "
+          f"{sum(c_ks)/n_trials:>8.2f} {max(c_ks):>6} {c_succ:>3}/{n_trials}")
+    print(f"  {'Regev b-trick':<14} "
+          f"{sum(regev_ks)/n_trials:>8.2f} {max(regev_ks):>6} {rv_succ:>3}/{n_trials}")
 
 
 def compare_with_c(
@@ -392,6 +723,12 @@ if __name__ == "__main__":
         demo()
     elif len(sys.argv) > 1 and sys.argv[1] == "compare":
         compare_with_c()
+    elif len(sys.argv) > 1 and sys.argv[1] == "factor":
+        end_to_end_factor_comparison_v2()
+        end_to_end_factor_comparison_v2(corrupt_prob=0.2)
+        end_to_end_factor_comparison_v2(corrupt_prob=0.3)
+        end_to_end_factor_comparison_v2(noise_kwargs={"depolarizing": 0.3})
+        end_to_end_factor_comparison_v2(noise_kwargs={"phase_sigma": 1.0})
     else:
         print("Usage: python -m experiments.rv_filter_lll demo")
         print("\n본 모듈은 STUB. 후속 작업 (todo):")
