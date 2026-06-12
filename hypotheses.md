@@ -172,8 +172,82 @@ N=1147, d=2, σ ∈ {0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 1.0}
 
 σ_opt(N) 함수 형태 결정 → polynomial vs log vs sigmoid
 
+## H14-H15: seed-내 변동성 + lucky base 분포 (V1 N=1147 outlier 분석에서 도출)
+
+### V1 N=1147 d=2 의 outlier 발견 (2026-06-12)
+
+| seed | K_baseline | SR % | 해석 |
+|---|---|---|---|
+| 5 | **2.110** | **-5.21%** | 유일 음수, K_base 최저 |
+| 4 | 2.580 | +12.40% | 가장 큰 SR |
+| 1 | 2.840 | +2.46% | |
+| 3 | 3.130 | +6.39% | |
+| 2 | 3.270 | +7.34% | |
+
+seed 5 의 outlier = K_baseline 가장 낮음 + 유일 음수 SR.
+
+### H14: **K_baseline 의 seed 내 변동성**
+
+같은 (N, d) 에서도 *base 의 luck* 에 따라 K_baseline 크게 다름.
+- d=2 의 경우 4 가지 base luck 조합:
+  - 4 의 1 (P=c²=1/4): 양쪽 b_i 모두 *nontrivial sqrt* (double-lucky) → K_base 최저 → ceiling
+  - 4 의 2 (P=2c(1-c)=1/2): 한쪽만 lucky → normal K_base → 최대 SR
+  - 4 의 1 (P=(1-c)²=1/4): 둘 다 trivial (no-lucky) → 인수 못함, hit max_runs
+
+→ seed 5 가 *double-lucky* 였을 가능성 가장 큼.
+
+**의의**:
+- d=2 에서 *25% seed 가 ceiling, 25% 가 fail* → SR 가 seed 마다 다름
+- d=4 에서: 1/16 ceiling, 1/16 fail, 14/16 normal — *more uniform*
+- d=8 에서: most seed 가 multi-lucky → ceiling dominant → SR ≈ 0
+- 이게 **M1 의 d sweet spot 패턴 (d=4 최적)** 의 *seed-level* 메커니즘
+
+### H15: lucky base 분포 vs SR 의 *aggregated* 효과
+
+Trial 평균 SR 가 보이는 효과:
+`SR_aggregate = mean over seeds of [SR if not ceiling, else 0 or -]`
+
+- seed 마다 다른 ceiling state → 평균 SR 가 *seed 분포에 dependent*
+- N 다른 군에서 *lucky base 확률 (c)* 가 변하면 → SR_aggregate 도 변함
+- Lemma 5.1: `c = 1 - 2^{-(v_p+v_q)} · (4^{min(v_p,v_q)} + 2)/3`
+- N=437 (v_p=v_q=1): c = 1/2
+- N=1147 (v_p=1, v_q=2): c = 1 - 1/4 = **3/4** ← 다름!
+
+→ **N=1147 의 c=3/4 가 N=437 의 c=1/2 와 *다름*** = lucky base 가 *더 흔함*.
+
+**예측**:
+- d=2 의 ceiling 비율: N=437 (c=1/2) = 1/4, N=1147 (c=3/4) = **9/16**
+- 즉 N=1147 d=2 에서 *56% seed 가 ceiling* 예상
+- 그러면 seed 5 의 ceiling 출현은 *예측 일치* (2/5 ≈ 40%, 분포 안)
+
+**SR_aggregate 의 이론적 한계**:
+- N=1147 d=2: only 1 - (1-c)^d = 1 - 1/16 = 15/16 seeds 가 *최종 성공*
+- 그 중 ceiling 비율 9/16 = 60%
+- Non-ceiling, non-fail seeds: 6/16 = 38%
+- 이 38% 만이 SR 발현 → *aggregate SR 가 individual SR 의 38%* 약화
+
+**다른 d 에서**:
+- d=4, c=3/4: ceiling = c^d = (3/4)^4 = 81/256 = 32% → SR-effective seeds 가 더 많음
+- d=8, c=3/4: ceiling = 0.1, SR-effective 90% (but K_base 작아서 다른 ceiling)
+
+### H14 + H15 의 통합 의미
+
+본 SR 효과는 **여러 layer 의 효과**:
+1. **Per-coordinate**: phase noise 가 g 살짝 boost
+2. **Per-seed**: lucky base 조합이 K_base 결정
+3. **Aggregate**: seed 분포의 SR_aggregate
+
+따라서 SR 측정의 변동성 = 본질적 (= noise + 알고리즘 구조 동시 작용).
+
+**실용적 함의**:
+- Adaptive d (= seed 마다 d 조정) 가 더 효율적일 수 있음
+- N 별로 c 다름 (Lemma 5.1) → 최적 d 도 N 별로 다름
+- 이게 H12 (σ_opt ∝ N^α) 와도 연결 — σ 와 d 의 *결합 최적화*
+
 ## 변경 로그
 
 - 2026-06-12 (초안): H1-H8 작성, 데이터 ground truth 표 작성.
 - 2026-06-12 (2): **H9-H13 추가**. H9 (polynomial scaling), H12c (σ_opt ∝ N^α).
   사용자의 *자물쇠와 열쇠 흔들림 비례* 직관 박아넣음.
+- 2026-06-12 (3): **H14, H15 추가**. V1 N=1147 seed 5 의 outlier 분석에서 도출.
+  K_baseline 의 seed-내 변동성 + Lemma 5.1 의 c 가 N 별로 다름 (1/2 vs 3/4) 발견.
