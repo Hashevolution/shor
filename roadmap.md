@@ -132,45 +132,133 @@ formalize. 가능하면 → noise-robust Regev variant. 작업 중 후보 C 의 
 
 ---
 
-## §2 Phase 1 — A: 정량적 K_λ 정리 (착수)
+## §2 Phase 1 — A: 정량적 K_λ 정리 (도출 완료)
 
-### 2.1 목표 진술
+### 2.1 정리 진술
 
-반소수 `N = pq` 에 대해, 균등 무작위 base 를 `K` 개 뽑아 `L = lcm(r_{a_1}, …, r_{a_K})`
-를 누적할 때:
+반소수 `N = pq` (`p, q` 서로 다른 홀소수) 와 `(Z/N)*` 의 균등 무작위 `K` 개 원소
+`a_1, …, a_K` 에 대해, `L_K := lcm(ord_N(a_1), …, ord_N(a_K))`. 각 prime `ℓ | λ(N)` 에 대해
 
-> **정리 2 (안)**: `P[L < λ(N) | K]  ≤  Σ_{ℓ | λ(N)} ℓ^{-s_ℓ(K)}`
+`s_ℓ := |{ξ ∈ {p, q} : v_ℓ(ξ-1) = v_ℓ(λ(N))}| ∈ {1, 2}`
+
+를 정의한다 (`v_ℓ` 는 `ℓ`-adic valuation).
+
+**정리 2 (K_λ 분포).**
+
+> (a) **꼬리 상한 (sharp).** `K ≥ 1` 에 대해
+> `P[L_K < λ(N)] ≤ Σ_{ℓ | λ(N)} ℓ^{−K · s_ℓ}`.
 >
-> 여기서 `s_ℓ` 는 `(Z/N)*` 에서 ℓ-Sylow 의 cover 빈도. 명시적 형태 derivation 필요.
+> (b) **꼬리 상한 (simple).**
+> `P[L_K < λ(N)] ≤ ω(λ(N)) · 2^{−K}`.
+>
+> (c) **평균.** `K_λ := min{K : L_K = λ(N)}` 에 대해
+> `E[K_λ] ≤ 1 + Σ_{ℓ | λ(N)} 1/(ℓ^{s_ℓ} − 1)`.
+>
+> (d) **고확률.** 임의 `ε ∈ (0, 1)` 에 대해
+> `K_λ ≤ ⌈log₂(ω(λ(N))/ε)⌉ + 1` 가 확률 `≥ 1 - ε`.
 
-대략 `K = O(ω(λ(N)) · log(1/ε))` 으로 `P ≥ 1-ε`.
+**전형 점근**: ω(λ(N)) ≤ ω(p-1) + ω(q-1) = O(log log N) (Hardy-Ramanujan), 따라서
+`E[K_λ] = O(log log log N)` (전형 반소수).
 
-### 2.2 증명 윤곽
+### 2.2 증명
 
-1. `(Z/N)* ≅ C_{p-1} × C_{q-1}` (CRT, `gcd(p-1, q-1)` 신경써야 함).
-2. 각 prime ℓ | λ(N) 에 대해 `ℓ^{v_ℓ(λ(N))} | L` 이어야 `L = λ(N)`.
-3. 균등 무작위 a 가 `ℓ^v` 를 cover 할 확률을 컴포넌트 별 cyclic-group 분석으로 계산.
-   - cyclic `C_n` 에서 `v_ℓ(n) = v`. 균등 무작위 x 에 대해
-     `P[v_ℓ(ord(x)) ≥ k] = 1 − ℓ^{−(v−k+1)}`.
-4. `(Z/N)*` 컴포넌트에서: `v_p = v_ℓ(p-1)`, `v_q = v_ℓ(q-1)`. `v = max(v_p, v_q) = v_ℓ(λ(N))`.
-   - `s_ℓ` := `|{x ∈ {p, q} : v_x = v}|` ∈ {1, 2}.
-   - 한 base 당 cover 확률 = `1 − (1/ℓ)^{s_ℓ}`.
-5. coupon-collector 부등식 + `ω(λ(N)) ≤ ω(p-1) + ω(q-1) ≤ O(log log N)` (Hardy-Ramanujan).
+**Step 1 (군 분해).** N = pq 에서 CRT 로 `(Z/N)* ≅ (Z/p)* × (Z/q)* ≅ C_{p-1} × C_{q-1}`.
+균등 a ∈ (Z/N)* 은 (x, y) ∈ C_{p-1} × C_{q-1} 의 균등 쌍에 대응하며 두 좌표는 **독립**.
 
-### 2.3 실험 검증 계획
+**Step 2 (cyclic group 위수 분포).** Cyclic group `C_n` 에 대해 `v := v_ℓ(n)`, 균등 무작위
+`x ∈ C_n` 와 `1 ≤ k ≤ v`:
 
-- `N` 30-40 개 (반소수, p≈q size 다양) 에서 100-trial 씩 `L` 누적 진행률 측정
-- 경험 `K_λ` 분포와 정리의 상한 비교
-- 분포 꼬리가 정리 안으로 들어오는지 확인
+`P[v_ℓ(ord(x)) ≥ k] = 1 − 1/ℓ^{v−k+1}`.
 
-### 2.4 다음 세션 시작점
+*증명.* `C_n` 의 부분군은 `n` 의 약수 `m` 에 대응하는 `H_m = {x : ord(x) | m}`, `|H_m| = m`.
+조건 `v_ℓ(ord(x)) < k` 는 `ord(x) | m` 인 `m` 으로 `v_ℓ(m) ≤ k - 1`. 그러한 `m | n` 의 최대값은
+`m* = n · ℓ^{k-1-v}` (l 의 지수만 v→k-1 로 낮춤). 따라서 `{x : v_ℓ(ord(x)) < k} = H_{m*}`,
+`|H_{m*}| = m* = n/ℓ^{v-k+1}`. `P = 1 − (n/ℓ^{v-k+1})/n = 1 − 1/ℓ^{v-k+1}`. ∎
 
-- `roadmap.md` §2.2 의 증명 단계 (3) 의 정확한 진술 검증 (n 이 ℓ-power 가 아닐 때).
-- `experiments/k_lambda_dist.py` 작성: N 다양한 반소수에서 K_λ 경험 분포.
+(수치 검증: `python -c "..."` 로 N=120, 96, 1000 에서 정확히 일치 확인.)
+
+**Step 3 (단일 base 당 prime ℓ cover 확률).** `v := v_ℓ(λ(N)) = max(v_ℓ(p-1), v_ℓ(q-1))`,
+`v_p := v_ℓ(p-1)`, `v_q := v_ℓ(q-1)`. 균등 base `a = (x, y)` 에 대해:
+
+`ord_N(a) = lcm(ord(x), ord(y))`,
+`v_ℓ(ord_N(a)) = max(v_ℓ(ord(x)), v_ℓ(ord(y)))`.
+
+이 값이 `< v` 일 확률:
+- `v_p < v`: x 는 항상 `v_ℓ(ord(x)) ≤ v_p < v`. 조건은 자동 만족. P[x 의 조건] = 1.
+- `v_p = v`: Step 2 (k=v) 로 `P[v_ℓ(ord(x)) < v] = 1/ℓ`.
+- 같은 분석 q.
+
+따라서 (독립성):
+
+`P[v_ℓ(ord_N(a)) < v] = (1/ℓ)^{s_ℓ}` (where s_ℓ ∈ {1, 2} as defined).
+
+**Step 4 (K-fold tail bound).** `K` 개 독립 base 에서 `ℓ`-성분이 한 번도 cover 되지 않을 확률:
+
+`P[L_K 의 ℓ-성분 < v_ℓ(λ(N))] = (1/ℓ)^{K · s_ℓ} = ℓ^{−K s_ℓ}`.
+
+`L_K = λ(N)` ⇔ 모든 `ℓ | λ(N)` 의 ℓ-성분이 cover. 여집합에 union bound:
+
+`P[L_K < λ(N)] ≤ Σ_{ℓ | λ(N)} ℓ^{−K s_ℓ}`. → **(a) 증명.**
+
+`s_ℓ ≥ 1`, `ℓ ≥ 2` 로 `ℓ^{−K s_ℓ} ≤ 2^{−K}`, 합은 `ω(λ(N)) · 2^{−K}`. → **(b) 증명.**
+
+**Step 5 (Expectation).**
+
+`E[K_λ] = Σ_{K=0}^∞ P[K_λ > K] = Σ_{K=0}^∞ P[L_K < λ(N)]`.
+
+`K=0` 에서 `L_0 = 1 < λ(N)`, P = 1. `K ≥ 1` 에서 (a) 적용:
+
+`E[K_λ] ≤ 1 + Σ_{K=1}^∞ Σ_ℓ ℓ^{−K s_ℓ}` (interchange)
+`= 1 + Σ_ℓ ℓ^{−s_ℓ} / (1 − ℓ^{−s_ℓ})`
+`= 1 + Σ_ℓ 1/(ℓ^{s_ℓ} − 1)`. → **(c) 증명.**
+
+**Step 6 (고확률).** (b) 에서 `P[L_K < λ(N)] ≤ ω · 2^{−K} ≤ ε` 풀면
+`K ≥ log₂(ω/ε)`. ⌈⌉ 처리. → **(d) 증명.** ∎
+
+### 2.3 선행연구 비교
+
+- **Pomerance et al. (2017)**: 일반 abelian `G` 에 대해 `e(G) ≤ d + 2.752` (생성에 필요한
+  기댓값). semiprime `(Z/N)* = C_{p-1} × C_{q-1}` 에서 각 Sylow 가 2-cyclic 이하 → `d ≤ 2`
+  → `e ≤ 4.75`. *생성* 은 *exponent 도달* 보다 강하므로 `E[K_λ] ≤ e(G) ≤ 4.75` 가
+  Pomerance et al. 의 따름정리. 정리 2(c) 는 이를 다음 두 측면에서 강화:
+  - (Z/N)\* 의 구조를 사용한 ℓ-Sylow-별 분석.
+  - "exponent 도달" 의 의미만큼만 비용 부담.
+
+- **Knill (1995), Bach-Shallit (1996)**: 다중 base lcm 이 λ(N) 으로 수렴하는 것을 언급하지만
+  **정량적 K 분포 분석은 없음**.
+
+- **Carmichael paper (2021, arXiv 2111.02488)**: λ(N) 추정 알고리즘이지만 base 수의 분포
+  에 대한 명시적 정리 없음. Algorithm 1 의 분석은 high-prob bound 에 가깝지만 본 정리 형태와
+  다름.
+
+**위치**: 정리 2 는 Phase 1 의 새 기여. 이전 작업에 없던 정량적 상한.
+
+### 2.4 실험 검증 계획
+
+- `experiments/k_lambda_dist.py` 를 확장: 각 N 에 대해 정리 2(c) 의 예측값 `1 + Σ 1/(ℓ^{s_ℓ}-1)`
+  계산, 경험 평균과 비교 컬럼 추가.
+- 큰 N (10⁴ 이상) 에서 ω(λ) 분포 수집 → (d) 형태의 고확률 보증 확인.
+
+### 2.5 다음 세션 시작점
+
+- §2.4 의 확장 스크립트 구현 + 실행.
+- paper.md/tex 의 §3.5 에 정리 2 삽입 — Theorem 1 (Determinism) 옆에 자매 정리로.
+- §5 (Related Work) 에 Pomerance et al. 비교 한 문단 추가.
 
 ---
 
 ## §3 진행 로그
 
-- **2026-06-12**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
+- **2026-06-12 (1)**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
   본 문서 §1 추가. Phase 1 (A) 착수 — §2 의 정리 윤곽 작성.
+- **2026-06-12 (2)**: **Phase 1 완료.**
+  - 정리 2 (K_λ 분포) 완전 도출 — 4 형태 (tail sharp, tail simple, expectation, high-prob).
+    Step 2 (cyclic group 위수 분포) 를 N=120, 96, 1000 수치 검증으로 확인.
+  - `experiments/k_lambda_dist.py` 확장: 정리 2(c) 상한 계산 + 경험 평균과 비교.
+    17 semiprimes × 1,000 trials 에서 **모든 N 에서 상한 통과**.
+    N=4087 (ω(λ)=4): 경험 평균 2.26 vs 상한 2.475 vs Pomerance 보장 4.752.
+  - `paper.md` / `paper.tex` 통합:
+    · §3 → "Main theorems" (3.1 정리 1, 3.2 정리 2, 3.3 joint interpretation).
+    · §3.2 에 완전 증명 (5 step) + Pomerance et al. 비교.
+    · Abstract, Conclusion, §6 limitations, §7 reproducibility 업데이트.
+    · Appendix D 신설 (17행 정리 2 검증표).

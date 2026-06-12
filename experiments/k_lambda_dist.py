@@ -37,6 +37,8 @@ class KLambdaStats:
     p90: int                  # 90 분위
     p99: int                  # 99 분위
     max: int
+    bound_c: float            # 정리 2 (c) 의 E[K_λ] 상한: 1 + Σ 1/(ℓ^s - 1)
+    bound_b: float            # 정리 2 (b) 식 상한 (단순): log₂(ω) + 2
 
 
 def carmichael_semiprime(p: int, q: int) -> int:
@@ -71,6 +73,51 @@ def factor_semiprime(N: int) -> tuple[int, int]:
     raise ValueError(f"{N} is prime, not a semiprime")
 
 
+def v_ell(n: int, ell: int) -> int:
+    """ℓ-adic valuation v_ℓ(n)."""
+    v = 0
+    while n % ell == 0:
+        n //= ell
+        v += 1
+    return v
+
+
+def primes_dividing(n: int) -> list[int]:
+    """n 의 서로 다른 소인수."""
+    primes: list[int] = []
+    x = n
+    d = 2
+    while d * d <= x:
+        if x % d == 0:
+            primes.append(d)
+            while x % d == 0:
+                x //= d
+        d += 1
+    if x > 1:
+        primes.append(x)
+    return primes
+
+
+def theorem2_bounds(p: int, q: int) -> tuple[float, float]:
+    """정리 2 의 상한값 계산.
+
+    Returns:
+        bound_c: E[K_λ] 의 sharp 상한 = 1 + Σ_ℓ 1/(ℓ^s_ℓ - 1).
+        bound_b: simple 상한 = log₂(ω(λ)) + 2.
+    """
+    lam = math.lcm(p - 1, q - 1)
+    primes = primes_dividing(lam)
+    bound_c = 1.0
+    for ell in primes:
+        v_max = v_ell(lam, ell)
+        v_p = v_ell(p - 1, ell)
+        v_q = v_ell(q - 1, ell)
+        s_ell = (1 if v_p == v_max else 0) + (1 if v_q == v_max else 0)
+        bound_c += 1.0 / (ell ** s_ell - 1)
+    bound_b = math.log2(len(primes)) + 2 if len(primes) >= 1 else 2.0
+    return bound_c, bound_b
+
+
 def measure_k_lambda(
     N: int, trials: int = 200, seed: int = 0, max_K: int = 200,
 ) -> KLambdaStats:
@@ -101,6 +148,7 @@ def measure_k_lambda(
 
     samples.sort()
     n = len(samples)
+    bound_c, bound_b = theorem2_bounds(p, q)
     return KLambdaStats(
         N=N, p=p, q=q, lam=lam, omega_lam=omega_lam, trials=n,
         mean=sum(samples) / n,
@@ -108,15 +156,20 @@ def measure_k_lambda(
         p90=samples[int(n * 0.9)],
         p99=samples[min(int(n * 0.99), n - 1)],
         max=samples[-1],
+        bound_c=bound_c,
+        bound_b=bound_b,
     )
 
 
 def print_table(stats: list[KLambdaStats]) -> None:
     print(f"{'N':>7}  {'p':>5} {'q':>5}  {'λ(N)':>9}  {'ω(λ)':>4}  "
-          f"{'mean':>5}  {'med':>4}  {'p90':>4}  {'p99':>4}  {'max':>4}")
+          f"{'mean':>5}  {'med':>4}  {'p90':>4}  {'p99':>4}  {'max':>4}  "
+          f"{'thm2c':>6}  {'thm2b':>6}  {'ok':>3}")
     for s in stats:
+        ok = "✓" if s.mean <= s.bound_c + 1e-9 else "✗"
         print(f"{s.N:>7}  {s.p:>5} {s.q:>5}  {s.lam:>9}  {s.omega_lam:>4}  "
-              f"{s.mean:>5.2f}  {s.median:>4}  {s.p90:>4}  {s.p99:>4}  {s.max:>4}")
+              f"{s.mean:>5.2f}  {s.median:>4}  {s.p90:>4}  {s.p99:>4}  {s.max:>4}  "
+              f"{s.bound_c:>6.3f}  {s.bound_b:>6.3f}  {ok:>3}")
 
 
 DEFAULT_NS = [
@@ -127,7 +180,7 @@ DEFAULT_NS = [
 
 def main(argv):
     Ns = [int(x) for x in argv[1:]] if len(argv) > 1 else DEFAULT_NS
-    trials = 200
+    trials = 1000
     print(f"# K_λ 경험 분포 — {trials} trials per N")
     stats = []
     for N in Ns:

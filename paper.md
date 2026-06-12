@@ -5,7 +5,7 @@
 
 ## Abstract
 
-We give an elementary observation about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. Maintaining an accumulated exponent candidate `L` — the least common multiple of orders recovered from previous bases — and augmenting standard continued-fraction post-processing with a divisor search over `L` yields a procedure (which we call (C)) that recovers the order `r_a` of any new base `a` deterministically whenever `r_a | L`, *independent of the measurement distribution*. As a corollary, the procedure is robust to any measurement-layer noise model: a measurement returning a value of `k` drawn from any distribution still yields the correct order, provided the accumulated `L` covers `r_a`. We verify this experimentally across 11 noise setups (depolarizing, readout flip, bias, phase decoherence, amplitude damping, modular exponentiation error) at three composite sizes and 500 trials each (16,500 measurements), and additionally at three larger semiprimes up to `N = 4087` (1,200 further measurements) — 17,700 total, zero violations. We discuss the theorem's relation to prior work — Knill's lcm trick (1995), McAnally's larger-Q convergent enumeration (2001), the Bach-Shallit textbook treatment of `r | λ(N)`, and the quantum algorithm for computing the Carmichael function (2021) — and conclude that while every individual ingredient is folklore, the *clean statement of the noise-invariance corollary* appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme — adaptive base selection and lattice-based joint post-processing — yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale.
+We give two elementary observations about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. (1) **Noise-invariant determinism**: maintaining an accumulated exponent candidate `L` — the least common multiple of orders recovered from previous bases — and augmenting standard continued-fraction post-processing with a divisor search over `L` yields a procedure (which we call (C)) that recovers the order `r_a` of any new base `a` deterministically whenever `r_a | L`, *independent of the measurement distribution*. (2) **Logarithmic coverage time**: for a semiprime `N = pq`, the expected number of independent uniform bases `K_λ` required for `L = λ(N)` satisfies `E[K_λ] ≤ 1 + Σ_{ℓ | λ(N)} 1/(ℓ^{s_ℓ} - 1)`, where `s_ℓ ∈ {1, 2}` records the ℓ-Sylow overlap of `(Z/p)*` and `(Z/q)*`. Together: a logarithmic number of measurements suffice to enter a regime immune to measurement noise. We verify (1) across 11 noise setups at three composite sizes × 500 trials (16,500 measurements) plus three larger semiprimes up to `N = 4087` × 100 trials (17,700 total, zero violations), and (2) across 17 semiprimes × 1,000 trials, observing all empirical means within the bound. We discuss the theorem's relation to prior work — Knill's lcm trick (1995), McAnally's larger-Q convergent enumeration (2001), the Bach-Shallit textbook treatment of `r | λ(N)`, and the quantum algorithm for computing the Carmichael function (2021) — and conclude that while every individual ingredient is folklore, the *clean statement of the noise-invariance corollary* appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme — adaptive base selection and lattice-based joint post-processing — yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale.
 
 ## 1. Background and notation
 
@@ -57,7 +57,11 @@ for iteration in 1..max_iter:
     attempt factoring with (a, r) via standard Shor reduction or factor_from_exponent(L)
 ```
 
-## 3. Main theorem
+## 3. Main theorems
+
+This section states two theorems. Theorem 1 ((C)-determinism) characterizes the noise-invariant region of (C). Theorem 2 (number of bases) quantifies how fast the algorithm enters that region.
+
+### 3.1 Theorem 1: (C)-determinism
 
 **Theorem 1 ((C)-determinism).** If `r_a | L`, then `C(a, N, k, Q, L) = r_a` for every `k ∈ {0, ..., Q-1}`.
 
@@ -68,6 +72,62 @@ for iteration in 1..max_iter:
 **Corollary 2 (L integrity).** When Algorithm 1 updates `L ← lcm(L, r)`, the value `r` returned by `(C)` is always either `r_a` (success) or `0` (failure). In the success case, `r_a | λ(N)` by (F1), so `L` always remains a divisor of `λ(N)`. Under noise, `L` cannot be corrupted to a value outside the divisors of `λ(N)`.
 
 **Corollary 3 (Failure region).** `(C)` can fail only when `r_a ∤ L`. In that case, success depends on `convergents(k/Q)` containing some positive multiple of `r_a` — the classical "(B) path."
+
+### 3.2 Theorem 2: Number of bases to reach λ(N)
+
+Theorem 1 holds *given* `r_a | L`. We now bound how many independent bases suffice to reach the global condition `L = λ(N)`, after which Theorem 1 applies to every subsequent base.
+
+Let `N = pq` be a semiprime with `p, q` distinct odd primes. Let `a_1, ..., a_K` be independent uniform samples from `(Z/N)*`, with orders `r_1, ..., r_K`, and `L_K := lcm(r_1, ..., r_K)`. Let `K_λ := min{K : L_K = λ(N)}`. For each prime `ℓ | λ(N)` define
+
+```
+s_ℓ := |{ξ ∈ {p, q} : v_ℓ(ξ-1) = v_ℓ(λ(N))}|  ∈ {1, 2}
+```
+
+where `v_ℓ` is the `ℓ`-adic valuation.
+
+**Theorem 2 (K_λ distribution).** For `K ≥ 1`,
+
+```
+P[L_K < λ(N)]  ≤  Σ_{ℓ | λ(N)} ℓ^{-K · s_ℓ}  ≤  ω(λ(N)) · 2^{-K}    (tail bound)
+E[K_λ]         ≤  1 + Σ_{ℓ | λ(N)} 1/(ℓ^{s_ℓ} - 1)                  (expectation)
+P[K_λ > ⌈log₂(ω(λ(N))/ε)⌉]  ≤  ε    for any  ε ∈ (0, 1)              (high-probability)
+```
+
+**Proof.** By CRT, `(Z/N)* ≅ C_{p-1} × C_{q-1}`, and a uniform `a ∈ (Z/N)*` corresponds to an independent uniform pair `(x, y)`.
+
+*Step 1 (cyclic-group valuation distribution).* In cyclic `C_n` with `v := v_ℓ(n)`, the set `{x : ord(x) | m}` equals the unique subgroup of order `m`, for `m | n`. Hence `{x : v_ℓ(ord(x)) ≤ k-1}` is the subgroup of order `max{m | n : v_ℓ(m) ≤ k-1} = n · ℓ^{-(v - k + 1)}`. Therefore for uniform `x`:
+
+```
+P[v_ℓ(ord(x)) ≥ k] = 1 - 1/ℓ^{v - k + 1}    (1 ≤ k ≤ v)
+```
+
+*Step 2 (per-base miss probability).* Let `v_p := v_ℓ(p-1)`, `v_q := v_ℓ(q-1)`, `v := v_ℓ(λ(N)) = max(v_p, v_q)`. Then `v_ℓ(ord(a)) = max(v_ℓ(ord(x)), v_ℓ(ord(y)))`, and using independence of `x, y`:
+
+```
+P[v_ℓ(ord(a)) < v] = P[v_ℓ(ord(x)) < v] · P[v_ℓ(ord(y)) < v] = (1/ℓ)^{s_ℓ}
+```
+
+(if `v_p < v`, the x-factor is 1; otherwise 1/ℓ by Step 1 with `k = v`. Likewise for `y`. `s_ℓ` counts how many of {p, q} achieve `v_p = v` or `v_q = v`.)
+
+*Step 3 (tail bound).* By independence across bases, `P[ℓ-component of L_K not covered] = ℓ^{-K · s_ℓ}`. Union bound over primes `ℓ | λ(N)` gives the first inequality. `ℓ^{-K · s_ℓ} ≤ 2^{-K}` (since `ℓ ≥ 2, s_ℓ ≥ 1`) gives the second.
+
+*Step 4 (expectation).* `E[K_λ] = Σ_{K ≥ 0} P[L_K < λ(N)]`. The `K = 0` term is `1` (since `L_0 = 1 < λ(N)`). For `K ≥ 1`, apply the tail bound and interchange sums:
+
+```
+E[K_λ]  ≤  1 + Σ_ℓ Σ_{K ≥ 1} ℓ^{-K · s_ℓ}  =  1 + Σ_ℓ 1/(ℓ^{s_ℓ} - 1).
+```
+
+*Step 5 (high-probability).* Solve `ω · 2^{-K} ≤ ε` for `K`. ∎
+
+**Asymptotic.** By the Hardy-Ramanujan theorem, `ω(p-1) ≤ (1 + o(1)) log log p` for almost all primes `p`, so for typical semiprimes `ω(λ(N)) = O(log log N)` and `E[K_λ] = O(log log log N)`.
+
+**Empirical verification.** We measure the empirical `E[K_λ]` over 1,000 independent trials per `N`, across 17 semiprimes from `N = 15` to `N = 4087`. In every case, the empirical mean stays within 0.4 of the bound (c), and is often within 0.05–0.1. See `experiments/k_lambda_dist.py` and Appendix D.
+
+**Remark.** Pomerance et al. (2017) prove `e(G) ≤ d + 2.752` for any finite abelian `G`, where `e(G)` is the expected number of uniform samples needed to *generate* `G` and `d` is the maximum Sylow generator count. For `G = (Z/N)*` with `N = pq`, `d ≤ 2` so `e(G) ≤ 4.752`. Since reaching `λ(N)` via lcm is weaker than generating, `E[K_λ] ≤ e((Z/N)*) ≤ 4.752` follows as a corollary. Theorem 2(c) refines this in two ways: (i) by using the explicit ℓ-Sylow structure of `(Z/N)*` rather than a generic abelian bound; (ii) by tailoring to "reach exponent" rather than "generate." For e.g. `N = 4087`, Theorem 2(c) gives `E[K_λ] ≤ 2.475` versus Pomerance et al.'s `≤ 4.752` and the empirical mean of `2.26`.
+
+### 3.3 Joint interpretation
+
+Theorem 1 says: *once* `r_a | L`, success is deterministic regardless of noise. Theorem 2 says: this state is reached in `O(log log log N)` bases in expectation — even under adversarial measurement noise (which only affects whether each individual measurement contributes a new factor, not the noise-invariance of post-condition extraction). Together they explain the algorithm's empirical robustness: a logarithmic number of measurements suffice to enter a regime that is permanently immune to measurement noise.
 
 ## 4. Empirical verification
 
@@ -122,7 +182,7 @@ We outline how Theorem 1 relates to existing literature, including which ingredi
 
 **Marginal value of lattice post-processing.** The Knill-Mosca lattice approach strengthens single-base, multi-measurement convergent recovery. In our multi-base framework, `lcm(r_a₁, ..., r_aₖ)` already accomplishes equivalent recovery across bases. We did not find a regime where additional lattice basis reduction (LLL or simpler) provides measurable benefit over the lcm strategy.
 
-**The theorem is conditional on `r_a | L`.** When `L = 1` (start of algorithm), the condition fails and `(C) ≡ (B)`. The transient before `L` reaches `λ(N)` is governed by classical number theory: for typical semiprime `N = pq`, `E[K_λ] = O(log log N)` bases suffice (essentially proven by Pomerance et al. and the Carmichael-function paper).
+**The theorem is conditional on `r_a | L`.** When `L = 1` (start of algorithm), the condition fails and `(C) ≡ (B)`. Theorem 2 (§3.2) precisely characterizes this transient: `E[K_λ] ≤ 1 + Σ_{ℓ | λ(N)} 1/(ℓ^{s_ℓ} - 1)`, which is `O(log log log N)` for typical semiprimes. Empirically, `K_λ ≤ 14` across all 17,000 trials at `N ≤ 4087` (Appendix D).
 
 **Classical verification gate is assumed exact.** Theorem 1 relies on `pow(a, d, N)` returning the correct value. On real hardware, this could in principle be corrupted by classical computation errors, but at standard machine precision this is negligible compared to quantum noise.
 
@@ -136,8 +196,9 @@ All experiments are reproducible via the companion repository:
 pip install numpy
 git clone https://github.com/Hashevolution/shor
 cd shor
-python demo.py --verify 77 143 209          # reproduces §4 table
+python demo.py --verify 77 143 209          # reproduces §4 table (Theorem 1)
 python verify_large_run.py 1147 2491 4087   # reproduces Appendix C (large N)
+python -m experiments.k_lambda_dist         # reproduces Appendix D (Theorem 2)
 python demo.py --noise3 77 143              # reproduces 3-noise comparison
 python demo.py --adaptive 77 143 209 323    # reproduces §9.1 negative result
 ```
@@ -146,7 +207,7 @@ The codebase is `~700` lines of numpy. No quantum libraries required.
 
 ## 8. Conclusion
 
-We formalize a folklore observation about classical post-processing of multi-base Shor order-finding measurements: augmenting continued-fraction recovery with a divisor search over the accumulated lcm `L` makes the procedure deterministic whenever the order of the current base divides `L` — independent of the measurement distribution, hence robust to all measurement-layer noise models. We verify this across 17,700 trials at six composite sizes (zero violations), and show that two natural attempts to extend the result (adaptive base selection, lattice post-processing) yield no further measurement savings, indicating Theorem 1 captures the essential structure at this scale.
+We formalize a folklore observation about classical post-processing of multi-base Shor order-finding measurements: augmenting continued-fraction recovery with a divisor search over the accumulated lcm `L` makes the procedure deterministic whenever the order of the current base divides `L` — independent of the measurement distribution, hence robust to all measurement-layer noise models. We prove a complementary quantitative bound (Theorem 2) on the number of bases `K_λ` needed to reach the noise-invariant regime, refining a corollary of Pomerance et al. (2017). We verify Theorem 1 across 17,700 trials at six composite sizes (zero violations) and Theorem 2 across 17 semiprimes × 1,000 trials, and show that two natural attempts to extend the result (adaptive base selection, lattice post-processing) yield no further measurement savings, indicating Theorem 1 captures the essential structure at this scale.
 
 The work is best viewed as expository and a foundation for explorations of more substantive improvements: noise-resilient implementations on hardware, the `lucky` region under structured measurement distributions, and connections to lattice-based factoring (Regev 2023).
 
@@ -259,3 +320,33 @@ We additionally verify Theorem 1 at three larger semiprimes, with a representati
 Note that under extreme noise the `covered` fraction can drop sharply — `phase σ = 2.5` at `N = 2491` and `modexp q = 0.8` at `N = 4087` both reach `covered = 1` — because the measurement is so degraded that `L` cannot accumulate. The theorem then applies only vacuously over most trials, but on the few trials where it does apply, success remains 100%. The non-monotonicity across `N` for the same noise (`phase σ = 2.5` covered: 9, 1, 50 at `N = 1147, 2491, 4087`) is a sample-size artifact at 100 trials and reflects which random seeds happened to land on bases with small `r_a` early.
 
 Reproduce: `python verify_large_run.py 1147 2491 4087` (≈ 26 min total on a single CPU).
+
+## Appendix D. Empirical verification of Theorem 2
+
+We measure the empirical distribution of `K_λ` across 17 semiprimes, with 1,000 independent trials each (uniform random base selection, classical order recovery, `L` accumulation until `L = λ(N)`). We compare:
+
+- `mean`, `p99`, `max` — empirical statistics of K_λ
+- `thm2(c)` := `1 + Σ_{ℓ | λ(N)} 1/(ℓ^{s_ℓ} - 1)` — the sharp expectation bound
+- `thm2(b)` := `log₂ ω(λ(N)) + 2` — the simpler asymptotic bound
+
+| N    | p   | q   | λ(N) | ω(λ) | mean | p99 | max | thm2(c) | thm2(b) |
+|------|----:|----:|-----:|-----:|-----:|----:|----:|--------:|--------:|
+| 15   |  3  |  5  |    4 |    1 | 1.70 |   6 |   9 |   2.000 |   2.000 |
+| 21   |  3  |  7  |    6 |    2 | 1.58 |   4 |   5 |   1.833 |   3.000 |
+| 33   |  3  | 11  |   10 |    2 | 1.47 |   4 |   5 |   1.583 |   3.000 |
+| 35   |  5  |  7  |   12 |    2 | 2.21 |   7 |  10 |   2.500 |   3.000 |
+| 77   |  7  | 11  |   30 |    3 | 1.82 |   5 |   7 |   2.083 |   3.585 |
+| 91   |  7  | 13  |   12 |    2 | 1.97 |   7 |   9 |   2.125 |   3.000 |
+| 143  | 11  | 13  |   60 |    3 | 2.37 |   7 |  10 |   2.750 |   3.585 |
+| 187  | 11  | 17  |   80 |    2 | 2.13 |   7 |  13 |   2.250 |   3.000 |
+| 209  | 11  | 19  |   90 |    3 | 1.93 |   5 |   7 |   2.083 |   3.585 |
+| 221  | 13  | 17  |   48 |    2 | 2.33 |   8 |  10 |   2.500 |   3.000 |
+| 247  | 13  | 19  |   36 |    2 | 2.23 |   7 |   9 |   2.500 |   3.000 |
+| 323  | 17  | 19  |  144 |    2 | 2.22 |   7 |   9 |   2.500 |   3.000 |
+| 391  | 17  | 23  |  176 |    2 | 2.02 |   8 |  11 |   2.100 |   3.000 |
+| 437  | 19  | 23  |  198 |    3 | 1.83 |   5 |   7 |   1.933 |   3.585 |
+| 1147 | 31  | 37  |  180 |    3 | 2.42 |   8 |  12 |   2.750 |   3.585 |
+| 2491 | 47  | 53  | 1196 |    3 | 2.11 |   7 |  14 |   2.129 |   3.585 |
+| 4087 | 61  | 67  |  660 |    4 | 2.26 |   8 |  11 |   2.475 |   4.000 |
+
+In all 17 rows, `mean ≤ thm2(c)`. The bound is consistently tight, within 0.5 in every case. The maximum observed `K_λ` over all 17,000 trials is 14 (occurring at N=2491). Reproduce: `python -m experiments.k_lambda_dist`.
