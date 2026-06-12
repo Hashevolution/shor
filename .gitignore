@@ -8,3 +8,6 @@ venv/
 .vscode/
 .idea/
 *.log
+
+# 외부 paper 텍스트 (사용자 업로드 분석용, repo 자산 아님)
+uploaded_paper.txt
