@@ -139,17 +139,102 @@ def filter_uncorrupted(
     return B[:target_size] if len(B) > target_size else B
 
 
-def regev_lll_postprocess_stub(
-    samples: list[RegevSample], N: int,
-) -> int | None:
-    """표준 Regev LLL 후처리 (TODO: 정확한 구현).
+def regev_algorithm_b1(
+    samples: list[RegevSample], bases: list[list[int]], N: int,
+    epsilon: int = 1,
+) -> list[list[int]]:
+    """RV Appendix B.1 / Regev 2023 Algorithm B.1: 표준 Regev 후처리.
 
-    현재 stub: filter 통과한 샘플 수만 출력. 실제 Regev factoring 은 미구현.
+    격자 Λ ⊆ R^(d+k) basis (열 단위):
+        [ I_d    ε^(-1) W ]
+        [  0      I_k     ]
+    W ∈ R^(d×k) 의 열 = 측정 벡터 w_i.
+
+    LLL 환원 → Gram-Schmidt → 짧은 벡터들 추출.
+
+    각 출력 벡터의 첫 d 좌표 = 잠재적 lattice L_a 의 원소 (정수 관계).
+    L_a = {z ∈ Z^d : ∏ a_i^z_i ≡ 1 mod N}. 만약 z ∈ L_a 면 z 의 좌표가 base 들의
+    multi-base 위수 관계를 줌.
+
+    Note: 본 구현은 Regev 의 lattice L₀ = {z : ∏ a_i^z_i ≡ 1} 의 직접 후처리.
+    원본 Regev 는 quadratic character b_i² = a_i 를 사용해 ±1 lattice L 에서
+    short vector → 비자명 square root → 인수. 본 구현은 a_i 만 사용 — 인수보단
+    "multi-base 정수 관계 = 위수 정보" 회수에 집중.
     """
-    if len(samples) < 2:
-        return None
-    # TODO: Regev 의 정확한 lattice 구성 + LLL → 인수
-    return len(samples)  # placeholder
+    if not samples:
+        return []
+    k = len(samples)
+    d = len(samples[0].k_vec)
+    Q = samples[0].Q
+
+    # W ∈ Z^(d×k), 각 열 = sample 의 k_vec (Q-스케일)
+    # 정수 LLL 을 위해 ε^(-1) 를 정수 factor 로 흡수
+    rows = []
+    # 첫 d 개 행: (I_d 단위벡터, 0)
+    for i in range(d):
+        row = [0] * (d + k)
+        row[i] = 1
+        rows.append(row)
+    # 다음 k 개 행: (ε^(-1) w_j, e_j). ε=1, w_j = k_vec
+    for j, s in enumerate(samples):
+        row = [0] * (d + k)
+        for i in range(d):
+            row[i] = s.k_vec[i] // max(1, epsilon)
+        row[d + j] = 1
+        rows.append(row)
+
+    H = Matrix(rows)
+    try:
+        reduced = H.lll()
+    except Exception:
+        return []
+
+    # 짧은 벡터들의 첫 d 좌표 추출
+    # Threshold: T = 2^(C·n) 같은 형식이지만, 단순화로 직접 norm 기반.
+    vectors = []
+    norms = []
+    for i in range(reduced.rows):
+        v = [int(reduced[i, j]) for j in range(d)]
+        full = [int(reduced[i, j]) for j in range(reduced.cols)]
+        nrm = sum(x * x for x in full) ** 0.5
+        norms.append((nrm, v))
+    norms.sort()
+
+    # 가장 짧은 d 개를 출력 (Regev 의 l 값 계산은 단순화)
+    return [v for _, v in norms[:d]]
+
+
+def try_factor_from_relations(
+    relations: list[list[int]], bases: list[int], N: int,
+) -> int | None:
+    """Regev B.1 의 짧은 벡터 z ∈ Z^d 로부터 N 의 인수 시도.
+
+    z 가 ∏ a_i^z_i ≡ 1 mod N 을 만족하면, z 의 좌표 정보로 multi-base lcm 식
+    인수 추출 가능. 본 구현은 Miller-Rabin reduction (factor_from_exponent) 으로
+    환원.
+    """
+    import math as _math
+    from multi_base import factor_from_exponent
+    import random as _random
+
+    for z in relations:
+        # Check ∏ a_i^z_i ≡ 1 mod N
+        product = 1
+        for a, zi in zip(bases, z):
+            product = (product * pow(a, zi, N)) % N
+        if product == 1:
+            # z 는 valid relation. 좌표의 gcd 가 어떤 a_i 의 위수 후보일 수 있음.
+            # 더 단순히: 짧은 벡터 length 가 exponent 추정값.
+            L_candidate = abs(z[0]) if z else 0
+            for zi in z[1:]:
+                if zi != 0:
+                    L_candidate = _math.gcd(L_candidate, abs(zi))
+            if L_candidate > 1:
+                rng = _random.Random(0)
+                result = factor_from_exponent(N, L_candidate, rng)
+                if result is not None:
+                    return result.factor
+    return None
 
 
 # ──────────────────────────────────────────────────────────────────

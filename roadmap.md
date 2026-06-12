@@ -637,6 +637,17 @@ sketch 만 작성. 본 검증은 후속 세션.
 
 - **2026-06-12 (1)**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
   본 문서 §1 추가. Phase 1 (A) 착수 — §2 의 정리 윤곽 작성.
+- **2026-06-12 (12)**: **B 단계 3: Regev Algorithm B.1 skeleton 구현 시도.**
+  `experiments/rv_filter_lll.py` 에 `regev_algorithm_b1`, `try_factor_from_relations`
+  추가. Regev §3 의 lattice 정의 `L₀ = {z ∈ Z^d : ∏ a_i^z_i ≡ 1 mod N}` 정독 후
+  Algorithm B.1 의 격자 [I_d  ε^(-1) W; 0  I_k] 와 LLL 환원 구현.
+  현 한계:
+  · LLL 환원된 짧은 벡터가 trivial form (좌표가 너무 크거나 zero).
+  · 인수 추출은 Regev 의 quadratic character b_i (b_i² ≡ a_i mod N) 와 정확한
+    lattice L 구성 필요 — 본 구현은 a_i 만 사용한 L₀ 직접 후처리.
+  · 따라서 end-to-end 인수 비교는 여전히 future work.
+  paper §3.4 의 caveat 단락 강화: Regev B.1 의 skeleton 구현 status 명시.
+
 - **2026-06-12 (11)**: **B 단계 2: RV Algorithm 6.1 의 정확한 격자 구성 구현 +
   (C) 와 head-to-head 부분 비교.** `experiments/rv_filter_lll.py` 의 `build_rv_lattice`,
   `rv_filter_round`, `filter_uncorrupted` 를 RV §6 Algorithm 6.1 의 정확한 공식
