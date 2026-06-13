@@ -44,10 +44,23 @@ from multi_base import (
 from experiments.rv_filter_lll import regev_setup_bases, simulate_regev_run
 
 
-SIGMA_GRID = [
+FULL_SIGMA_GRID = [
     0.000, 0.005, 0.010, 0.015, 0.020, 0.025, 0.035, 0.050, 0.075, 0.100,
     0.150, 0.200,
 ]
+
+# Compact grid: 5 σ covering full mechanism structure
+#   0.000: baseline
+#   0.025: plateau early (V3 measurement point)
+#   0.050: plateau center (mechanism anchor)
+#   0.150: decline onset
+#   0.200: overload (direction asymmetry check)
+COMPACT_SIGMA_GRID = [0.000, 0.025, 0.050, 0.150, 0.200]
+
+# Minimal grid: just plateau center + baseline
+MINIMAL_SIGMA_GRID = [0.000, 0.050]
+
+SIGMA_GRID = FULL_SIGMA_GRID  # default, overridden in main() if grid_mode arg given
 
 
 def hybrid_one_trial(N, d, noise_kwargs, seed, max_runs=20):
@@ -210,16 +223,28 @@ def report_flips(hists, K_means_all, plateau=0.050):
 
 
 def main(argv):
+    global SIGMA_GRID
     if len(argv) < 3:
-        print(f"Usage: python -m experiments.sigma_scan_general N d [n_seeds] [trials]")
+        print(f"Usage: python -m experiments.sigma_scan_general N d [n_seeds] [trials] [grid_mode]")
+        print(f"  grid_mode: full (12 σ, default), compact (5 σ), minimal (2 σ)")
         return
     N = int(argv[1])
     D = int(argv[2])
     n_seeds = int(argv[3]) if len(argv) > 3 else 3
     trials = int(argv[4]) if len(argv) > 4 else 100
+    grid_mode = argv[5] if len(argv) > 5 else "full"
 
-    K_file = Path(f"experiments/sigma_scan_N{N}_d{D}_results.txt")
-    H_file = Path(f"experiments/sigma_scan_N{N}_d{D}_histograms.txt")
+    if grid_mode == "compact":
+        SIGMA_GRID = COMPACT_SIGMA_GRID
+    elif grid_mode == "minimal":
+        SIGMA_GRID = MINIMAL_SIGMA_GRID
+    else:
+        SIGMA_GRID = FULL_SIGMA_GRID
+
+    # File suffix: compact mode 는 별도 파일로 (full 결과와 섞이지 않게)
+    suffix = "_compact" if grid_mode == "compact" else ("_minimal" if grid_mode == "minimal" else "")
+    K_file = Path(f"experiments/sigma_scan_N{N}_d{D}{suffix}_results.txt")
+    H_file = Path(f"experiments/sigma_scan_N{N}_d{D}{suffix}_histograms.txt")
 
     # Initialize files (no overwrite)
     if not K_file.exists():
