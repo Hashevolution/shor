@@ -46,12 +46,14 @@ BACKFILL_SIGMAS = [0.0, 0.050]
 # ────────────────────────────────────────────────────────────
 
 def read_K_means():
-    """Base + extend 파일에서 K_means 로드."""
+    """Base + extend 파일에서 K_means 로드. (cp949 / utf-8 둘 다 안전)."""
     K_means: dict[int, dict[float, float]] = {}
     for path in [BASE_FILE, EXTEND_FILE]:
         if not path.exists():
             continue
-        with open(path, encoding="utf-8") as f:
+        # Comment 줄에 σ (cp949 or utf-8) 있을 수 있어 errors="replace" 사용
+        # 데이터 줄은 순수 ASCII 라 영향 없음
+        with open(path, encoding="utf-8", errors="replace") as f:
             for line in f:
                 line = line.strip()
                 if not line or line.startswith("#") or line.startswith("sigma"):
@@ -74,7 +76,7 @@ def read_histograms():
     hists: dict[int, dict[float, dict[int, int]]] = {}
     if not HIST_FILE.exists():
         return hists
-    with open(HIST_FILE, encoding="utf-8") as f:
+    with open(HIST_FILE, encoding="utf-8", errors="replace") as f:
         for line in f:
             line = line.strip()
             if not line or line.startswith("#") or line.startswith("seed"):
