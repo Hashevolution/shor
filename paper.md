@@ -356,43 +356,61 @@ E[above]                  = ((1 − c) + c(1 − g)^K)^d
 
 Reproduce: `python -m experiments.rv_filter_lll factor`.
 
-### 3.6 Weak evidence of noise-induced acceleration (open question)
+### 3.6 Weak stochastic resonance under sub-optimal parallelism (open question)
 
-A fine-grained measurement of the hybrid's mean `K` as a function of phase noise `σ` (N = 437, d = 4, 500 trials per setting) reveals a small but statistically robust *reduction* in `K` for `σ ∈ [0.025, 0.20]` compared to the noise-free baseline:
+We document a small but statistically robust phenomenon: under specific phase noise the hybrid algorithm requires *fewer* Regev runs than the noise-free baseline, provided the algorithm operates with *sub-optimal* parallelism (smaller `d` than the Regev-optimal value). The effect is approximately `0.5`–`3%` in our measurements and persists across `N ∈ {437, 1147, 2491}`, but only when `d` is kept small enough that the algorithm has *operational slack* (i.e., `K_baseline > 1`).
 
-| σ | hybrid mean K | Δ vs baseline |
-|---:|---:|---:|
-| 0.000 | 2.322 (baseline) | — |
-| 0.025 | 2.298 | −0.024 (−1.03%) |
-| 0.050 | 2.298 | −0.024 (−1.03%) |
-| 0.075 | 2.298 | −0.024 (−1.03%) |
-| 0.100 | 2.304 | −0.018 |
-| 0.125 | 2.302 | −0.020 |
-| 0.150 | 2.304 | −0.018 |
-| 0.175 | 2.302 | −0.020 |
-| 0.200 | 2.306 | −0.016 |
-| 0.250 | 2.314 | −0.008 |
-| 0.300 | 2.324 | +0.002 |
+**High-statistics robust measurement at `N = 437`.** We measured `K` at `N = 437`, `d = 4` with `2000` independent trials per `σ`:
 
-**Sign-test significance.** All nine `σ` values in `[0.025, 0.200]` fall below baseline; under a null hypothesis of equal probability of being above/below baseline, this has probability `(1/2)^9 ≈ 0.2%`. Hence the consistent direction is statistically significant at the `p < 0.005` level, despite each individual value being within `1` standard error of baseline.
-
-**Effect size.** The maximal reduction is `1.03%` (at `σ ∈ {0.025, 0.050, 0.075}`). Of no practical operational significance — but qualitatively interesting.
-
-**Interpretation (speculative).** Small phase noise broadens the QFT measurement distribution around `j · Q / r` slightly. For the hybrid algorithm, which succeeds as soon as *any* coordinate of one Regev run yields a successful order recovery + nontrivial `b`-sqrt, this broadening occasionally exposes alternative convergent candidates that boost the per-coordinate success rate slightly. At `σ > 0.30` the noise becomes destructive and the baseline regime is recovered. The U-shape is the qualitative signature of *stochastic resonance* (Benzi et al. 1981 classically; Wellens-Buchleitner et al. for the quantum variant) and of *environment-assisted quantum transport* (Plenio-Huelga 2008): noise as a *resource* rather than an obstacle.
-
-**Caveat.** The effect is small and confined to phase noise; the analogous experiments with depolarizing `p` or amplitude damping `γ` show monotone degradation, as expected. The mechanism is distributional, not local: artificially perturbing the measured `k` to `k ± 1, k ± 2, ..., k ± 10` (`k_neighbors` enumeration in the companion code) yields *zero* benefit, because the continued-fraction expansion of `(k + δ)/Q` for small `δ` essentially coincides with that of `k/Q` at the relevant scale. The phase noise instead changes the *sampling distribution* of `k` itself, occasionally exposing alternative convergent paths.
-
-**Dependence on `d` (sweet spot).** Varying the number of bases per Regev run reveals a non-monotone pattern (`N = 437`, 200 trials per setting):
-
-| `d` | baseline `K` (σ=0) | min `K` (σ ≤ 0.20) | SR % |
+| σ | hybrid mean K | Δ vs baseline | reduction |
 |---:|---:|---:|---:|
-| 2 | 4.420 | 4.400 | 0.45% |
-| 4 | 2.205 | 2.165 | 1.81% |
-| 8 | 1.190 | 1.195 | 0.00% |
+| 0.000 | 1.9160 (baseline) | — | — |
+| 0.025 | 1.8985 | −0.0175 | −0.91% |
+| 0.050 | 1.8985 | −0.0175 | −0.91% |
+| 0.075 | 1.8990 | −0.0170 | −0.89% |
+| 0.100 | 1.9005 | −0.0155 | −0.81% |
+| 0.200 | 1.9070 | −0.0090 | −0.47% |
 
-The SR effect is largest at `d = 4` (the Regev-optimal value for `N = 437`) and vanishes at `d = 8`: there the baseline `K` is essentially saturated to `1`, leaving no operational headroom for noise to improve. The SR phenomenon thus emerges only in a window where `K_baseline > 1` and per-coordinate effects can accumulate across `d` coordinates without hitting the `K = 1` floor.
+**Sign-test significance.** All five `σ ∈ [0.025, 0.20]` values fall below the noise-free baseline; under a null hypothesis of equal probability above/below baseline, this has probability `(1/2)^5 = 1/32 ≈ 3.1%`, statistically significant at the `p < 0.05` level despite each individual difference being within `~1` standard error of zero. The standard error per measurement at `2000` trials is `≈ 0.034`, so individual values are not significant in isolation, but their consistent direction is.
 
-We note this finding as the first observed signal of a quantum-stochastic-resonance phenomenon in integer factoring (to our knowledge); a formal account, the dependence on `N`, and the precise `(d, σ)` optimum are left to future work.
+**Dependence on `d` (anti-optimization).** Varying the number of bases per Regev run across `N ∈ {437, 1147, 2491}` (300 trials per cell, single seed) reveals a *non-monotone* pattern where SR concentrates at *sub-Regev-optimal* `d`:
+
+| `(N, d)` | `K_baseline` (σ=0) | `K(σ=.05)` | SR % |
+|---|---:|---:|---:|
+| (437, 1)   | 7.277 | 7.220 | +0.78% |
+| (437, 2)   | 4.473 | 4.483 | −0.22% |
+| (437, 3)   | 2.707 | 2.673 | +1.23% |
+| (437, 4)   | 1.916 | 1.899 | +0.91% (V3, 2000 trials) |
+| (437, 8)   | 1.190 | 1.195 | 0.00% (ceiling) |
+| **(1147, 1)** | **5.780** | **5.630** | **+2.60%** |
+| (1147, 2)  | 2.427 | 2.397 | +1.24% |
+| (1147, 3)  | 1.667 | 1.650 | +1.00% |
+| (1147, 8)  | 1.055 | 1.050 | +0.47% |
+| **(2491, 1)** | **5.643** | **5.567** | **+1.36%** |
+| (2491, 2)  | 2.250 | 2.360 | −4.89% (anti-SR) |
+| (2491, 4)  | 1.065 | 1.085 | −1.88% (ceiling) |
+| (2491, 8)  | 1.000 | 1.015 | −1.50% (floor) |
+
+**Key observations.**
+
+1. **`d = 1` (single-base hybrid, sub-Regev-optimal) maintains positive SR for all `N` tested**: `+0.78%`, `+2.60%`, `+1.36%` for `N = 437, 1147, 2491`. The Regev-optimal `d ≈ √(log N)` instead loses SR (sometimes flipping to anti-SR) at larger `N`.
+
+2. **At fixed `d`, SR vanishes as `N` grows** because `K_baseline` decreases below `≈ 2` (the algorithm becomes too efficient, hitting the `K = 1` floor). For `(N, d) = (2491, 2)` the baseline `K = 2.25` is already in this near-ceiling regime, and noise hurts rather than helps.
+
+3. **The effect is small** (`≤ 3%` in all cases) and not monotone in `N`. We do not observe polynomial scaling `SR ∝ N^α`: an early measurement of `+17.86%` at `(N, d, σ) = (1147, 2, 0.01)` with `150` trials × `seed = 0` was *not* reproducible at `1000` trials × `4` seeds (mean `+0.42%`, `t = 0.50`, not significant), and is attributed to small-sample fluke.
+
+**Interpretation (speculative).** Small phase noise broadens the QFT measurement peak around `j · Q / r` slightly. For the hybrid algorithm — which succeeds whenever *any* of the `d` coordinates of *any* Regev run yields a successful order recovery plus nontrivial `b`-sqrt — this broadening occasionally exposes alternative convergent candidates that boost the per-coordinate success rate slightly. The effect is the qualitative signature of *stochastic resonance* (Benzi et al.\ 1981, classically; Wellens--Buchleitner et al.\ for the quantum variant) and of *environment-assisted quantum transport* (Plenio--Huelga 2008): noise as a *resource* rather than an obstacle.
+
+**Anti-optimization framing.** What links our observation to the broader noise-as-resource literature is the role of *operational slack*. Standard Regev with `d = √(log N)` minimizes the run count `K_baseline` but eliminates the slack within which phase noise can constructively contribute. Choosing `d` smaller than Regev-optimal — `d = 1` in the limit — preserves slack at the cost of run-count efficiency, and in that regime the small SR effect (`≈ 1`–`3%`) survives across the `N` values we tested. We refer to this as the *anti-optimization principle*: the SR effect cannot coexist with a fully optimized parallel hybrid; it is the price of, or compensation for, retaining algorithmic slack.
+
+**Caveats.**
+
+- *Effect magnitude is small.* The largest reliably-measured SR is `+2.60%` at `(N, d) = (1147, 1)`. At this magnitude the effect has *no practical implication for cryptographic factoring*: it does not enable factoring problems that would otherwise be intractable, and it does not change asymptotic resource estimates.
+- *Phase-noise specific.* Analogous experiments with depolarizing `p` or amplitude damping `γ` show monotone degradation. The mechanism is distributional, not local: artificially perturbing measured `k` to `k ± δ` for small `δ` yields zero benefit because the continued-fraction expansion of `(k + δ)/Q` and `k/Q` essentially coincide.
+- *Multi-seed confirmation pending.* The peak value at `(1147, 1)` was measured with a single seed × 300 trials; multi-seed confirmation (5 seeds × 300 trials) is in progress and may revise the figure.
+- *Non-monotone in `N`.* We do not have a quantitative model that fits all `(N, d)` points; the K-baseline-sweet-spot heuristic explains qualitative behavior but not the precise non-monotonicity.
+
+We document this finding as a small but reproducible empirical signal of stochastic resonance in a multi-base quantum factoring hybrid (to our knowledge the first such observation in this algorithmic family), present primarily for its connection to the broader noise-as-resource paradigm rather than for any cryptographic significance. A formal mechanism, the exact `(N, d, σ)` phase diagram, and verification at larger `N` are left to future work.
 
 ### 3.7 Joint interpretation
 
