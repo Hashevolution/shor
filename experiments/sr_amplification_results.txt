@@ -1,0 +1,22 @@
+# SR amplification at N=437 d=4
+# 2026-06-13 19:39:45
+
+mode    seed  sigma   K_mean
+normal  1    0.000  2.5900
+normal  1    0.050  2.5600
+normal  1    0.150  2.5700
+thinned 1    0.000  19.8100
+thinned 1    0.050  19.8100
+thinned 1    0.150  19.8100
+normal  2    0.000  1.6300
+normal  2    0.050  1.6300
+normal  2    0.150  1.6300
+thinned 2    0.000  19.8100
+thinned 2    0.050  19.8100
+thinned 2    0.150  19.8100
+normal  3    0.000  2.0200
+normal  3    0.050  2.0400
+normal  3    0.150  2.0400
+thinned 3    0.000  20.0000
+thinned 3    0.050  20.0000
+thinned 3    0.150  20.0000
