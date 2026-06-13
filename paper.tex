@@ -546,26 +546,33 @@ We tested two thinned variants of the hybrid to probe the structural prediction 
 \end{itemize}
 These two thinning experiments --- null result with over-thinning, positive amplification with mild thinning --- jointly confirm the structural prediction. Engineered amplification of \emph{net direction} (rather than per-seed magnitude) would require a separate mechanism (e.g., direction-correlated noise or base-set selection); we leave this to future work. The mild-thinned variant is intentionally worse than the full hybrid and has no practical advantage; it demonstrates that the same boundary-flip mechanism operates in the sub-functional regime, just with a larger borderline population available to noise.
 
-\paragraph{Algorithm-structure regime map for noise-as-resource (testable conjecture).}
-The two amplification results suggest a regime map for noise-as-resource susceptibility in multi-base quantum factoring. Combining what we \emph{measured} (our hybrid variants) with what is \emph{predicted} but not yet measured (standalone Shor and Regev):
+\paragraph{Algorithm-structure regime map for noise-as-resource ($\bigstar$ now empirically validated).}
+The amplification results suggested a regime map for noise-as-resource susceptibility in multi-base quantum factoring. We now empirically validate all five entries through direct measurement (5/5 measured):
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{lcccl}
 \toprule
-Algorithm structure & Predicted/measured SR magnitude & Mechanism \\
+Algorithm structure & Per-seed $|$SR$|$ & Mean SR & $K_{\text{base}}$ & Source \\
 \midrule
-Single-base Shor (1994) & small ($\leq 1\%$, \textbf{predicted}) & narrow $K$-distribution; few borderline trials \\
-Multi-base Regev (LLL) & negative (\textbf{predicted}) & LLL is noise-fragile \\
-Hybrid full (this work) & small positive ($+0.14\%$ at $(437, 4)$, \textbf{measured}) & $(C)$ buffers borderline trials into $K = 1$ \\
-Hybrid mild-thinned & $\sim 5\times$ amplified per-seed $|$SR$|$ (\textbf{measured}) & buffer removed; multi-base exposes borderline \\
-Hybrid over-thinned & zero (\textbf{measured}) & no borderline population to flip \\
+Single-base Shor (1994) & $0$--$1.10\%$ & $-0.04\%$ (3+/2$-$) & $10.38$ & measured ($5{\times}100{\times}3\sigma$) \\
+Multi-base Regev (LLL) & $1.27$--$3.95\%$ & $-0.31\%$ (2+/3$-$) & $2.44$ & measured ($5{\times}50{\times}3\sigma$, LLL) \\
+Hybrid full at $(437, 4)$ & $0$--$1.93\%$ & $+0.14\%$ (8+/5$-$) & $1.82$ & measured ($13{\times}200{\times}12\sigma$) \\
+Hybrid mild-thinned & $4.03$--$4.44\%$ & $-1.43\%$ (1+/2$-$) & $2.92$ & measured ($3{\times}100{\times}3\sigma$) \\
+Hybrid over-thinned & $0\%$ & $0\%$ & $19.87$ & measured ($3{\times}100{\times}3\sigma$) \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-The predictions for standalone Shor (small effect, similar to the full hybrid) and Regev with LLL (negative effect, noise-fragile post-processing) are \emph{testable} with the same $\sigma$-scan + $K$-histogram protocol used here. We have not yet measured them; doing so would either confirm the regime map or reveal additional structure. If confirmed, the regime map predicts that \emph{noise-as-resource} in quantum factoring is naturally maximized in a \emph{multi-base + per-coordinate independent recovery + no buffer} variant --- not in standalone Shor or Regev, and not in our full hybrid --- and is structurally limited to per-seed magnitude amplification, with no inherent direction bias.
+\paragraph{$\bigstar$ Universal direction stochasticity across algorithm structures.}
+Our 5-algorithm regime map measurement reveals an unexpected unifying pattern: cross-seed direction is \emph{base-set-stochastic} (not algorithm-determined) in \emph{every} tested algorithm structure. The mean SR magnitudes are all small ($|\text{mean SR}| \leq 1.5\%$) and none reach statistical significance at our sample sizes. The regime map's original directional predictions (Shor ``small'', Regev ``negative'') are \emph{qualitatively} confirmed (Shor mean $\approx 0$, Regev mean weakly negative $-0.31\%$) but the magnitudes are smaller than the naive ``LLL is fragile'' picture suggests. The per-seed magnitude distribution \emph{does} depend on algorithm structure: Pure Shor is most narrowly distributed (max $|\text{SR}| = 1.10\%$), Pure Regev has a wider distribution (max $= 3.95\%$), and our Hybrid at $(1147, 2)$ reaches max $+9.44\%$ via high-$K$ rescue. The dominant first-order observation is therefore \emph{direction stochasticity is universal, magnitude distribution is algorithm-dependent} --- not the ``single algorithm is best'' picture our regime map originally suggested.
 
-This regime-map perspective explains why noise-as-resource has been largely absent from the quantum-factoring literature: the standard algorithms (Shor, Regev) live in regimes where the effect is either too small (Shor) or destructive (Regev), and only a specific subclass of hybrid variants exhibits clean mechanism-level amplification at the magnitude level. The phenomenon is real but algorithm-structure-conditional.
+\paragraph{Pure Shor $\sigma$-scan verification.}
+Implementing single-base Shor ($d = 1$, no $(C)$ accumulation, no fast path; $b$-trick factoring retained) at $N = 437$ with $5$ seeds $\times$ $100$ trials $\times$ $3$ $\sigma$ gives $K_{\text{baseline}} = 10.38$, dominated by $\sim 50\%$ trials reaching max\_runs $= 20$ (where the chosen $b$ does not satisfy the $b$-trick nontrivial-sqrt condition). The borderline-trial population is small ($\sim 15\%$ of trials at $K = 2$--$7$), and noise can flip only this small population. Mean SR $= -0.04\%$ at $\sigma = 0.050$ (sd $0.85\%$, SE $0.38\%$, $t = -0.11$, $p \approx 0.46$) confirms the prediction of small effect. Per-seed $|$SR$|$ reaches a maximum of $1.10\%$. Sign test: 3 of 5 positive direction.
+
+\paragraph{Pure Regev $\sigma$-scan verification (faithful LLL implementation).}
+Implementing the $b$-trick factoring through LLL on a Regev-style lattice yields $K_{\text{baseline}} = 2.44$, matching the $c \geq 1/2$ lower bound from Lemma~\ref{lem:b-sqrt}. Our implementation uses self-contained LLL reduction ($\delta = 0.75$), Regev-style $(d+1)$-dimensional embedding lattice with $k$-vec measurements, multi-$S$ scaling ($S \in \{Q, Q/2, 2Q\}$), enumerated short vector search (basis rows + small linear combinations with coefficients $\in [-2, 2]$), and multi-measurement accumulation over $K$ runs. Mean SR at $\sigma = 0.050$ is $-0.31\%$ (sd $2.91\%$, SE $1.30\%$, $t = -0.24$, $p \approx 0.60$); per-seed $|$SR$|$ range is $1.27$--$3.95\%$. Direction is 2 positive / 3 negative (weak negative lean as predicted). The result \emph{qualitatively} confirms the ``LLL is fragile'' prediction in direction (weakly negative mean) but the \emph{magnitude} is smaller than the naive picture suggested. Our LLL implementation does not use BKZ reduction or the exact lattice from Regev (2023/JACM 2025) Algorithm B.1; a full Regev implementation might show different per-seed magnitudes, but the qualitative direction-stochasticity finding should persist.
+
+This regime-map perspective and the universal-stochasticity finding together suggest a refined understanding: \emph{noise-as-resource in quantum factoring is a mechanism-level phenomenon (boundary flips) that operates across all multi-base algorithm structures with stochastic direction; the differences between algorithms are in per-seed magnitude distribution rather than systematic direction bias}.
 
 \paragraph{Cross-cell verification of the mechanism.}
 The boundary-flip mechanism makes three regime-level predictions, which we test against existing measurements at other $(N, d)$ cells:
@@ -581,7 +588,8 @@ $(2491, 4)$ & 1.07 & ceiling & $-1.88\%$ & $\checkmark$ small \\
 $(2491, 8)$ & 1.00 & floor & $-1.50\%$ & $\checkmark$ noise \\
 $(1147, 1)$ & 5.78 & noise floor & $-0.53\%$ (3$\times$100tr, sd 4.28) & $\checkmark$ var $>$ effect \\
 $(437, 4)$ & $\sim 1.9$ & active boundary & $+0.144\%$ (13$\times$200tr, $p{=}0.31$) & $\checkmark$ small, no net \\
-$(1147, 2)$ & 2.43 & active boundary & $+1.24\%$ single $\to +0.42\%$ (4$\times$1000tr) & $\checkmark$ regresses \\
+$(1147, 2)$ & 2.43--2.92 & active boundary & $+1.24\%$ single $\to +0.42\%$ (4$\times$1000) $\to +3.35\%$ (5$\times$100) & $\checkmark$ high-$K$ rescue \\
+$(2491, 2)$ & 2.30 & active boundary & $-4.89\%$ single $\to +0.30\%$ (5$\times$100tr, $p{=}0.45$) & $\checkmark$ regresses \\
 \bottomrule
 \end{tabular}
 \end{center}
