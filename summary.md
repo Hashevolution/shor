@@ -201,14 +201,16 @@ K_base │  (N, d)      │ SR %    │ 영역
 ## 9. 진행 중
 
 ```
-AOP background (bx9aam5fo):
-  - N=1147 d=3 (다음 cell)
-  - N=2491 × 3 cells (느림)
-  - 예상 2-4 시간
+N=1147 d=1 multi-seed confirm (사용자 직접 실행 중):
+  - 5 seeds × 300 trials × σ ∈ {0, 0.05}
+  - 결과 검정 기준:
+    * mean SR > 2% & t > 2 → 2.60% peak CONFIRMED → AOP 강력 지지
+    * mean SR ~0% → 2.60% 도 fluke → AOP 약화
+    * 중간 → weak 추가 분석 필요
 
-N=2491 d=1 이 마지막 분기점:
-  - SR > 3%: H18 (d 고정 → polynomial) 확정 — 새 방향
-  - SR ≈ 0%: 단순 "narrow window" 마무리
+N=2491 미실행 cells:
+  - d=2, d=3 (이전 AOP run 중 중단)
+  - 우선순위 낮음 (1147 confirm 결과 우선)
 ```
 
 ## 10. 메타 lesson
@@ -218,7 +220,30 @@ N=2491 d=1 이 마지막 분기점:
 - "자물쇠 직관" 같은 정량적 모델은 데이터로 직접 검증
 - 정직한 평가가 결국 paper 의 신뢰도 결정
 
+## 11. Paper / Zenodo 준비 상태 (2026-06-13)
+
+```
+paper.md / paper.tex:
+  ✓ §3.6 SR observation (honest framing)
+  ✓ §3.7 joint interpretation (T5 + SR orthogonal)
+  ✓ §7 reproducibility (sr_aop.py 추가)
+  ✓ §8 conclusion (T4-5 + SR mention)
+  ✓ Abstract 마지막 한 줄 (SR over-claim 없이)
+
+Zenodo 메타데이터:
+  ✓ CITATION.cff (GitHub citation 위젯)
+  ✓ .zenodo.json (Zenodo 자동 메타데이터)
+  ✓ LICENSE (MIT)
+
+남은 작업:
+  - N=1147 d=1 multi-seed 결과 → §3.6 단일 셀 confirm 통합
+  - 선택: N=4087 d=1 single 측정
+  - GitHub release 생성 → Zenodo 자동 sync → DOI 획득
+  - arXiv 제출 (endorsement 후)
+```
+
 ---
 
 진행 로그:
-- 2026-06-13: V + confirm 완료, 17.86% fluke 확정. AOP 진행 중.
+- 2026-06-13 (오전): V + confirm 완료, 17.86% fluke 확정. AOP partial. paper Abstract/§3.6/§3.7/§7/§8 polish 완료.
+- 2026-06-13: Zenodo 메타데이터 (CITATION.cff/.zenodo.json/LICENSE) 추가.
