@@ -109,10 +109,14 @@ QFT가 정확히 jQ/r을 주지 않더라도, `|k/Q - j/r| ≤ 1/(2Q) ≤ 1/(2r�
 | 파일 | 역할 |
 |------|------|
 | `README.md` | 이론 정리 (이 문서) |
+| `paper.md` / `paper.tex` | **정리 1-5 + Lemma 5.1 의 정식 논문 (영문)** |
+| `compile-notes.md` | LaTeX 컴파일 / arXiv 업로드 가이드 |
 | `classical.py` | 고전 환원 + 고전적 위수 계산 (검증/비교용 baseline) |
 | `shor.py` | 양자 주기 찾기의 numpy 상태벡터 시뮬레이션 |
 | `multi_base.py` | 다중 base λ(N) 누적으로 측정당 회수율 향상 (§7) |
+| `noise.py` | 6종 노이즈 모델 + 5종 hybrid b-trick 부패 모델 |
 | `demo.py` | 인수분해 데모 + 회수율 비교 실험 |
+| `experiments/` | 정리 2/3/4/5 + §3.6 SR 재현 스크립트 |
 
 ### 4.1 시뮬레이션 한계
 - 큐비트 수 ≈ 3·⌈log₂ N⌉. 상태벡터 차원 2^(t+n) → N이 커지면 메모리 폭발.
