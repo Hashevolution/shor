@@ -381,3 +381,47 @@ H9 (polynomial scaling) 가 H16 의 *core* — **strongly confirmed**.
   - 사용자의 *자물쇠 직관* (H12c, H16) 정직하게 기각
   - 본 paper 는 modest workshop note 수준 finding (~1% SR at small N)
   - **RSA paradigm 변화 없음**
+
+- 2026-06-13 (6): **σ scan 13 seeds × 200 trials × 12 σ at (437, 4) 완료 → multi-boundary 발견**.
+  - K-histogram backfill + per-seed flip 분석:
+    * 13/13 seeds 가 boundary-flip mechanism 따름 — **universal at base-set level**
+    * Boundary distribution: K=1/K=2 (10 seeds, 77%), K=2/K=3 (2, 15%), K=3↔K=1 (1, 8%)
+    * Sanity 13/13 ✓ (histogram Δ = K_mean Δ × n 정확)
+  - σ-curve direction asymmetry 발견:
+    * Positive seeds: plateau (σ ∈ [0.005, 0.100]) + decline (σ ≥ 0.150) — baseline 회귀
+    * Negative seeds: monotonic worsening — K=1 reservoir 가 무한 (180+ vs 10)
+  - Direction 의 *base-set 결정성* 직접 evidence:
+    * seeds 3, 4, 13 모두 K_base=1.720 인데 SR 방향 다름
+    * → K_base 는 *집계 proxy*, 진짜 mechanism 은 *trial-level 분포*
+  - **H22 신규: Multi-boundary universal flip mechanism**
+  - **H19 (Goldilocks) 약화**: K_base ≈ 2 가 단순 sweet spot 이 아니라
+    *trial 별 borderline 분포 의 함수* — K_base 자체가 *direction* 결정 안 함.
+  - **V3 의 "p=0.03 sign test" 도 *허위* significance 로 정정**:
+    * within-seed σ correlation (plateau 가 같은 trial set 을 flip)
+    * → 5/5 σ values below baseline 은 *1/2* (한 seed direction)
+    * → V3 의 진짜 p ≈ 50%, *not* 3%
+  - Net SR (13 seeds): mean +0.144%, t=0.51, p=0.31 — NOT significant
+  - Plan A' 확정: **mechanism observation strong, net direction undetermined**.
+
+## H22 (신규): Multi-boundary universal flip mechanism
+
+**가설**: Phase noise σ ∈ [0.005, 0.100] 는 모든 base set 에서 *K-bin boundary 의
+trial 들을 flip* 시킨다. 단, *어느 boundary* 와 *어느 방향* 으로 flip 시키는지는
+base set 의 *internal K-distribution* 에 의해 결정 된다.
+
+**근거**:
+- 13/13 seeds at (437, 4) 가 mechanism 따름
+- 77% K=1/K=2, 15% K=2/K=3, 8% long-jump 분포
+- σ-curve classical SR shape (sub-threshold + plateau + decline + overload)
+- σ-curve direction asymmetry (K-distribution skew 의 직접 결과)
+- Sanity check 13/13 (mechanism 가 *완전한* 효과 설명)
+
+**미확정**:
+- Cross-cell universality (현재 (437, 4) 만, (1147, 2) compact 진행 중)
+- Active boundary 의 K_base 의존 (예측: 더 큰 K_base → K=2/K=3 더 활성)
+- Net direction bias (현재 8/13 positive, p=0.29 not sig — 30+ seeds 필요)
+
+**검증 진행**:
+- (1147, 2) compact: 5 seeds × 100 trials × 5 σ (background)
+  → mechanism universality + boundary distribution shift 검증
+- 후속 후보: (4087, 4), (437, 3), (1147, 3)

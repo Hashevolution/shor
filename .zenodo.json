@@ -1,6 +1,6 @@
 {
   "title": "A Noise-Invariant Determinism Theorem for Multi-Base Post-Processing in Shor's Order Finding",
-  "description": "Five theorems on classical post-processing of multi-base order-finding measurements in Shor's algorithm: (1) noise-invariant determinism, (2) logarithmic coverage time, (3) exact noise scaling 1/g_M(η), (4) conditional compatibility with Regev's 2023 multi-base framework, and (5) a hybrid (C) + Regev b-trick factoring algorithm with closed-form bound matching empirical mean within 4%. Verified across 17,700 measurements at six composite sizes. Additionally documents a small (~1-3%) phase-noise-induced reduction in run count at sub-Regev-optimal d, a weak instance of stochastic resonance in multi-base quantum factoring under an 'anti-optimization' regime (effect coexists only with sacrificed efficiency). Companion code is ~700 lines of numpy with no quantum libraries required.",
+  "description": "Five theorems on classical post-processing of multi-base order-finding measurements in Shor's algorithm: (1) noise-invariant determinism, (2) logarithmic coverage time, (3) exact noise scaling 1/g_M(η), (4) conditional compatibility with Regev's 2023 multi-base framework, and (5) a hybrid (C) + Regev b-trick factoring algorithm with closed-form bound matching N=437 empirical mean within 4%. Verified across 17,700 measurements at six composite sizes. Additionally documents a universal trial-level mechanism observation at (N, d) = (437, 4): across 13 independent base sets (200 trials × 12 sigma values each = 31,200 trial-measurements), phase noise universally flips trials at one of the K-bin boundaries (77% K=1/K=2, 15% K=2/K=3, 8% long-jump) of single-run hybrid factoring, with stochastic per-seed direction (mean SR +0.14%, t=0.51, p=0.31, not significant). The mechanism follows the classical Benzi-Buchleitner stochastic resonance shape (saturation plateau + overload decline) and provides a clean conceptual bridge between integer factoring and the noise-as-resource literature (ENAQT), with no cryptographic implication. Companion code is ~1000 lines of numpy with no quantum libraries required.",
   "upload_type": "publication",
   "publication_type": "preprint",
   "creators": [
@@ -19,7 +19,9 @@
     "quantum noise",
     "ENAQT",
     "post-processing",
-    "multi-base"
+    "multi-base",
+    "K-boundary flip",
+    "trial-level mechanism"
   ],
   "license": "MIT",
   "access_right": "open",

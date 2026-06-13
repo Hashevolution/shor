@@ -281,3 +281,15 @@ hint* 일 뿐 *measurement* 아님 — 이게 핵심 learning.
   AOP "d=1 universal" *기각*. Goldilocks 가설 (K_base ≈ 2) 로 narrative 정정.
   단일 cell (437, 4) 만 robust. 자물쇠 비유 정정 ("간신히 안 풀릴 = Goldilocks").
   메타 lesson 추가: single-seed = direction hint, not measurement.
+- 2026-06-13 (저녁): **Plan A' 확정 — multi-boundary mechanism observation**.
+  σ scan (437, 4) 13 seeds × 200 trials × 12 σ + K-histogram 분석 결과:
+  - **13/13 seeds 가 boundary-flip mechanism 따름** (universal at base set level)
+  - Boundary distribution: 77% K=1/K=2, 15% K=2/K=3, 8% long-jump
+  - σ-curve direction asymmetry (positive 회귀, negative monotonic)
+  - **Direction base-set 결정성**: seed 3, 4, 13 K_base=1.72 동일 다른 direction
+  - Net SR: mean +0.144%, t=0.51, p=0.31 — NOT significant
+  - V3 sign-test "p=0.03" 도 within-seed σ correlation 으로 *허위* significance.
+  Goldilocks 가설 *세련화*: K_base 는 *집계 proxy*, 진짜 mechanism 은 *trial-level
+  boundary-flip*. paper §3.6 multi-boundary mechanism 으로 격상.
+  자물쇠 비유 진화: "어느 자물쇠 가방에서나 *경계 trial* 이 있고, 흔들기가 *어느 방향*
+  flip 시키는지가 base set 의 *trial 별 위치* 결정". K_base 는 평균만 알려줄 뿐.

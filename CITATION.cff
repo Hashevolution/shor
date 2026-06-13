@@ -7,10 +7,14 @@ abstract: >-
   logarithmic coverage time (T2), exact noise scaling 1/g_M(η) (T3),
   conditional compatibility with Regev's 2023 multi-base framework (T4),
   and a hybrid (C) + Regev b-trick factoring algorithm (T5) with closed-form
-  bound matching empirical mean within 4%. Verified across 17,700 measurements
-  at six composite sizes. Additionally documents a small (~1-3%) phase-noise-
-  induced reduction in run count at sub-Regev-optimal d — a weak instance of
-  stochastic resonance under an "anti-optimization" regime.
+  bound matching N=437 empirical mean within 4%. Verified across 17,700
+  measurements at six composite sizes. Additionally documents a universal
+  trial-level mechanism observation at (N=437, d=4): across 13 base sets
+  (31,200 trial-measurements), phase noise universally flips trials at one
+  of the K-bin boundaries (77% K=1/K=2, 15% K=2/K=3) of hybrid factoring,
+  with stochastic per-seed direction (mean SR +0.14%, p=0.31). The mechanism
+  follows the classical Benzi-Buchleitner stochastic resonance shape and
+  provides a conceptual bridge to the noise-as-resource literature (ENAQT).
 authors:
   - family-names: "Hashevolution"
     given-names: ""
@@ -25,5 +29,5 @@ keywords:
   - stochastic resonance
   - quantum noise
 license: MIT
-version: "0.1.0"
+version: "0.2.0"
 date-released: 2026-06-13
