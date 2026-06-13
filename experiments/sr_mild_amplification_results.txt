@@ -1,0 +1,22 @@
+# SR mild amplification at N=437 d=4
+# 2026-06-13 20:58:01
+
+mode    seed  sigma   K_mean
+normal  1    0.000  2.5900
+normal  1    0.050  2.5600
+normal  1    0.150  2.5700
+mild    1    0.000  3.3400
+mild    1    0.050  3.2000
+mild    1    0.150  3.2100
+normal  2    0.000  1.6300
+normal  2    0.050  1.6300
+normal  2    0.150  1.6300
+mild    2    0.000  2.4800
+mild    2    0.050  2.5800
+mild    2    0.150  2.5800
+normal  3    0.000  2.0200
+normal  3    0.050  2.0400
+normal  3    0.150  2.0400
+mild    3    0.000  2.9300
+mild    3    0.050  3.0600
+mild    3    0.150  3.0900
