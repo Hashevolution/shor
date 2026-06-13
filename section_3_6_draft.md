@@ -1,27 +1,32 @@
 # §3.6 Reframe Draft (대기 중)
 
-**Status**: 초안 작성 — σ scan extend 결과 받은 후 [TBD] 채우고 paper.md / paper.tex 에 commit.
+**Status**: 11 seeds 분석 완료 — seeds 12-13 결과 받으면 최종 [TBD] 채우고 paper.md / paper.tex 에 commit.
 
 **Source data**:
 - V3 (N=437 d=4, 2000 trials × 6 σ): 단일 또는 소수 seed
 - 현 σ scan (sigma_scan_437_d4_results.txt): 3 seeds × 200 trials × 12 σ
-- 현 σ scan extend (sigma_scan_437_d4_extended.txt): seeds 4-N 추가 [진행 중]
-- Histogram backfill (sigma_scan_437_d4_histograms.txt): 모든 seeds at σ=0, σ=0.050
+- 현 σ scan extend (sigma_scan_437_d4_extended.txt): seeds 4-13 [진행 중]
+- Histogram (sigma_scan_437_d4_histograms.txt): 모든 seeds 에서 σ=0, σ=0.050 비교
 - AOP grid + 이전 measurements (summary.md)
 
-**[TBD] 항목**:
-- Total seeds N (현재 5, 최대 13)
+**현재 진행 (n=11)**:
+- Mean SR at σ=0.050: +0.464% (n=10) → [TBD seeds 12-13 후 갱신]
+- Sign test: 8/11 positive (binomial p ≈ 0.11)
+- Mechanism: **Multi-boundary flip universal (11/11)**, K=1/K=2 dominant (8/11), K=2/K=3 secondary (3/11)
+- Sanity check: 11/11 ✓ histogram-K_mean 정확 일치
+
+**[TBD] 항목** (seeds 12-13 후):
 - 최종 mean SR, sd, SE, t, p
-- Sign test 결과 (positive/total)
-- Per-seed flip 표 추가 행
+- Sign test 최종 (positive / total)
+- Seeds 12-13 의 flip 패턴 통합
 
 ---
 
-## 3.6 Trial-level noise sensitivity at the K=1/K=2 boundary (mechanism observation)
+## 3.6 Trial-level noise sensitivity at K-bin boundaries (multi-boundary mechanism observation)
 
-We document a small but mechanistically clean phenomenon in the hybrid (C) + Regev b-trick algorithm: phase noise of magnitude `σ ∈ [0.005, 0.100]` reliably flips a small number of "borderline" trials at the `K = 1 / K = 2` success/failure boundary of single-run hybrid factoring, with the direction (success ↔ failure) determined by base-set composition. The aggregate K-mean effect is approximately `±0.5` to `±2%` per seed, with [TBD: net positive bias / mean indistinguishable from 0] across our sample of [TBD: N] seeds.
+We document a small but mechanistically clean phenomenon in the hybrid (C) + Regev b-trick algorithm: phase noise of magnitude `σ ∈ [0.005, 0.100]` reliably flips a small number of "borderline" trials at one of the K-bin boundaries of single-run hybrid factoring — typically the `K = 1 / K = 2` boundary, occasionally the `K = 2 / K = 3` boundary. Across [TBD: N] independent seeds at (N, d) = (437, 4), every seed exhibits boundary-flip activity (universality of the mechanism), with the *specific* boundary location and direction determined by base-set composition. The aggregate K-mean effect is approximately `±0.3` to `±2%` per seed, with [TBD: net positive bias / mean indistinguishable from 0] across our sample.
 
-The K = 1 / K = 2 boundary corresponds to the algorithm's intrinsic ~50% success rate per Regev run at the cell (N, d) = (437, 4); trials near this probability threshold are sensitive to small phase perturbations. The mechanism is qualitatively a member of the *stochastic resonance* family (Benzi et al. 1981; Wellens–Huelga et al. for the quantum variant), and quantitatively shows the classical SR σ-curve shape (saturation plateau + overload decline). It is too small to have cryptographic implications but provides a clean bridge between integer factoring and the broader *noise-as-resource* literature.
+The K = 1 / K = 2 boundary, which dominates in ~73% of sampled seeds, corresponds to the algorithm's intrinsic per-coordinate success rate giving a meaningful population of trials at the success/failure threshold. Less frequently (~18%), seeds whose K-distribution gives a stable K = 1 / K = 2 boundary show activity instead at the K = 2 / K = 3 boundary. The mechanism is qualitatively a member of the *stochastic resonance* family (Benzi et al. 1981; Wellens–Buchleitner 2004 for the quantum variant), and quantitatively shows the classical SR σ-curve shape (saturation plateau + overload decline). It is too small to have cryptographic implications but provides a clean bridge between integer factoring and the broader *noise-as-resource* literature.
 
 ### High-statistics measurement at N = 437, d = 4
 
@@ -38,32 +43,47 @@ We measured `K` with 200 trials per `σ`, across 12 σ values, and [TBD: 5-13] i
 
 [Plateau SR at σ ∈ [0.005, 0.100] is statistically [TBD: significant / borderline / not significant] at the `p < 0.05` level. The K-mean differences are individually small but consistent in [TBD: direction].]
 
-### Mechanism: K = 1 / K = 2 boundary flips
+### Mechanism: K-bin boundary flips (multi-boundary)
 
-For each seed we compute the K-histogram at `σ = 0` and `σ = 0.050` (within the saturation plateau). The diff histogram reveals which K-bin trials moved between, identifying the dominant flip:
+For each seed we compute the K-histogram at `σ = 0` and `σ = 0.050` (within the saturation plateau). The diff histogram reveals which K-bin trials moved between, identifying the dominant flip per seed. Across [TBD: N] seeds:
 
-| seed | K_baseline | SR % at σ=0.050 | direction | dominant flip |
-|---|---|---|---|---|
-| 1 | 2.200 | +0.682% | helps | K = 2 → K = 1 |
-| 2 | 1.555 | +1.929% | helps | K = 2 → K = 1 |
-| 3 | 1.720 | -0.872% | hurts | K = 1 → K = 2 |
-| 4 | 1.720 | +0.581% | helps | K = 2 → K = 1 |
-| 5 | 1.630 | +0.613% | helps | K = 2 → K = 1 |
-| [TBD seed 6-13] | ... | ... | ... | ... |
+| seed | K_baseline | SR % at σ=0.050 | direction | dominant flip | magnitude |
+|---|---|---|---|---|---|
+| 1 | 2.200 | +0.682% | helps | K = 2 → K = 1 | 1 |
+| 2 | 1.555 | +1.929% | helps | K = 2 → K = 1 | 1 |
+| 3 | 1.720 | -0.872% | hurts | K = 1 → K = 2 | 1 |
+| 4 | 1.720 | +0.581% | helps | K = 2 → K = 1 | 2 |
+| 5 | 1.630 | +0.613% | helps | K = 3 → K = 1 (long jump) | 1 |
+| 6 | 1.550 | +0.323% | helps | K = 3 → K = 2 (secondary boundary) | 1 |
+| 7 | 1.515 | +0.330% | helps | K = 2 → K = 1 | 2 |
+| 8 | 2.315 | +0.432% | helps | K = 2 → K = 1 | 2 |
+| 9 | 2.215 | +1.580% | helps | K = 2 → K = 1 | 5 |
+| 10 | 2.090 | -0.957% | hurts | K = 2 → K = 3 (secondary boundary, negative) | 2 |
+| 11 | 1.820 | -1.099% | hurts | K = 1 → K = 2 | 2 |
+| [TBD seed 12-13] | ... | ... | ... | ... | ... |
 
-**All measured seeds show the dominant noise-induced flip at the K = 1 / K = 2 boundary.** The direction (whether trials flow K = 2 → K = 1 or K = 1 → K = 2) depends on which side of the boundary has more "near-miss" trials in the noise-free baseline — itself a base-set-specific property.
+**Boundary location distribution**:
+- **K = 1 / K = 2**: 8 of 11 seeds (72.7%) — primary boundary
+- **K = 2 / K = 3**: 2 of 11 seeds (18.2%) — secondary boundary (seeds 6, 10)
+- **Non-adjacent (K = 3 ↔ K = 1)**: 1 of 11 seeds (9.1%) — long-jump (seed 5)
 
-A striking instance of base-set determinism: seeds 3 and 4 have **identical** `K_baseline = 1.720`, yet show **opposite SR directions** (`-0.872%` vs `+0.581%`). This directly demonstrates that K_baseline is *not* a deterministic predictor of SR direction; the direction is determined by the trial-level K-distribution of the specific base set drawn.
+The K-mean change for each seed is *exactly* reproduced by the histogram diff (sanity check: 11/11 seeds, `Δ K_total = (K_mean(σ=0.05) − K_mean(σ=0)) × n_trials` to within integer precision). This confirms that the dominant flip identified is the principal contribution; subsidiary boundary activity, if present, contributes ≤ 1 trial per 200.
+
+**Direction is determined by which side of the active boundary has more near-miss trials.** For seeds where the active boundary is K = 1 / K = 2, the direction is "K = 2 → K = 1" (helps) when the noise-free distribution has more *near-success* (almost-K = 1) trials, and "K = 1 → K = 2" (hurts) when it has more *barely-succeeded* (K = 1 but borderline) trials. For seeds where the active boundary shifts to K = 2 / K = 3, the same dynamic applies with shifted bins.
+
+A striking instance of base-set determinism: seeds 3 and 4 have **identical** `K_baseline = 1.720`, yet show **opposite SR directions** (`-0.872%` vs `+0.581%`). The K_baseline value is a population summary; the direction is determined by which side of the active boundary the base set populates more densely, an internal-distribution property that K_baseline does not capture.
 
 ### σ-curve consistency with classical SR
 
 The K-mean as a function of σ (averaged across [TBD: N] seeds, 200 trials each) follows the classical Benzi–Buchleitner SR-curve shape:
 
 - **σ < 0.005 (sub-threshold)**: zero effect — phase noise too small to perturb boundary trials.
-- **σ ∈ [0.005, 0.100] (saturation plateau)**: all flippable boundary trials flip; the magnitude is independent of σ within this range. Within a single seed, all 9 σ values in this range give *identical* K-mean (deterministic given that the same trials flip).
-- **σ ∈ [0.150, 0.200] (overload)**: additional trials at higher K-bins (K = 3 → K = 4, etc.) begin to flip in the failure direction, partially or fully canceling the boundary effect.
+- **σ ∈ [0.005, 0.100] (saturation plateau)**: all flippable boundary trials flip; the magnitude is independent of σ within this range. Within a single seed, all 9 σ values in this range give *identical* K-mean to integer-flip precision (deterministic given that the same trials flip across the range).
+- **σ ∈ [0.150, 0.200] (overload)**: additional trials at higher K-bins begin to flip in the failure direction, partially or fully canceling the boundary effect. Net SR at σ = 0.200 is statistically indistinguishable from zero.
 
-This is the quantitative shape of stochastic resonance — saturation followed by overload — and matches the prediction from the boundary-flip mechanism, where additional noise pushes trials further from the K = 1 / K = 2 boundary into other boundaries that do not benefit the algorithm.
+This is the quantitative shape of stochastic resonance — saturation followed by overload — and matches the prediction from the boundary-flip mechanism, where additional noise pushes trials further from the active boundary into other regimes that do not benefit (or harm) the algorithm uniformly.
+
+The intra-seed determinism of the plateau (`σ = 0.005, 0.010, ..., 0.100` give identical K-means within a seed) is itself a strong signature: it means the dominant flips are *deterministic* with respect to σ once σ exceeds the sub-threshold; the only stochastic ingredient is *which seeds* land on which side of the active boundary (between-seed variance).
 
 ### Cross-cell verification
 
@@ -114,9 +134,9 @@ The mechanism predicts that direction is determined by base-set composition, not
 
 ### Interpretation in the noise-as-resource framework
 
-The boundary-flip mechanism is the discrete analog of stochastic resonance in continuous systems. In ENAQT (Plenio–Huelga 2008) and related biological-transport studies, environmental noise drives a continuous probability distribution toward a more efficient transport configuration. In our setting, the analog is: phase noise drives discrete K outcomes between K = 1 and K = 2, and aggregate SR direction depends on which K bin had more borderline trials before noise. Both are instances of noise as a *boundary-locator* rather than a *signal amplifier*.
+The multi-boundary flip mechanism is the discrete analog of stochastic resonance in continuous systems. In ENAQT (Plenio–Huelga 2008) and related biological-transport studies, environmental noise drives a continuous probability distribution toward a more efficient transport configuration. In our setting, the analog is: phase noise drives discrete K outcomes across the K-boundaries (primarily K = 1 / K = 2, occasionally K = 2 / K = 3), and aggregate SR direction depends on the population balance at the active boundary. Both are instances of noise as a *boundary-locator* rather than a *signal amplifier*.
 
-To our knowledge this is the first observation of a clean, mechanism-level SR signal in an integer-factoring quantum algorithm. The effect is too small to have cryptographic implications (1–6 trial flips per 200 = `±0.5–3%` K reduction per seed, [TBD: net across seeds]) but provides a clear conceptual bridge between the noise-as-resource paradigm and quantum factoring.
+To our knowledge this is the first observation of a clean, mechanism-level SR signal in an integer-factoring quantum algorithm, where the mechanism is identified at trial-level granularity (which K-bin trials moved and in which direction). The effect is too small to have cryptographic implications (1–7 trial flips per 200 = `±0.3–2%` K reduction per seed, [TBD: net across seeds]) but provides a clear conceptual bridge between the noise-as-resource paradigm and quantum factoring.
 
 ### What we earlier over-claimed and have since retracted
 
@@ -132,18 +152,19 @@ To our knowledge this is the first observation of a clean, mechanism-level SR si
 
 ### Caveats
 
-- *Effect magnitude is tiny.* Approximately 1–6 trial flips per 200 trials at the K = 1 / K = 2 boundary; aggregate K-mean change `±0.005–0.030` runs, or `±0.5–2%` per seed.
+- *Effect magnitude is tiny.* Approximately 1–7 trial flips per 200 trials at the active K-boundary; aggregate K-mean change `±0.005–0.030` runs, or `±0.3–2%` per seed.
 - *No definite net SR effect across seeds.* [TBD: Mean SR across N seeds is `[TBD]±[TBD]%` (t = [TBD], p = [TBD]); the direction (net positive / net zero / net negative) [TBD: is / is not] statistically supported.]
-- *Direction is base-set-deterministic, not random-in-population.* Different seeds give different *directions* but the same *boundary location*. Predicting direction for an unmeasured seed requires inspecting its base-set K-distribution, not its K_baseline.
+- *Direction is base-set-deterministic, not random-in-population.* Different seeds give different *directions* and sometimes different *active boundaries* (K = 1 / K = 2 vs K = 2 / K = 3) but always exhibit the boundary-flip mechanism. Predicting direction (or boundary location) for an unmeasured seed requires inspecting its base-set K-distribution, not its K_baseline.
 - *Phase-noise specific.* Depolarizing and amplitude-damping noise show monotone degradation. Artificial `k ± δ` perturbation of measured k yields zero effect (continued-fraction expansion absorbs small δ).
-- *Closed-form prediction is partial.* We predict the K-bin where flips occur (K = 1 / K = 2 for `K_baseline ≈ 2`) and the σ-curve shape (saturation + overload), but not the flip direction (which depends on base-set composition).
+- *Closed-form prediction is partial.* We predict the σ-curve shape (saturation + overload) and that some K-boundary will be active, but not the specific active boundary or the flip direction (both depend on base-set composition).
 
 ### Open questions
 
-1. *Direction net bias across seeds.* Our [TBD: 5–13] seeds at (437, 4) show [TBD: a positive net trend / equipopulated +/-]. A larger sample (e.g., 30+ seeds) would distinguish a small genuine positive bias from a symmetric direction distribution.
-2. *Universality across N.* The boundary-flip mechanism predicts that any `K_baseline ≈ 2` cell shows the same qualitative pattern. Confirmation at `(1147, 2), (1147, 3), (4087, 4)` requires multi-thousand-trial measurements at each.
-3. *Higher-boundary effects.* Our histograms show small flip activity at K = 2 / K = 3, K = 3 / K = 4 (cascade effects). Whether these contribute systematically or only as noise has not been resolved.
-4. *Hardware verification.* Phase noise on real quantum hardware is structured (not Gaussian iid); whether the boundary-flip mechanism survives that noise structure is an empirical question.
+1. *Direction net bias across seeds.* Our [TBD: 11–13] seeds at (437, 4) show [TBD: a positive net trend with marginal significance / a clear positive net bias / mean indistinguishable from 0]. A larger sample (30+ seeds) would distinguish a small genuine positive bias from a symmetric direction distribution.
+2. *Which boundary is active at a given seed.* We observe 73% K = 1 / K = 2, 18% K = 2 / K = 3, and 9% long-jump in our 11-seed sample. The base-set property that determines this is not currently predictable from K_baseline alone; characterizing it would require finer-grained analysis of the noise-free K-histogram per seed.
+3. *Universality across N.* The multi-boundary flip mechanism predicts that any active-boundary cell shows the same qualitative pattern. Confirmation at `(1147, 2), (1147, 3), (4087, 4)` requires multi-thousand-trial measurements at each.
+4. *Long-jump events.* Seed 5 in our sample shows a single trial moving from K = 3 to K = 1, skipping K = 2. Whether this reflects a true noise-induced trajectory divergence or a cascade through two adjacent boundaries (recorded as one event at our resolution) remains open.
+5. *Hardware verification.* Phase noise on real quantum hardware is structured (not Gaussian iid); whether the boundary-flip mechanism survives that noise structure is an empirical question.
 
 We document this as a single-algorithm, mechanism-level observation: qualitatively a member of the noise-as-resource family, quantitatively too small to enable practical advantage. The K = 1 / K = 2 boundary mechanism is the *right* level of description; the integrated SR effect is the *measurement* of that mechanism.
 
