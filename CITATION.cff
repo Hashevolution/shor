@@ -20,9 +20,12 @@ authors:
     given-names: ""
 repository-code: "https://github.com/Hashevolution/shor"
 url: "https://github.com/Hashevolution/shor"
-doi: "10.5281/zenodo.20679807"
+doi: "10.5281/zenodo.20681847"
 identifiers:
-  - description: "Concept DOI for all versions"
+  - description: "v0.2.1 (current release)"
+    type: doi
+    value: "10.5281/zenodo.20681847"
+  - description: "v0.2.0 (initial release)"
     type: doi
     value: "10.5281/zenodo.20679807"
 keywords:

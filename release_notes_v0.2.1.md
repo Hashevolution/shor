@@ -103,7 +103,7 @@ This is a STRONGER finding than the original regime map: rather than "different 
 ```
 Hashevolution. (2026). A Noise-Invariant Determinism Theorem for Multi-Base
 Post-Processing in Shor's Order Finding (Version 0.2.1). Zenodo.
-https://doi.org/10.5281/zenodo.20679807
+https://doi.org/10.5281/zenodo.20681847
 ```
 
 See `CITATION.cff` (GitHub will auto-format BibTeX from this file).
