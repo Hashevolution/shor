@@ -291,7 +291,52 @@ seed 3, 4, 13: 모두 K_base = 1.720
 - "자물쇠 직관" 같은 정량적 모델은 데이터로 직접 검증
 - 정직한 평가가 결국 paper 의 신뢰도 결정
 
-## 11. Paper / Zenodo 준비 상태 (2026-06-13)
+## 11. 추가 발견 (2026-06-13 저녁)
+
+### Cross-cell (1147, 2) — High-K rescue 발견 ★
+
+5 seeds × 100 trials × 5 σ at (N=1147, d=2), K_base mean = 2.92:
+
+| seed | K_base | SR (σ=0.05) | dominant flip |
+|---|---|---|---|
+| 1 | 2.80 | +1.43% | K=2→K=1 (classical) |
+| 2 | 3.25 | 0.00% | K=3→K=1 |
+| 3 | 3.39 | **+9.44%** ★ | **K=15→K=5 + K=11→K=5 + K=20→K=6** |
+| 4 | 2.92 | **+8.56%** ★ | **K=8→K=4 (3 trials!)** |
+| 5 | 2.24 | -2.68% | K=1→K=2 (classical neg) |
+
+**Cross-seed**: mean +3.35%, sd 5.37%, t=1.39, p=0.082 (marginal)
+
+**핵심 발견 — High-K rescue**:
+- 큰 K (8, 11, 15, 20) trials 가 *moderate K* (4, 5) 로 jump
+- Per-seed |SR| 5x amplified vs (437, 4) max
+- K_base 큰 cell 에서 *새 mechanism channel* 활성
+
+### Engineered amplification ★
+
+Mild thinned hybrid (ALL convergents + NO (C) augmentation):
+```
+Full hybrid:    K_base=2.08, per-seed |SR| 0-1.16%
+Over-thinned:   K_base=19.87, SR=0% (no borderlines)
+Mild thinned:   K_base=2.92, per-seed |SR| 4-5% (★ 5x amplification)
+```
+
+→ (C) augmentation 가 *noise buffer* 역할 — 제거 시 mechanism 노출.  
+→ Direction 여전히 stochastic (1+, 2-).
+
+### Algorithm-structure regime map (testable conjecture)
+
+| Algorithm | SR | source |
+|---|---|---|
+| Shor (단일 base) | small (≤1%) | **PREDICTED** |
+| Regev (LLL) | negative | **PREDICTED** |
+| Hybrid full | +0.14% | **MEASURED** |
+| Hybrid mild-thinned | 5x amp | **MEASURED** |
+| Hybrid over-thinned | 0 | **MEASURED** |
+
+→ Multi-base + per-coord + no buffer = amplification sweet spot
+
+## 12. Paper / Zenodo 준비 상태 (2026-06-13)
 
 ```
 paper.md / paper.tex:
