@@ -416,6 +416,20 @@ This asymmetry — a direct consequence of the heavily K = 1-skewed noise-free K
 
 These two thinning experiments — null result with over-thinning, positive amplification with mild thinning — jointly confirm the structural prediction. Engineered amplification of *net direction* (rather than per-seed magnitude) would require a separate mechanism (e.g., direction-correlated noise or base-set selection); we leave this to future work. The mild-thinned variant is intentionally worse than the full hybrid and has no practical advantage; it demonstrates that the same boundary-flip mechanism operates in the sub-functional regime, just with a larger borderline population available to noise.
 
+**Algorithm-structure regime map for noise-as-resource (testable conjecture).** The two amplification results suggest a regime map for noise-as-resource susceptibility in multi-base quantum factoring. Combining what we *measured* (our hybrid variants) with what is *predicted* but not yet measured (standalone Shor and Regev):
+
+| Algorithm structure | Predicted/measured SR magnitude | Mechanism |
+|---|---|---|
+| Single-base Shor (1994) | small (≤ 1%, **predicted**) | narrow per-measurement K-distribution; few borderline trials |
+| Multi-base Regev (LLL post-processing) | negative SR (**predicted**) | LLL is noise-fragile; phase noise degrades factor extraction |
+| Hybrid (C) + b-trick — full (this work) | small positive (+0.14% at (437, 4), **measured**) | (C) augmentation acts as a buffer, absorbing borderline trials into K = 1 |
+| Hybrid mild-thinned (no (C) augmentation) | ~5× amplified per-seed \|SR\| (4–5% at (437, 4), **measured**) | (C) buffer removed; multi-base structure exposes borderline-trial population to noise |
+| Hybrid over-thinned (smallest convergent only) | zero (**measured**) | over-thinning eliminates borderline population entirely |
+
+The predictions for standalone Shor (small effect, similar to the full hybrid) and Regev with LLL (negative effect, noise-fragile post-processing) are *testable* with the same σ-scan + K-histogram protocol used here. We have not yet measured them; doing so would either confirm the regime map or reveal additional structure. If confirmed, the regime map predicts that *noise-as-resource* in quantum factoring is naturally maximized in a *multi-base + per-coordinate independent recovery + no buffer* variant — not in standalone Shor or Regev, and not in our full hybrid — and is structurally limited to per-seed magnitude amplification, with no inherent direction bias.
+
+This regime-map perspective explains why noise-as-resource has been largely absent from the quantum-factoring literature: the standard algorithms (Shor, Regev) live in regimes where the effect is either too small (Shor) or destructive (Regev), and only a specific subclass of hybrid variants exhibits clean mechanism-level amplification at the magnitude level. The phenomenon is real but algorithm-structure-conditional.
+
 **Cross-cell verification of the mechanism.** The boundary-flip mechanism makes three regime-level predictions, which we test against existing measurements at other `(N, d)` cells:
 
 | (N, d) | K_baseline | regime | observed SR % | match |
