@@ -13,8 +13,8 @@
 | 3 | B — HSP/이산로그 확장 | ✅ 종료 (scope-out) | paper §6 Limitations 단락 |
 | 4 | C — hardware 데모 (IBM Q) | 🟡 부분 (calibrated proxy) | Appendix E (5종 IBM Eagle 모델) |
 | 5 | E — Regev 통합 본실행 | ✅ 완료 | 정리 4-5 (paper §3.4-3.5) + Lemma 5.1 |
-| 6 | F — Noise-as-resource (frontier) | ✅ 완료 | §3.6 SR + AOP grid + ENAQT bridge |
-| 7 | Publication — arXiv / Zenodo | 🟡 진행중 | Zenodo 메타 준비완료, DOI 대기 |
+| 6 | F — Noise-as-resource → multi-boundary mechanism | ✅ 완료 | §3.6 13-seed universal mechanism + ENAQT bridge |
+| 7 | Publication — arXiv / Zenodo | 🟡 진행중 | Zenodo 메타 v0.2 준비완료, DOI 대기, cross-cell verification (1147,2) 진행 |
 
 ---
 
@@ -650,6 +650,18 @@ sketch 만 작성. 본 검증은 후속 세션.
 본 paper 본문 외부 — 후속 연구 가능성 기록용.
 
 ## §8 진행 로그
+
+- **2026-06-13 (저녁: Plan A' multi-boundary mechanism 격상)**: σ scan (437, 4) 13 seeds × 200 trials × 12 σ + K-histogram backfill 결과:
+  - **13/13 seeds 가 boundary-flip mechanism 따름** (universal at base-set level)
+  - Boundary distribution: 77% K=1/K=2, 15% K=2/K=3, 8% long-jump
+  - σ-curve direction asymmetry (positive 회귀, negative monotonic)
+  - **Direction 의 base-set 결정성**: seed 3, 4, 13 모두 K_base=1.72 다른 direction
+  - Net SR: mean +0.144%, t=0.51, p=0.31 — NOT significant
+  - V3 "p=0.03 sign test" 도 *within-seed σ correlation* 으로 *허위* significance.
+  Goldilocks 가설 *세련화*: K_base 는 집계 proxy, 진짜 mechanism 은 trial-level
+  boundary-flip. paper §3.6 multi-boundary mechanism 으로 격상. H22 신규.
+  부속 doc (summary.md, frontier.md, hypotheses.md, Zenodo 메타) 모두 정합성.
+  (1147, 2) compact σ scan 백그라운드 진행 — cross-cell universality 검증.
 
 - **2026-06-13 (paper polish + Zenodo prep)**: **paper.md / paper.tex 정밀 polish 완료.**
   - Abstract: §3.6 SR observation 한 줄 추가 (caveat 포함), Lemma 5.1 bound 의

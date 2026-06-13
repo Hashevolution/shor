@@ -715,14 +715,18 @@ python -m experiments.g_eta 437             # measures g_M (Theorem 3)
 python -m experiments.k_lambda_alg 437      # reproduces Theorem 3 table
 python -m experiments.regev_c               # reproduces Theorem 4 table
 python -m experiments.rv_filter_lll factor  # reproduces Theorem 5 hybrid table
-python -m experiments.sr_aop                # reproduces Sec. 3.6 (N, d) SR grid
+python -m experiments.sr_aop                # Sec. 3.6 single-seed (N, d) AOP grid
+python -m experiments.sigma_scan_437        # Sec. 3.6 baseline sigma-scan (3 seeds)
+python -m experiments.sigma_scan_437_extend # Sec. 3.6 extended seeds (4-13) + backfill
+python -m experiments.analyze_histograms    # Sec. 3.6 per-seed flip identification
+python -m experiments.sigma_scan_general 1147 2 5 100 compact  # cross-cell test
 python -m experiments.hardware_calibrated   # reproduces Appendix E (hardware proxy)
 python demo.py --noise3 77 143              # 3-noise comparison
 python demo.py --adaptive 77 143 209 323    # negative result, Sec. 6
 \end{lstlisting}
 
 \noindent
-The codebase is approximately 700 lines of \texttt{numpy}. No quantum libraries are required.
+The codebase is approximately $1{,}000$ lines of \texttt{numpy}. No quantum libraries are required. Raw measurement data for \S\,3.6 is stored in \texttt{experiments/sigma\_scan\_437\_d4\_results.txt} (initial $3$ seeds), \texttt{experiments/sigma\_scan\_437\_d4\_extended.txt} (seeds $4$--$13$), and \texttt{experiments/sigma\_scan\_437\_d4\_histograms.txt} (per-seed $K$-distributions). All scripts are resumable.
 
 \section{Conclusion}
 \label{sec:conclusion}

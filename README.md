@@ -116,7 +116,14 @@ QFT가 정확히 jQ/r을 주지 않더라도, `|k/Q - j/r| ≤ 1/(2Q) ≤ 1/(2r�
 | `multi_base.py` | 다중 base λ(N) 누적으로 측정당 회수율 향상 (§7) |
 | `noise.py` | 6종 노이즈 모델 + 5종 hybrid b-trick 부패 모델 |
 | `demo.py` | 인수분해 데모 + 회수율 비교 실험 |
-| `experiments/` | 정리 2/3/4/5 + §3.6 SR 재현 스크립트 |
+| `experiments/` | 정리 2-5 + §3.6 multi-boundary mechanism 재현 스크립트 |
+| `experiments/sigma_scan_437.py` | §3.6 baseline σ-scan (3 seeds × 12 σ) |
+| `experiments/sigma_scan_437_extend.py` | §3.6 extended seeds 4-13 + histogram backfill |
+| `experiments/sigma_scan_general.py` | 임의 (N, d) cell 에서 σ-scan + cross-cell verification |
+| `experiments/analyze_histograms.py` | §3.6 per-seed K-bin flip 식별 + boundary distribution |
+| `section_3_6_draft.md` | §3.6 reframe 초안 ([TBD] 채워진 후 paper 에 반영됨) |
+| `summary.md` / `hypotheses.md` / `frontier.md` | 연구 진행 메타 문서 |
+| `roadmap.md` | Phase 1-7 격상 로드맵 |
 
 ### 4.1 시뮬레이션 한계
 - 큐비트 수 ≈ 3·⌈log₂ N⌉. 상태벡터 차원 2^(t+n) → N이 커지면 메모리 폭발.

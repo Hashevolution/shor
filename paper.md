@@ -549,13 +549,19 @@ python -m experiments.g_eta 437             # measures g_M(η) per noise model (
 python -m experiments.k_lambda_alg 437      # reproduces §3.3 table (Theorem 3)
 python -m experiments.regev_c               # reproduces §3.4 table (Theorem 4)
 python -m experiments.rv_filter_lll factor  # reproduces §3.5 table (Theorem 5 hybrid)
-python -m experiments.sr_aop                # reproduces §3.6 (N, d) SR grid
+python -m experiments.sr_aop                # reproduces §3.6 single-seed (N, d) AOP grid
+python -m experiments.sigma_scan_437        # reproduces §3.6 baseline σ-scan (3 seeds)
+python -m experiments.sigma_scan_437_extend # reproduces §3.6 extended seeds (4-13) + backfill
+python -m experiments.analyze_histograms    # reproduces §3.6 per-seed flip identification
+python -m experiments.sigma_scan_general 1147 2 5 100 compact   # cross-cell verification
 python -m experiments.hardware_calibrated   # reproduces Appendix E (hardware proxy)
 python demo.py --noise3 77 143              # reproduces 3-noise comparison
 python demo.py --adaptive 77 143 209 323    # reproduces §9.1 negative result
 ```
 
-The codebase is `~700` lines of numpy. No quantum libraries required.
+The codebase is `~1000` lines of numpy. No quantum libraries required.
+
+Raw measurement data for §3.6 is stored in `experiments/sigma_scan_437_d4_results.txt` (initial 3 seeds), `experiments/sigma_scan_437_d4_extended.txt` (seeds 4-13), and `experiments/sigma_scan_437_d4_histograms.txt` (per-seed K-distributions at σ ∈ {0, 0.050} for boundary-flip analysis). All scripts are resumable (immediate per-cell save, skip-existing on re-run).
 
 ## 8. Conclusion
 
