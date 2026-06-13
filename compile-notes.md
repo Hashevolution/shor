@@ -36,6 +36,22 @@ latexmk -pdf paper.tex
 3. **인용 누락 확인**. `pdflatex` 출력에서 `Warning: Citation ... undefined` 가 없는지.
 4. **그림 없음 확인**. 본 paper 는 표만 사용 — 그림 누락 경고 없음.
 5. **arXiv 카테고리 결정**. 권장: `quant-ph` (Quantum Physics) 주 + `cs.CC` (Computational Complexity) 또는 `math.NT` (Number Theory) 보조.
+6. **§3.6 의 최신 결과 통합 확인**. v0.2 (13-seed × 12 σ + (1147, 2) cross-cell + amplification) 모두 반영되었는지.
+
+## Zenodo 업로드 (arXiv 와 *별도* 가능)
+
+arXiv endorsement 대기 중에 *Zenodo 만* 으로 priority lock 가능:
+
+1. https://zenodo.org/ 계정 + GitHub OAuth 연결
+2. https://zenodo.org/account/settings/github/ 에서 `Hashevolution/shor` 토글 ON
+3. GitHub repo PUBLIC 으로 전환
+4. GitHub Release 생성:
+   ```powershell
+   gh release create v0.2.0 --title "Multi-boundary mechanism observation" `
+       --notes-file release_notes_v0.2.0.md
+   ```
+5. Zenodo 가 자동 archive + DOI 발급 (~10분)
+6. CITATION.cff / README.md 에 DOI badge 추가
 
 ## arXiv 업로드 단계
 
