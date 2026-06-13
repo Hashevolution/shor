@@ -5,7 +5,7 @@
 
 ## Abstract
 
-We give five theorems and one conditional compatibility observation about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. (1) **Noise-invariant determinism**: maintaining an accumulated exponent candidate `L` — the least common multiple of orders recovered from previous bases — and augmenting standard continued-fraction post-processing with a divisor search over `L` yields a procedure (which we call (C)) that recovers the order `r_a` of any new base `a` deterministically whenever `r_a | L`, *independent of the measurement distribution*. (2) **Logarithmic coverage time (ideal)**: for a semiprime `N = pq`, the expected number of independent uniform bases `K_λ` required for `L = λ(N)` satisfies `E[K_λ] ≤ 1 + Σ_{ℓ | λ(N)} 1/(ℓ^{s_ℓ} - 1)`, where `s_ℓ ∈ {1, 2}` records the ℓ-Sylow overlap of `(Z/p)*` and `(Z/q)*`. (3) **Noise scaling**: under a class of "destructive" noise models (depolarizing, bias, modexp), the actual algorithm K_λ scales exactly as `E[K_λ^{alg}(η)] = E[K_λ^{ideal}] / g_M(η)` where `g_M(η)` is the per-base extraction probability. Together: a noise-adjusted logarithmic number of measurements suffice to enter the noise-immune regime of (1). We verify (1) across 17,700 measurements (zero violations), (2) across 17,000 trials (mean within bound), and (3) across 9 noise setups on N=437 (mean error ~11% for the destructive class). Theorem 4 demonstrates conditional compatibility with Regev's 2023 multi-base framework (numpy simulation, 200 trials × 4 N), provided each measurement coordinate's marginal is Shor-like. Theorem 5 introduces the **(C) + Regev b-trick hybrid**: applying (C) per coordinate while immediately checking each newly-recovered `ord(a_i)` for a nontrivial square root via `b_i^{ord(a_i)}`. Empirically, the hybrid factors N=437 in 1.03-1.70 runs (100% success across 5 noise/corruption conditions × 30 trials), versus 6.7-7.1 (70%) for (C) alone and 3.1-4.0 (90%) for pure b-trick. We formalize this with **Lemma 5.1** (per-`b` nontrivial-sqrt probability ≥ 1/2 for any semiprime) and a closed-form bound `E[K] ≤ 1/(1 − (1 − g(η)·c)^d)` matching the N=437 empirical mean within 4% (the bound is correspondingly loose at larger N, where the per-coordinate recovery rate `g` drops below 1; the empirical mean stays in `[1.1, 1.5]` across `N ∈ {1147, 2491, 4087}`). We discuss the theorem's relation to prior work — Knill's lcm trick (1995), McAnally's larger-Q convergent enumeration (2001), the Bach-Shallit textbook treatment of `r | λ(N)`, and the quantum algorithm for computing the Carmichael function (2021) — and conclude that while every individual ingredient is folklore, the *clean statement of the noise-invariance corollary* appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme — adaptive base selection and lattice-based joint post-processing — yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale. Finally, we document a small (~0.9%) phase-noise-induced reduction in run count at a single (N, d) = (437, 4) cell — an empirical instance of stochastic resonance in multi-base quantum factoring, robust under high-statistics sign test (p ≈ 0.03 over 2000 trials), confined to a narrow "Goldilocks" regime where K_baseline is barely above 1.
+We give five theorems and one conditional compatibility observation about classical post-processing of multiple-base order-finding measurements in Shor's algorithm. (1) **Noise-invariant determinism**: maintaining an accumulated exponent candidate `L` — the least common multiple of orders recovered from previous bases — and augmenting standard continued-fraction post-processing with a divisor search over `L` yields a procedure (which we call (C)) that recovers the order `r_a` of any new base `a` deterministically whenever `r_a | L`, *independent of the measurement distribution*. (2) **Logarithmic coverage time (ideal)**: for a semiprime `N = pq`, the expected number of independent uniform bases `K_λ` required for `L = λ(N)` satisfies `E[K_λ] ≤ 1 + Σ_{ℓ | λ(N)} 1/(ℓ^{s_ℓ} - 1)`, where `s_ℓ ∈ {1, 2}` records the ℓ-Sylow overlap of `(Z/p)*` and `(Z/q)*`. (3) **Noise scaling**: under a class of "destructive" noise models (depolarizing, bias, modexp), the actual algorithm K_λ scales exactly as `E[K_λ^{alg}(η)] = E[K_λ^{ideal}] / g_M(η)` where `g_M(η)` is the per-base extraction probability. Together: a noise-adjusted logarithmic number of measurements suffice to enter the noise-immune regime of (1). We verify (1) across 17,700 measurements (zero violations), (2) across 17,000 trials (mean within bound), and (3) across 9 noise setups on N=437 (mean error ~11% for the destructive class). Theorem 4 demonstrates conditional compatibility with Regev's 2023 multi-base framework (numpy simulation, 200 trials × 4 N), provided each measurement coordinate's marginal is Shor-like. Theorem 5 introduces the **(C) + Regev b-trick hybrid**: applying (C) per coordinate while immediately checking each newly-recovered `ord(a_i)` for a nontrivial square root via `b_i^{ord(a_i)}`. Empirically, the hybrid factors N=437 in 1.03-1.70 runs (100% success across 5 noise/corruption conditions × 30 trials), versus 6.7-7.1 (70%) for (C) alone and 3.1-4.0 (90%) for pure b-trick. We formalize this with **Lemma 5.1** (per-`b` nontrivial-sqrt probability ≥ 1/2 for any semiprime) and a closed-form bound `E[K] ≤ 1/(1 − (1 − g(η)·c)^d)` matching the N=437 empirical mean within 4% (the bound is correspondingly loose at larger N, where the per-coordinate recovery rate `g` drops below 1; the empirical mean stays in `[1.1, 1.5]` across `N ∈ {1147, 2491, 4087}`). We discuss the theorem's relation to prior work — Knill's lcm trick (1995), McAnally's larger-Q convergent enumeration (2001), the Bach-Shallit textbook treatment of `r | λ(N)`, and the quantum algorithm for computing the Carmichael function (2021) — and conclude that while every individual ingredient is folklore, the *clean statement of the noise-invariance corollary* appears not to be made explicit in surveyed literature. We additionally show that two natural attempts to improve measurement count beyond this scheme — adaptive base selection and lattice-based joint post-processing — yield no further reduction, suggesting the theorem captures the essential structure of the problem at this scale. Finally, we document a universal trial-level mechanism observation at `(N, d) = (437, 4)`: across 13 independent base sets (200 trials × 12 σ values each), phase noise σ ∈ [0.005, 0.100] reliably flips a small number of trials at one of the K-bin boundaries (primarily K=1/K=2, occasionally K=2/K=3) of single-run factoring — but the direction (success ↔ failure) is base-set-stochastic, and the cross-seed mean SR (+0.14%, t=0.51, p=0.31 at σ=0.050) shows no statistically significant net bias. The mechanism is qualitatively a member of the stochastic-resonance family and provides a conceptual bridge to the noise-as-resource literature (ENAQT) but is too small in absolute terms to enable cryptographic advantage.
 
 ## 1. Background and notation
 
@@ -356,73 +356,103 @@ E[above]                  = ((1 − c) + c(1 − g)^K)^d
 
 Reproduce: `python -m experiments.rv_filter_lll factor`.
 
-### 3.6 Weak stochastic resonance in a `K_baseline ≈ 2` regime (single-cell observation)
+### 3.6 Trial-level noise sensitivity at K-bin boundaries (universal mechanism observation)
 
-We document a small but statistically robust phenomenon at a single (N, d) cell: under small phase noise the hybrid algorithm requires *fewer* Regev runs than the noise-free baseline. The effect is approximately `0.9%` and is reproducible at `N = 437`, `d = 4` (V3 measurement: 2000 trials per σ, sign-test `p ≈ 0.03`). Whether the effect extends to other (N, d) cells is *open*: our multi-seed confirmation tests at larger N reveal that per-seed standard deviation (`~4%` at `N = 1147`, `d = 1`, `100` trials × `3` seeds) is comparable to or larger than the supposed effect size, so single-seed AOP-grid measurements (reported below for transparency) are *inconclusive*.
+We document a mechanistically clean phenomenon in the hybrid (C) + Regev b-trick algorithm at `(N, d) = (437, 4)`: under phase noise of magnitude `σ ∈ [0.005, 0.100]`, every sampled base set exhibits a small set of trials moving across one of the K-bin boundaries of single-run factoring — most often the `K = 1 / K = 2` boundary, occasionally the `K = 2 / K = 3` boundary. Across 13 independent seeds × 200 trials × 12 σ values (= 31,200 trial-measurements), the *boundary-flip mechanism is universal* (13/13 seeds), but the *direction* (success ↔ failure) is base-set-dependent and shows no statistically significant net bias: mean SR `= +0.144%`, sd `1.016%`, SE `0.282%`, `t = 0.51`, `p (1-sided) = 0.31` at σ = 0.050.
 
-**Robust high-statistics measurement at `N = 437`, `d = 4`.** We measured `K` with `2000` independent trials per `σ`:
+The mechanism is qualitatively a member of the stochastic resonance family (Benzi et al. 1981; Wellens–Buchleitner 2004 for the quantum variant) and the σ-curve quantitatively matches the classical Benzi shape (saturation plateau followed by overload decline). It provides a clean conceptual bridge between integer factoring and the broader noise-as-resource literature (ENAQT, Plenio–Huelga 2008) but is too small in absolute terms (1–7 trial flips per 200 = `±0.3–2%` per seed) to have cryptographic implications.
 
-| σ | hybrid mean K | Δ vs baseline | reduction |
-|---:|---:|---:|---:|
-| 0.000 | 1.9160 (baseline) | — | — |
-| 0.025 | 1.8985 | −0.0175 | −0.91% |
-| 0.050 | 1.8985 | −0.0175 | −0.91% |
-| 0.075 | 1.8990 | −0.0170 | −0.89% |
-| 0.100 | 1.9005 | −0.0155 | −0.81% |
-| 0.200 | 1.9070 | −0.0090 | −0.47% |
+**13-seed σ-scan at `N = 437`, `d = 4`.** We measured `K` with 200 trials per σ across 12 σ values and 13 seeds:
 
-**Sign-test significance.** All five `σ ∈ [0.025, 0.20]` values fall below the noise-free baseline; under a null hypothesis of equal probability above/below baseline, `P[5/5 below] = (1/2)^5 ≈ 0.03`, significant at `p < 0.05`. Each individual `Δ` is within `~1` standard error of zero (SE per measurement at 2000 trials is `≈ 0.034`); the significance comes from the *consistent direction* across five σ values, not from any single value.
+| σ | mean SR % (over seeds) | sd | SE | t | p (1-sided) |
+|---:|---:|---:|---:|---:|---:|
+| 0.005 | +0.211% | 1.052 | 0.292 | +0.72 | 0.236 |
+| 0.010-0.025 | +0.190% | 1.054 | 0.292 | +0.65 | 0.258 |
+| 0.035-0.075 | +0.165% | 1.041 | 0.289 | +0.57 | 0.284 |
+| 0.100 | +0.142% | 1.041 | 0.289 | +0.49 | 0.312 |
+| 0.150 | +0.001% | 1.000 | 0.277 | +0.00 | 0.500 |
+| 0.200 | −0.318% | 0.974 | 0.270 | −1.18 | 0.881 |
 
-**Goldilocks observation.** The cell where SR is robust has `K_baseline = 1.916` — just above the `K = 1` ceiling that obtains when the hybrid factors in a single run. We hypothesize a narrow "Goldilocks" regime:
+The plateau structure of the σ-curve is preserved: within each seed, σ ∈ [0.005, 0.100] gives identical K-mean (deterministic flip set). The decline at σ ≥ 0.150 is real but the net direction is small. At σ = 0.200 the mean turns slightly negative — see *direction asymmetry* below.
 
-- *Ceiling regime* (`K_baseline → 1`): the algorithm already factors in one run, leaving no room for noise to help. Example: `(437, 8)` with `K_baseline = 1.19`, SR `≈ 0%`.
-- *Goldilocks regime* (`K_baseline ≈ 2`): the algorithm is *just barely* failing in 1 run, so a small phase-noise perturbation can *occasionally* flip near-miss measurements into successful order recoveries. Example: `(437, 4)` with `K_baseline = 1.92`, SR `+0.9%` (robust).
-- *Noise-floor regime* (`K_baseline ≫ 2`): the effect (if any) is buried in per-seed variance. Example: `(1147, 1)` with `K_baseline ≈ 6.5`, per-seed `sd ≈ 4%` at 100 trials × 3 seeds — variance dominates the supposed signal.
+**Per-seed mechanism observation.** For each seed we computed the K-histogram at σ = 0 and σ = 0.050 and identified the dominant K-bin flip:
 
-**Intuitive picture (lock-and-key analogy).** Think of `K_baseline` as how stuck a lock is when picked with the noise-free key. A 1-tumbler lock (`K = 1`) opens immediately; small shaking does not help. A *barely-stuck* lock (`K ≈ 2`) is the regime where a small wiggle occasionally frees a tumbler. A very stuck lock (`K ≫ 2`) needs many tries, and the *spread* in tries-per-lock from wiggling exceeds the wiggle's average benefit. Goldilocks is the narrow window in which the noise pushes near-misses into hits without overwhelming the comparison.
+| seed | K_base | SR at σ=0.050 | direction | dominant flip | mag |
+|---|---|---|---|---|---|
+| 1 | 2.200 | +0.682% | helps | K=2→K=1 | 1 |
+| 2 | 1.555 | +1.929% | helps | K=2→K=1 | 1 |
+| 3 | 1.720 | −0.872% | hurts | K=1→K=2 | 1 |
+| 4 | 1.720 | +0.581% | helps | K=2→K=1 | 2 |
+| 5 | 1.630 | +0.613% | helps | K=3→K=1 (long jump) | 1 |
+| 6 | 1.550 | +0.323% | helps | K=3→K=2 (secondary) | 1 |
+| 7 | 1.515 | +0.330% | helps | K=2→K=1 | 2 |
+| 8 | 2.315 | +0.432% | helps | K=2→K=1 | 2 |
+| 9 | 2.215 | +1.580% | helps | K=2→K=1 | 5 |
+| 10 | 2.090 | −0.957% | hurts | K=2→K=3 (secondary, neg) | 2 |
+| 11 | 1.820 | −1.099% | hurts | K=1→K=2 | 2 |
+| 12 | 1.815 | −1.377% | hurts | K=1→K=2 | 5 |
+| 13 | 1.720 | −0.291% | hurts | K=1→K=2 | 3 |
 
-**Exploratory `(N, d)` grid (unconfirmed — single seed × 300 trials).** For completeness we record the original grid that motivated the Goldilocks observation. *These values should be read as a single-seed sample, not as confirmed measurements:* a multi-seed re-measurement at `(1147, 1)` (the strongest single-seed positive) found mean `−0.53%` with sd `4.28%` over 3 seeds × 100 trials, fully consistent with the supposed `+2.60%` peak being a single-seed fluctuation.
+**Boundary distribution**: K = 1 / K = 2 in 10/13 seeds (76.9%); K = 2 / K = 3 in 2/13 (15.4%); K = 3 ↔ K = 1 long-jump in 1/13 (7.7%). All 13 seeds show boundary-flip activity: *mechanism universality is empirically robust*. The K-mean change for each seed exactly matches the histogram-derived total (`Δ K_total / n_trials = mean SR / 100 × K_base`, integer precision, 13/13).
 
-| `(N, d)` | `K_baseline` | `K(σ=.05)` | SR % (single seed) | regime |
-|---|---:|---:|---:|---|
-| (437, 1)   | 7.277 | 7.220 | +0.78 | noise-floor |
-| (437, 2)   | 4.473 | 4.483 | −0.22 | noise-floor |
-| (437, 3)   | 2.707 | 2.673 | +1.23 | noise-floor / Goldilocks edge |
-| **(437, 4)** | **1.916** | **1.899** | **+0.91 ✓ V3 (2000 trials)** | **Goldilocks ★** |
-| (437, 8)   | 1.190 | 1.195 |  0.00 | ceiling |
-| (1147, 1)  | 5.780 | 5.630 | +2.60 (✗ multi-seed `−0.53 ± 4.28`) | noise-floor |
-| (1147, 2)  | 2.427 | 2.397 | +1.24 | Goldilocks candidate |
-| (1147, 3)  | 1.667 | 1.650 | +1.00 | Goldilocks candidate |
-| (1147, 8)  | 1.055 | 1.050 | +0.47 | ceiling |
-| (2491, 1)  | 5.643 | 5.567 | +1.36 | noise-floor |
-| (2491, 2)  | 2.250 | 2.360 | −4.89 | unclear |
-| (2491, 4)  | 1.065 | 1.085 | −1.88 | ceiling |
+**Direction independence from K_baseline.** Seeds 3 and 4 share `K_baseline = 1.720` but show opposite directions (−0.872% vs +0.581%); seeds 4 and 13 also share this `K_baseline` but give +0.581% vs −0.291%. Direction is determined by the trial-level K-distribution of the specific base set drawn, not by the K-mean aggregate.
+
+**σ-curve direction asymmetry.** Positive-SR seeds and negative-SR seeds follow qualitatively different σ-curves:
+
+- *Positive seeds*: saturation plateau (σ ∈ [0.005, 0.100]), then decline back toward baseline as σ ≥ 0.150 (some flipped trials are pushed back). The effect is bounded above by the small K = 2 (or K = 3) population available to flip into K = 1.
+- *Negative seeds*: monotonic worsening — K-mean increases with σ throughout the range, no decline. The K = 1 population (180+ trials of 200) is virtually unbounded relative to K = 2, so noise has a continuous reservoir of trials to push out of K = 1.
+
+This asymmetry — a direct consequence of the heavily K = 1-skewed noise-free K-distribution at this cell — explains why the cross-seed mean SR at high σ approaches zero or slightly negative: positive seeds saturate while negative seeds amplify.
+
+**Speculative mechanism.** Small phase noise broadens the QFT measurement peak around `j · Q / r` slightly. For each trial the broadening either exposes an alternative convergent candidate that succeeds (K decrease) or perturbs a previously-found one into failure (K increase); the outcome per base set is determined by which side of the active boundary holds more *near-miss* trials in the noise-free measurement. The plateau structure follows from the discreteness of the affected trial set: once σ exceeds the per-trial peak width that the borderline trials require to flip, additional σ has no marginal effect within the plateau. The overload decline at large σ reflects the same dynamic in reverse — flipped trials become unstable and revert.
+
+**Cross-cell verification of the mechanism.** The boundary-flip mechanism makes three regime-level predictions, which we test against existing measurements at other `(N, d)` cells:
+
+| (N, d) | K_baseline | regime | observed SR % | match |
+|---|---|---|---|---|
+| (437, 8) | 1.19 | ceiling | +0.00% | ✓ exact |
+| (1147, 8) | 1.06 | ceiling | +0.47% | ✓ small |
+| (2491, 4) | 1.07 | ceiling | −1.88% | ✓ small |
+| (2491, 8) | 1.00 | floor | −1.50% | ✓ noise |
+| (1147, 1) | 5.78 | noise floor | −0.53% (multi-seed 3×100tr, sd 4.28%) | ✓ variance > effect |
+| (437, 4) | 1.92 | active boundary | +0.144% (13×200tr, p=0.31) | ✓ small, no net direction |
+| (1147, 2) | 2.43 | active boundary | +1.24% single → +0.42% (4×1000tr, t=0.50) | ✓ regresses to small |
+
+The ceiling cells show near-zero SR (no `K ≥ 2` population to flip); the noise-floor cell shows variance dominating effect; the active-boundary cells show small magnitudes that regress under multi-seed measurement. The single-seed grid measurements at `(437, 1, 2, 3), (1147, 3, 4), (2491, 1, 2)` (mostly positive, one −4.89% at 2491, 2) are consistent with this picture: per-seed variance ≈ effect magnitude, mean direction not yet determined.
 
 **What we earlier over-claimed and have since retracted.**
 
-1. *17.86% peak at `(N, d, σ) = (1147, 2, 0.01)`*: measured at 150 trials × single seed; reproducing at 1000 trials × 4 seeds gave mean `+0.42%` (`t = 0.50`, not significant) — *fluke*.
-2. *Polynomial scaling `SR ∝ N^α`*: rejected once `N = 2491` showed `SR ≈ 0%` at the same `(d, σ)` cells.
-3. *`σ_opt ∝ N^α`* (a metaphor we explored: "small lock, small wiggle; large lock, larger wiggle"): rejected by a dedicated σ-scan finding `σ_opt ≈ 0.010` independent of `N`.
-4. *"Anti-Optimization Principle" — `d = 1` maintains positive SR for all `N`*: motivated by the AOP grid above but undermined by the multi-seed re-measurement at `(1147, 1)`. The single-seed positive values at `(437, 1)`, `(2491, 1)` remain unconfirmed; they may all be of fluctuation magnitude given the variance observed at `(1147, 1)`.
-
-The honest interpretation is that we have *one* robust cell, *one* qualitative pattern (Goldilocks: SR detectable only when `K_baseline` is barely above `1`), and many tantalizing but unconfirmed single-seed positives that are within fluctuation distance of zero.
-
-**Speculative mechanism.** Small phase noise broadens the QFT measurement peak around `j · Q / r` slightly. For the hybrid algorithm — which succeeds whenever *any* of the `d` coordinates of *any* Regev run yields a successful order recovery plus nontrivial `b`-sqrt — this broadening occasionally exposes alternative convergent candidates and pushes a "near-miss" measurement into a successful one. The effect is the qualitative signature of *stochastic resonance* (Benzi et al. 1981, classically; Wellens–Buchleitner et al. for the quantum variant) and of *environment-assisted quantum transport* (Plenio–Huelga 2008). The Goldilocks character — that the effect manifests only when the algorithm is *barely failing* — is consistent with this picture: where the noise-free algorithm succeeds in one run, there is no near-miss to convert; where the noise-free algorithm requires many runs, the per-trial variance washes out the small per-trial benefit.
+1. *`+17.86%` peak at `(1147, 2, 0.01)`* (150 trials × 1 seed): re-measured at 1000 trials × 4 seeds gave mean `+0.42%` (`t = 0.50`, not significant). The original is a single-seed direction fluctuation, within mechanism variance.
+2. *Polynomial scaling `SR ∝ N^α`*: rejected once `N = 2491` cells showed near-zero or negative SR. The boundary-flip mechanism predicts no N-scaling; effect depends on `K_baseline` and seed-specific direction.
+3. *`σ_opt ∝ N^α`* ("small lock, small wiggle"): rejected by σ-scan finding `σ_opt ≈ 0.010` independent of N — consistent with the discrete saturation plateau (any σ > threshold flips the same trials).
+4. *"Anti-Optimization Principle" — `d = 1` universal positive SR*: motivated by single-seed AOP measurements; multi-seed re-measurement at `(1147, 1)` gave `−0.53% ± 4.28%`, consistent with the noise-floor regime.
+5. *V3 sign test `p = 0.03` as significance*: V3 showed all 5 σ values below baseline at a single seed; we treated this as `(1/2)^5 ≈ 3%`. This is invalid because σ values within the saturation plateau are perfectly correlated (same boundary trials flip in all). The proper significance test is between-seed direction, which our 13-seed measurement finds *not* significant (`p = 0.31`).
+6. *"Goldilocks K_baseline ≈ 2 regime as a robust SR cell"*: refined. `K_baseline ≈ 2` *does* mark the regime where boundary-flip activity is detectable, but the *direction* is base-set-stochastic, not systematically positive. The boundary flip mechanism is the robust observation; the SR-as-positive-effect interpretation was a single-seed artifact.
 
 **Caveats.**
 
-- *Effect magnitude is tiny.* `−0.0175` runs in absolute terms at `N = 437`, `d = 4`. The cryptographic factoring picture is *unchanged*: no asymptotic resource saving, no RSA implication.
-- *Single robust cell.* `(437, 4)` is the only cell where multi-σ sign-test passes. Other (N, d) cells are individually consistent with zero given measurement variance, even where the single-seed point estimate is positive.
-- *Phase-noise specific.* Depolarizing and amplitude-damping noise show monotone degradation, not SR.
-- *Mechanism not formalized.* The Goldilocks heuristic is qualitative; we have no closed-form prediction for the magnitude of `Δ K(σ)` as a function of `(N, d, K_baseline)`.
+- *Effect magnitude is tiny.* 1–7 trial flips per 200, ±0.3–2% K change per seed, no cryptographic implication.
+- *No net SR direction.* Mean SR across 13 seeds (`+0.144%`, p = 0.31) is not statistically distinguishable from zero. Direction is base-set-stochastic.
+- *Direction asymmetry of σ-curve* reflects K-distribution skew, not a feature of phase noise itself.
+- *Phase-noise specific.* Depolarizing and amplitude damping show monotone degradation, not boundary flips.
+- *Mechanism not formalized at base-set level.* We predict that some K-boundary is active and the σ-curve shape, but not the specific boundary location or flip direction (both depend on base-set-specific K-distribution structure).
 
-We document this finding as a single-cell empirical signal of stochastic resonance in a multi-base quantum factoring hybrid, present primarily for its conceptual connection to the broader noise-as-resource paradigm rather than for cryptographic significance. Whether the Goldilocks regime is universal (i.e., whether all `K_baseline ≈ 2` cells show `~ 1%` SR) is left to future work — concrete candidates: `(N, d) ∈ {(1147, 2), (1147, 3), (4087, 4)}`, each requiring V3-style multi-thousand-trial measurement to overcome per-seed variance.
+**Open questions.**
+
+1. *Direction bias at larger samples.* 30+ seeds may reveal a small systematic bias hidden in our 13-seed noise. The current point estimate (+0.14%) is consistent with both a true zero and a small positive effect.
+2. *Active-boundary determinants.* Which K-boundary becomes active at a given seed is not predictable from `K_baseline` alone; finer-grained analysis of base-set composition is needed.
+3. *Universality across N.* The mechanism likely extends to other active-boundary cells; concrete verification candidates: `(1147, 2), (1147, 3), (4087, 4)`, each at ~2000-trial multi-seed scale.
+4. *Long-jump events* (e.g., K = 3 → K = 1 in seed 5) may reflect cascades or true noise-induced trajectory divergence.
+
+We document this as a universal trial-level mechanism observation with stochastic per-seed direction: the multi-base hybrid Shor algorithm has K-bin boundaries that are sensitive to small phase noise, the mechanism is robust across all sampled base sets, but the cross-seed direction is not systematically biased toward improvement. The qualitative connection to the noise-as-resource paradigm is clear; the quantitative net effect is null at our sample size.
+
+Reproduce: `python -m experiments.sigma_scan_437` (12 σ × 3 seeds × 200 trials baseline scan), `python -m experiments.sigma_scan_437_extend 4 13` (additional 10 seeds), `python -m experiments.analyze_histograms` (boundary-flip analysis).
 
 ### 3.7 Joint interpretation
 
 Theorem 1 says: *once* `r_a | L`, success is deterministic regardless of noise. Theorem 2 says: an ideal algorithm reaches this state in `O(log log log N)` bases in expectation. Theorem 3 says: under destructive noise, the actual algorithm reaches it in `E[K_λ^{ideal}] / g_M(η)` bases — i.e., overhead exactly `1/g_M(η)`. Theorem 4 says: under a marginal-distribution assumption, the (C) framework applies coordinate-wise to Regev's multi-base measurements with corresponding reduction in run count. Theorem 5 closes the loop: combining (C)'s `λ(N)` recovery with Regev's `b`-trick yields a complete factoring algorithm that empirically requires ~5× fewer runs than standalone Regev at `N ∈ {437, 1147, 2491, 4087}`. Together they explain the algorithm's empirical robustness: a noise-adjusted logarithmic number of measurements suffice to enter a regime immune to further measurement noise, and the framework composes naturally with Regev's multi-base circuit (modulo marginal assumption).
 
-The §3.6 stochastic-resonance observation sits *orthogonal* to this main framework: at a narrow "Goldilocks" cell `(N, d) = (437, 4)` where `K_baseline ≈ 1.92`, a small phase noise `σ ≈ 0.05` produces a ~0.9% reduction in run count, robust under multi-σ sign test (p ≈ 0.03). Other (N, d) cells we tested either sit at the `K = 1` ceiling (no room for noise to help) or in a `K ≫ 2` noise-floor regime where per-seed variance exceeds the supposed effect; the broader question of whether the Goldilocks regime is universal across N is left open. The effect does not interact with Theorems 1-5 in the regime where they are tight.
+The §3.6 trial-level boundary-flip observation sits *orthogonal* to this main framework: across 13 base sets at `(N, d) = (437, 4)`, phase noise universally activates a K-bin boundary (K=1/K=2 in 77% of seeds, K=2/K=3 in 15%, long-jump in 8%), but with stochastic per-seed direction and no statistically significant cross-seed net SR (mean +0.14%, p=0.31). The mechanism is universal at the boundary-flip level; the integrated SR effect is null at our sample size. Cross-cell predictions (ceiling cells ≈ 0, noise-floor cells variance-dominated, active-boundary cells regress to small magnitude under multi-seed measurement) are consistent with this picture. The effect does not interact with Theorems 1-5 in the regime where they are tight.
 
 ## 4. Empirical verification
 
@@ -531,7 +561,7 @@ The codebase is `~700` lines of numpy. No quantum libraries required.
 
 We formalize a folklore observation about classical post-processing of multi-base Shor order-finding measurements: augmenting continued-fraction recovery with a divisor search over the accumulated lcm `L` makes the procedure deterministic whenever the order of the current base divides `L` — independent of the measurement distribution, hence robust to all measurement-layer noise models. We prove two complementary quantitative bounds: Theorem 2 on the number of bases `K_λ` needed to reach the noise-invariant regime (refining a corollary of Pomerance et al. 2017), and Theorem 3 characterizing the exact noise overhead `1/g_M(η)` for destructive noise models. We verify Theorem 1 across 17,700 trials at six composite sizes (zero violations), Theorem 2 across 17 semiprimes × 1,000 trials, and Theorem 3 across 9 noise setups on N=437. Theorem 4 extends the framework coordinate-wise to Regev's multi-base measurements (conditional on a verified marginal-distribution assumption); Theorem 5 packages this into a hybrid factoring algorithm that empirically requires ~5× fewer runs than standalone Regev at N ∈ {437, 1147, 2491, 4087}. Two natural attempts to further reduce measurement count (adaptive base selection, lattice post-processing) yield no improvement, indicating Theorem 1 captures the essential structure at this scale.
 
-Additionally (§3.6), we document a small (~0.9%) phase-noise-induced reduction in run count at a single (N, d) = (437, 4) cell with `K_baseline ≈ 1.92`, robust under multi-σ sign test (p ≈ 0.03 over 2000 trials per σ). The cell sits in what we call a "Goldilocks" regime — `K_baseline` barely above the `K = 1` ceiling, just enough algorithmic slack for a small phase-noise perturbation to occasionally flip a near-miss into a successful run, but not so much that per-seed variance washes out the signal. We do not have evidence that the regime extends universally across N (single-seed grid measurements at (1147, 1) and (2491, 1) suggested positive SR but failed multi-seed confirmation). The effect has no cryptographic implication but provides a conceptual bridge between integer factoring and the broader *noise-as-resource* literature (ENAQT; Plenio–Huelga 2008).
+Additionally (§3.6), at `(N, d) = (437, 4)` we measured `K` with 13 independent base sets × 200 trials × 12 σ values (31,200 trial-measurements total) and identified a universal trial-level mechanism: phase noise σ ∈ [0.005, 0.100] flips a small number of trials at one of the K-bin boundaries (K=1/K=2 in 77% of seeds, K=2/K=3 in 15%) of single-run factoring. The mechanism is robust (13/13 seeds), and the σ-curve follows the classical Benzi–Buchleitner shape (saturation plateau + overload decline). The direction (success ↔ failure) is determined by base-set-specific K-distribution near the active boundary and shows no statistically significant net bias across seeds (mean SR = +0.144%, t = 0.51, p = 0.31). The observation provides a clean conceptual bridge between integer factoring and the broader *noise-as-resource* literature (ENAQT; Plenio–Huelga 2008) but is too small in absolute terms to enable cryptographic advantage.
 
 The work is best viewed as expository and a foundation for explorations of more substantive improvements: noise-resilient implementations on hardware, the `lucky` region under structured measurement distributions, the empirical comparison of (C) coordinate-wise vs RV's filter-then-LLL on matched corrupted Regev data, and a deeper theoretical account of when noise transitions from barrier to weak resource in quantum factoring.
 
