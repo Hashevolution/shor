@@ -120,7 +120,7 @@ See `CITATION.cff` (GitHub will auto-format BibTeX from this file).
 ```
 Hashevolution. (2026). A Noise-Invariant Determinism Theorem for Multi-Base
 Post-Processing in Shor's Order Finding (Version 0.2.0). Zenodo.
-https://doi.org/[TO BE ADDED]
+https://doi.org/10.5281/zenodo.20679807
 ```
 
 ## License

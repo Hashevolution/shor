@@ -20,6 +20,11 @@ authors:
     given-names: ""
 repository-code: "https://github.com/Hashevolution/shor"
 url: "https://github.com/Hashevolution/shor"
+doi: "10.5281/zenodo.20679807"
+identifiers:
+  - description: "Concept DOI for all versions"
+    type: doi
+    value: "10.5281/zenodo.20679807"
 keywords:
   - quantum computing
   - shor's algorithm

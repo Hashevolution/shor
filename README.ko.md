@@ -708,7 +708,7 @@ K_base ≈ 2.92 cell 에서 5 seeds × 100 trials × 5 σ 측정 (별도 mechani
 ```
 Hashevolution. (2026). A Noise-Invariant Determinism Theorem for Multi-Base
 Post-Processing in Shor's Order Finding (Version 0.2.0). Zenodo.
-https://doi.org/[v0.2.0 release 후 발급]
+https://doi.org/10.5281/zenodo.20679807
 ```
 
 학술 인용 = `paper.md` / `paper.tex` (영문 정식 paper).
