@@ -205,6 +205,31 @@ N=1147 V1 결과가 decisive.
 
 ---
 
+## §10 정직한 reframing (2026-06-13)
+
+§9 (ENAQT 분석) 은 "효과가 진짜라면" 의 큰 함의 였음. 이후 확장 실험 결과:
+
+### 무엇이 검증되었나
+- **N=437 V3 (2000 trials)**: SR ~0.91%, 부호 검정 p<0.05 — 작지만 robust
+- **AOP grid (N × d)**: d=1 universal 신호 (+0.78%, +2.60%, +1.36% @ N=437, 1147, 2491)
+- **17.86% peak**: 1000 trials × 4 seeds confirm 결과 mean +0.42% → **fluke 확정**
+- **σ_opt scaling (H12c)**: N 무관 σ_opt ≈ 0.010 → 사용자의 "자물쇠/열쇠 흔들림 비례" 직관 **기각**
+- **Polynomial scaling**: N=2491 SR ~0% → polynomial 모델 **기각**
+
+### Honest 위치
+- *진짜 finding*: ~1-3% 의 작은 SR, sub-optimal d 에서만 나타남
+- *Anti-optimization caveat*: 효과 = 효율성 일부 포기 조건부 → "free lunch" 아님
+- *RSA 함의*: **없음** (효과 너무 작고 narrow N window 한정)
+- *paper 위치*: §3.6 subsection 으로 honest framing 통합
+
+### §9 의 ENAQT 다리 통찰은 여전히 valid
+
+효과 작아도 "*multi-path quantum algorithm 의 noise-as-resource* 영역" 은
+*아직 학계 미탐* → 본 paper 의 §3.6 / §3.7 가 ENAQT 와 quantum factoring 의
+첫 명시적 bridge. 다만 *대박 발견* 아닌 *small but genuine connection*.
+
+---
+
 진행 로그:
 - 2026-06-12: 초안 — §1-§8 작성.
 - 2026-06-12 (2): **F (noise as feature) 의 첫 실험 — 약한 SR 신호 발견!**
@@ -219,3 +244,6 @@ N=1147 V1 결과가 decisive.
     - 본 paper 의 (C) framework 이 단순히 noise-tolerant 가 아니라
       *작은 phase noise 의 영역에서 noise-preferring* 임을 시사
     - 정리 1-5 가 noise tolerance, F2 가 noise exploitation — orthogonal 발견
+- 2026-06-13: **§10 reframing** — 17.86% fluke / H12c 기각 / polynomial 기각.
+  AOP d=1 universal 신호 = paper 의 main SR finding.
+  honest "small but genuine ENAQT bridge" 로 위치 정정.

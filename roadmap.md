@@ -5,14 +5,16 @@
 
 ## 전체 단계
 
-| Phase | 내용 | 기간 (예상) | 산출물 |
+| Phase | 내용 | 상태 | 산출물 |
 |---|---|---|---|
-| 0 | E 스코핑 — Regev 2023 와의 통합 가능성 | (완료) | 본 문서 §1 |
-| 1 | A — 정량적 K_λ 정리 (반소수 N=pq) | 3-4 주 | 정리 + 증명 + 실험 검증 |
-| 2 | D — noise→covered 점근식 | 2-3 주 | 정리 + curve fit |
-| 3 | B — HSP/이산로그 확장 | 4-6 주 | 정리 또는 음수결과 |
-| 4 | C — hardware 데모 (IBM Q) | 1-2 주 | 실측 데이터 |
-| 5 | E — Regev 통합 본실행 (Phase 0 결과 따라) | 미정 | 통합 결과 또는 음수결과 |
+| 0 | E 스코핑 — Regev 2023 와의 통합 가능성 | ✅ 완료 | 본 문서 §1 |
+| 1 | A — 정량적 K_λ 정리 (반소수 N=pq) | ✅ 완료 | 정리 2 (paper §3.2) + 17 N × 1k trials |
+| 2 | D — noise→covered 점근식 | ✅ 완료 | 정리 3 (paper §3.3) + 9 노이즈 N=437 |
+| 3 | B — HSP/이산로그 확장 | ✅ 종료 (scope-out) | paper §6 Limitations 단락 |
+| 4 | C — hardware 데모 (IBM Q) | 🟡 부분 (calibrated proxy) | Appendix E (5종 IBM Eagle 모델) |
+| 5 | E — Regev 통합 본실행 | ✅ 완료 | 정리 4-5 (paper §3.4-3.5) + Lemma 5.1 |
+| 6 | F — Noise-as-resource (frontier) | ✅ 완료 | §3.6 SR + AOP grid + ENAQT bridge |
+| 7 | Publication — arXiv / Zenodo | 🟡 진행중 | Zenodo 메타 준비완료, DOI 대기 |
 
 ---
 
@@ -648,6 +650,26 @@ sketch 만 작성. 본 검증은 후속 세션.
 본 paper 본문 외부 — 후속 연구 가능성 기록용.
 
 ## §8 진행 로그
+
+- **2026-06-13 (paper polish + Zenodo prep)**: **paper.md / paper.tex 정밀 polish 완료.**
+  - Abstract: §3.6 SR observation 한 줄 추가 (caveat 포함), Lemma 5.1 bound 의
+    "within 4%" 를 N=437 한정으로 명확화.
+  - §3.7 Joint interpretation: Theorem 5 (~5x reduction) + §3.6 SR 의 *orthogonal*
+    위치 문단 추가.
+  - §7 Reproducibility: `python -m experiments.sr_aop` 추가.
+  - §8 Conclusion: Theorem 4-5 정량 mention + §3.6 SR + ENAQT bridge 한 문단.
+  - **Zenodo / GitHub 인용 준비**: CITATION.cff (cite-this-repository 버튼 활성화),
+    .zenodo.json (자동 메타데이터), LICENSE (MIT) 추가.
+  - 부속: README §4 paper.md/experiments/ 추가, summary.md §9/§11 갱신.
+  - **다음**: N=1147 d=1 multi-seed confirm 결과 → §3.6 통합. GitHub release →
+    Zenodo 자동 sync → DOI 획득.
+
+- **2026-06-13 (SR 정리 + AOP)**: **SR finding 정리 완료.** 17.86% peak 가
+  1000 trials × 4 seeds 에서 mean +0.42% → **fluke 확정**. H12c (σ_opt ∝ N^α),
+  H9 (polynomial scaling) 둘 다 기각. **AOP grid (N × d)**: d=1 universal
+  positive signal (+0.78%, +2.60%, +1.36% @ N=437, 1147, 2491). 본 paper 의
+  honest SR finding = **~1-3% 작은 효과 / sub-optimal d 영역 / anti-optimization
+  caveat**. ENAQT 와의 bridge 는 *small but genuine*. RSA 변화 없음.
 
 - **2026-06-12 (1)**: Phase 0 스코핑 완료. E 의 후보 B 를 Phase 5 표적으로 확정.
   본 문서 §1 추가. Phase 1 (A) 착수 — §2 의 정리 윤곽 작성.
