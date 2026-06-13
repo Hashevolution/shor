@@ -149,18 +149,20 @@ K_base │  (N, d)      │ SR %    │ 영역
 | **H15** | **Lemma 5.1 c = f(N)** | **수학적 확정** ✓ |
 | H16 | σ_opt 고정 + SR_max polynomial | **기각** (17.86% fluke) |
 | **H17** | **Narrow N window** | **지지** ✓ |
-| H18 | d 고정시 SR ∝ N (AOP 시사) | **검증 중** (N=2491 d=1) |
-| AOP | Slack → SR 단조 | **부분** (non-monotone) |
+| H18 | d 고정시 SR ∝ N (AOP 시사) | **기각** (N=1147 d=1 multi-seed null) ✗ |
+| AOP | Slack → SR 단조 | **기각** (N=1147 d=1 multi-seed -0.53% ± 4.28%) ✗ |
+| **H19** | **Goldilocks K_base ≈ 2 = sweet spot** | **단일 cell 지지** (N=437 d=4 V3) |
 
 ## 6. 진짜 SR 효과 (final, high-stat)
 
-| (N, d) | SR % | 통계 신뢰 | trials |
-|---|---|---|---|
-| **(437, 4)** | **+0.80%** | sign test **p=0.03** ✓ | 2000 |
-| **(1147, 2)** | **+0.42%** | t=0.50, **NOT sig** | 4×1000 |
-| (2491, 2) | ~0% / negative | 200 trials | 200 |
+| (N, d) | SR % | 통계 신뢰 | trials | 결론 |
+|---|---|---|---|---|
+| **(437, 4)** | **+0.91%** | sign test **p=0.03** ✓ | 2000 | **유일 robust** |
+| (1147, 2) | +0.42% | t=0.50, NOT sig | 4×1000 | unconfirmed |
+| (1147, 1) | **-0.53% ± 4.28%** | per-seed sd > effect | 3×100 | **noise floor** |
+| (2491, 2) | ~0% / negative | 200 trials | 200 | unconfirmed |
 
-→ **진짜 효과: ~0.5%, N=437 만 robust 확정**.
+→ **진짜 효과: ~0.9%, (N=437, d=4) Goldilocks cell 만 robust 확정**.
 
 ## 7. 시간순 narrative
 
@@ -177,11 +179,11 @@ K_base │  (N, d)      │ SR %    │ 영역
 
 ### 확정된 facts
 
-- SR 효과 존재 (N=437 V3 sign test p=0.03)
-- 크기: ~0.5-1% (small)
+- SR 효과 존재 **(N=437 d=4 V3 sign test p=0.03 단일 cell)**
+- 크기: ~0.9% (tiny)
 - σ_opt ≈ 0.01-0.05 (N 무관)
 - Phase noise specific (depol/amp 안 함)
-- K_baseline 2-3 sweet spot 패턴
+- **Goldilocks K_base ≈ 2 가설** (단일 cell 지지)
 
 ### 기각된 주장
 
@@ -189,6 +191,8 @@ K_base │  (N, d)      │ SR %    │ 영역
 - "자물쇠 비례 흔들림" 직관 (H12c)
 - 17.86% 결과 (fluke)
 - 8.56% 결과 (large variance)
+- **2.60% 결과** (N=1147 d=1 multi-seed null)
+- **AOP "d=1 universal"** (H18, AOP)
 - RSA paradigm shift
 
 ### Paper 등급 (현재)
@@ -198,19 +202,23 @@ K_base │  (N, d)      │ SR %    │ 영역
 - **Workshop note 수준**
 - **RSA 보안에 변화 없음**
 
-## 9. 진행 중
+## 9. 진행 중 / 다음 후보
 
 ```
-N=1147 d=1 multi-seed confirm (사용자 직접 실행 중):
-  - 5 seeds × 300 trials × σ ∈ {0, 0.05}
-  - 결과 검정 기준:
-    * mean SR > 2% & t > 2 → 2.60% peak CONFIRMED → AOP 강력 지지
-    * mean SR ~0% → 2.60% 도 fluke → AOP 약화
-    * 중간 → weak 추가 분석 필요
+N=1147 d=1 multi-seed confirm 완료 (2026-06-13):
+  - 3 seeds × 100 trials
+  - mean SR = -0.53%, sd = 4.28%, t = -0.21
+  - 결론: 2.60% peak 도 fluke. AOP universality 무너짐.
+  - per-seed sd 4.28% > effect → noise floor 영역
 
-N=2491 미실행 cells:
-  - d=2, d=3 (이전 AOP run 중 중단)
-  - 우선순위 낮음 (1147 confirm 결과 우선)
+Goldilocks 가설 (H19) 검증 후보 (K_base ≈ 2 cells):
+  - (1147, 2): K_base = 2.43  ← 가장 가까움
+  - (1147, 3): K_base = 1.67  ← Goldilocks edge
+  - (4087, 4): K_base ≈ 1.43  ← V3 와 유사
+  
+  각 cell V3-style (2000 trials × 2 σ) 필요. 각 ~3-4 시간.
+
+Pending: σ scan at (N=437, d=4) 정밀 측정 — σ_opt 위치 확정
 ```
 
 ## 10. 메타 lesson
@@ -247,3 +255,8 @@ Zenodo 메타데이터:
 진행 로그:
 - 2026-06-13 (오전): V + confirm 완료, 17.86% fluke 확정. AOP partial. paper Abstract/§3.6/§3.7/§7/§8 polish 완료.
 - 2026-06-13: Zenodo 메타데이터 (CITATION.cff/.zenodo.json/LICENSE) 추가.
+- 2026-06-13 (오후): **N=1147 d=1 multi-seed confirm 결과 = noise floor**. 2.60% peak
+  도 fluke 확정 (mean -0.53% ± 4.28%). AOP "d=1 universal" 무너짐. paper §3.6
+  **Goldilocks 재작성** (K_base ≈ 2 cell 단일 robust, ceiling/Goldilocks/noise-floor
+  3 영역 가설). Abstract / §3.7 / §8 정합성 갱신. H18 / AOP 기각, H19 (Goldilocks)
+  단일 cell 지지.

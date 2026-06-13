@@ -210,23 +210,53 @@ N=1147 V1 결과가 decisive.
 §9 (ENAQT 분석) 은 "효과가 진짜라면" 의 큰 함의 였음. 이후 확장 실험 결과:
 
 ### 무엇이 검증되었나
-- **N=437 V3 (2000 trials)**: SR ~0.91%, 부호 검정 p<0.05 — 작지만 robust
-- **AOP grid (N × d)**: d=1 universal 신호 (+0.78%, +2.60%, +1.36% @ N=437, 1147, 2491)
-- **17.86% peak**: 1000 trials × 4 seeds confirm 결과 mean +0.42% → **fluke 확정**
-- **σ_opt scaling (H12c)**: N 무관 σ_opt ≈ 0.010 → 사용자의 "자물쇠/열쇠 흔들림 비례" 직관 **기각**
-- **Polynomial scaling**: N=2491 SR ~0% → polynomial 모델 **기각**
+- **N=437 d=4 V3 (2000 trials)**: SR +0.91%, 부호 검정 p=0.03 — 작지만 robust ✓
+- **N=1147 d=1 multi-seed (3 seeds × 100 trials)**: mean **-0.53% ± 4.28%** → 2.60% peak **fluke 확정** ✗
+- **AOP grid 단일-seed 측정** (전부): noise-floor 영역 — sd > effect → uninformative
+- **17.86% peak**: 1000 trials × 4 seeds 에서 mean +0.42% → fluke 확정 ✗
+- **σ_opt scaling (H12c)**: N 무관 σ_opt ≈ 0.010 → "자물쇠/열쇠 흔들림 비례" 직관 기각 ✗
+- **Polynomial scaling**: N=2491 SR ~0% → 기각 ✗
+- **AOP "d=1 universal"** (H18): N=1147 d=1 multi-seed 통과 못 함 → 기각 ✗
 
-### Honest 위치
-- *진짜 finding*: ~1-3% 의 작은 SR, sub-optimal d 에서만 나타남
-- *Anti-optimization caveat*: 효과 = 효율성 일부 포기 조건부 → "free lunch" 아님
-- *RSA 함의*: **없음** (효과 너무 작고 narrow N window 한정)
-- *paper 위치*: §3.6 subsection 으로 honest framing 통합
+### Honest 위치 (Goldilocks framing)
+
+**진짜 finding**: ~0.9% SR at **단 하나의 cell** (N=437, d=4, K_base ≈ 1.92).
+
+**Goldilocks 가설** (3 영역):
+- *Ceiling* (K_base → 1): 노이즈 도울 공간 없음. 예: (437, 8) SR ≈ 0%.
+- *Goldilocks* (K_base ≈ 2): 노이즈가 가끔 near-miss → hit. 예: (437, 4) SR +0.9% ★.
+- *Noise-floor* (K_base ≫ 2): per-seed sd > effect, 검출 불가. 예: (1147, 1) sd 4.28% > effect.
+
+**자물쇠 비유 정정**: 이전 "큰 자물쇠 → 큰 흔들림" (H12c) 은 *틀림*.  
+정확한 직관: **"간신히 안 풀릴 자물쇠 (K ≈ 2) 만 흔들기 효과"**.  
+1-tumbler 자물쇠는 흔들 필요 없고, 매우 stuck 한 자물쇠는 흔들기의 spread 가 효과 압도.
+
+### 본 paper 의 §3.6 위치
+
+*Single-cell observation* 으로 honest framing:
+- main contribution = 정리 1-5 (workshop note → conference 격상)
+- §3.6 = small (~0.9%) sub-finding + Goldilocks 가설 + 자물쇠 비유
+- ENAQT bridge 는 single cell 로도 conceptually valid
+- RSA 변화 없음, asymptotic resource 변화 없음
 
 ### §9 의 ENAQT 다리 통찰은 여전히 valid
 
 효과 작아도 "*multi-path quantum algorithm 의 noise-as-resource* 영역" 은
-*아직 학계 미탐* → 본 paper 의 §3.6 / §3.7 가 ENAQT 와 quantum factoring 의
-첫 명시적 bridge. 다만 *대박 발견* 아닌 *small but genuine connection*.
+*아직 학계 미탐* → 본 paper 의 §3.6 가 quantum factoring 과 ENAQT 의 첫 명시적
+single-cell bridge. 다만 *대박 발견* 아닌 *narrow but genuine connection*.
+
+### 메타 lesson: 어디서 어긋났나
+
+| 단계 | 우리의 잘못 | 정정 |
+|---|---|---|
+| sr_confirm 초기 | 150 trials 결과를 robust 취급 | sample size 점검 미흡 |
+| σ scan 17.86% | 1 seed × 150 trials → polynomial 가설 | multi-seed × 1000 trials 후 fluke 확정 |
+| AOP grid | 1 seed × 300 trials → universal 패턴 주장 | 1147 d=1 multi-seed null → 기각 |
+| 자물쇠 직관 (H12c) | 데이터 2점 fit 으로 hypothesis | σ scan 직접 측정 후 기각 |
+
+**근본 원인**: per-seed variance 의 크기 (~4%) 가 효과 (~1%) 보다 큰 영역에서  
+single-seed 측정을 "정량적 데이터" 로 취급. 모든 single-seed 결과는 *direction
+hint* 일 뿐 *measurement* 아님 — 이게 핵심 learning.
 
 ---
 
@@ -247,3 +277,7 @@ N=1147 V1 결과가 decisive.
 - 2026-06-13: **§10 reframing** — 17.86% fluke / H12c 기각 / polynomial 기각.
   AOP d=1 universal 신호 = paper 의 main SR finding.
   honest "small but genuine ENAQT bridge" 로 위치 정정.
+- 2026-06-13 (오후): **§10 갱신** — N=1147 d=1 multi-seed null (mean -0.53% ± 4.28%).
+  AOP "d=1 universal" *기각*. Goldilocks 가설 (K_base ≈ 2) 로 narrative 정정.
+  단일 cell (437, 4) 만 robust. 자물쇠 비유 정정 ("간신히 안 풀릴 = Goldilocks").
+  메타 lesson 추가: single-seed = direction hint, not measurement.
