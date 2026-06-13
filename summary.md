@@ -305,7 +305,7 @@ seed 3, 4, 13: 모두 K_base = 1.720
 | 4 | 2.92 | **+8.56%** ★ | **K=8→K=4 (3 trials!)** |
 | 5 | 2.24 | -2.68% | K=1→K=2 (classical neg) |
 
-**Cross-seed**: mean +3.35%, sd 5.37%, t=1.39, p=0.082 (marginal)
+**Cross-seed**: mean +3.35%, sd 5.37%, t=1.39, p≈0.12 (t-dist) / 0.082 (normal approx) — marginal
 
 **핵심 발견 — High-K rescue**:
 - 큰 K (8, 11, 15, 20) trials 가 *moderate K* (4, 5) 로 jump

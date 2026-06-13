@@ -25,7 +25,7 @@ A 5-seed σ-scan at (N, d) = (1147, 2) with K_baseline ≈ 2.92 reveals a *riche
 - **High-K rescue** ★ : trials at very high K bins (K = 8, 11, 15, even K = 20) move to *moderate* K bins (K = 4, 5) under noise (seed 3: K = 15 → K = 5, SR = +9.44%; seed 4: 3 × (K = 8 → K = 4), SR = +8.56%)
 - **Per-seed |SR| amplifies** with K_baseline: max +9.44% at (1147, 2) vs +1.93% at (437, 4)
 - **Boundary distribution shifts**: only 40% K = 1 / K = 2 at (1147, 2) vs 77% at (437, 4); the remainder includes K = 8 → K = 4, K = 15 → K = 5, etc.
-- **Cross-seed mean**: +3.35% (sd 5.37, SE 2.40, t = 1.39, p = 0.082) — borderline at 5-seed sample, dominated by high-K-rescue seeds
+- **Cross-seed mean**: +3.35% (sd 5.37, SE 2.40, t = 1.39, p ≈ 0.12 with t-distribution / 0.082 normal approx) — borderline at 5-seed sample, dominated by high-K-rescue seeds
 
 ### ★ Engineered amplification — (C) augmentation as a noise buffer
 
@@ -53,7 +53,7 @@ The regime map predicts that noise-as-resource in quantum factoring is naturally
 - **Net SR direction across 13 seeds at (437, 4): mean = +0.144%, t = 0.51, p = 0.31** — *not* statistically significant
 - Sign test: 8/13 positive (p = 0.29)
 - The mechanism is universal; the net direction is base-set-stochastic at our sample size
-- (1147, 2) 5-seed mean +3.35% (p = 0.082) is marginal; high-K-rescue seeds dominate
+- (1147, 2) 5-seed mean +3.35% (p ≈ 0.12 t-dist / 0.082 normal approx) is marginal; high-K-rescue seeds dominate
 
 ### Retractions
 
