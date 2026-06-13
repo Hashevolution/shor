@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "A Noise-Invariant Determinism Theorem for Multi-Base Post-Processing in Shor's Order Finding"
+abstract: >-
+  Five theorems on classical post-processing of multi-base order-finding
+  measurements in Shor's algorithm: noise-invariant determinism (T1),
+  logarithmic coverage time (T2), exact noise scaling 1/g_M(η) (T3),
+  conditional compatibility with Regev's 2023 multi-base framework (T4),
+  and a hybrid (C) + Regev b-trick factoring algorithm (T5) with closed-form
+  bound matching empirical mean within 4%. Verified across 17,700 measurements
+  at six composite sizes. Additionally documents a small (~1-3%) phase-noise-
+  induced reduction in run count at sub-Regev-optimal d — a weak instance of
+  stochastic resonance under an "anti-optimization" regime.
+authors:
+  - family-names: "Hashevolution"
+    given-names: ""
+repository-code: "https://github.com/Hashevolution/shor"
+url: "https://github.com/Hashevolution/shor"
+keywords:
+  - quantum computing
+  - shor's algorithm
+  - integer factoring
+  - regev factoring
+  - noise-invariance
+  - stochastic resonance
+  - quantum noise
+license: MIT
+version: "0.1.0"
+date-released: 2026-06-13
