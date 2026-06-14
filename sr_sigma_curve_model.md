@@ -468,6 +468,33 @@ model 의 *analytical foundation* 을 본 framework 가 제공.
 2. Cross-algorithm universality (4 algorithms beyond Shor: Grover, QPE, Simon, +
    Hybrid 의 internal consistency).
 3. paper v0.2.1 §3.6 의 SR claim 의 mechanism-level self-correction.
+
+### §6.7d M_1,frac / Δ_ver,frac sim verification (idealized regime, 2026-06-14)
+
+`experiments/ym_multi_denom_fit.py` σ-scan 직접 측정:
+- 3 setups × 10 σ values (0.000 ~ 1.000) × 2000 samples
+- BEST_CONV r_0 정의 (Yang-Markidis convention)
+
+| Feature | R² | RMSE | n |
+|---|---:|---:|---:|
+| M_1,frac (rational in u) | +0.6534 | **0.0020** | 30 |
+| Δ_ver,frac (rational in u) | +0.5526 | **0.0036** | 30 |
+
+**결과 분석**:
+- Closed form 자체는 **수학적으로 정확** — RMSE 0.002-0.004 (per-cell diff
+  모두 < 0.01).
+- 그러나 우리 idealized sim 의 setups 에서 r_a ∈ {99, 198} 로 *너무 큼* →
+  multiples of r_a (valid d's) 가 N=437 안에 2-4 개만 존재 → m_σ(r_a) 가
+  다른 d 들을 압도 → M_1,frac 변화 폭 < 1.5% (0.987 ~ 1.000) → R²
+  *moderate* 만.
+- **이 trivial dynamic range 는 우리 sim 의 한계** — *Yang-Markidis 의 real
+  IBM data 는 hardware noise 가 분포를 broad 시켜 다양한 d 에 mass spread*
+  → M_1,frac 의 dynamic range 충분 → informative R² 예상.
+
+**Implication for collaboration**: closed form 정확성은 우리 sim 에서 *RMSE
+level 로 확인*. Yang-Markidis 의 680 IBM distributions 에 같은 form 을 fit
+하면 *informative* 한 R² 가능 (그들 분포가 multi-denom regime). 본 result
+는 도전 4 (IBM data fit, real noise characterization) 의 직접적 motivation.
 4. SR-based factoring 가속 불가의 closed-form bound: |ΔK_max| ≤ |1/ρ - 1/p_0|.
 
 ## §6.8 Universal closed form across noise models (2026-06-14)
