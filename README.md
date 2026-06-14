@@ -137,9 +137,10 @@ All experimental scripts are *resumable* (immediate per-cell save, skip-existing
 
 ```
 Hashevolution. (2026). A Noise-Invariant Determinism Theorem for Multi-Base
-Post-Processing in Shor's Order Finding (Version 0.3.0). Zenodo.
+Post-Processing in Shor's Order Finding (Version 0.4.0). Zenodo.
 https://doi.org/10.5281/zenodo.20685015
 ```
+(v0.4.0 DOI backfilled once Zenodo archives the GitHub release.)
 
 BibTeX:
 ```bibtex
@@ -151,13 +152,14 @@ BibTeX:
   month        = jun,
   year         = 2026,
   publisher    = {Zenodo},
-  version      = {v0.3.0},
+  version      = {v0.4.0},
   doi          = {10.5281/zenodo.20685015},
   url          = {https://doi.org/10.5281/zenodo.20685015}
 }
 ```
 
 Previous version DOIs:
+- v0.3.0: [10.5281/zenodo.20685015](https://doi.org/10.5281/zenodo.20685015)
 - v0.2.1: [10.5281/zenodo.20681847](https://doi.org/10.5281/zenodo.20681847)
 - v0.2.0: [10.5281/zenodo.20679807](https://doi.org/10.5281/zenodo.20679807)
 
