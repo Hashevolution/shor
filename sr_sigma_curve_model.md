@@ -447,13 +447,15 @@ model 의 *analytical foundation* 을 본 framework 가 제공.
 
 ### 그들의 model 과 우리 closed form 의 *동치성*
 
-그들 (Eq. 2): `(1-ε)·[p_s ∗ K_{σ_0}](y) + ε·Σ_h ν_h·[p_h ∗ K_{σ_h}](y)`.
+그들 (Eq. (3), §5): `(1-ε)·[p_s ∗ K_{σ_0}](y) + ε·Σ_h ν_h·[p_h ∗ K_{σ_h}](y)`.
 
 우리 closed form (FFT + phase noise): `E[P_σ(y)] = (1-e^{-σ²})/Q + e^{-σ²}·P_0(y)`.
 
 → **구조 동일**: weight (1-ε) ↔ e^{-σ²}, weight ε ↔ 1-e^{-σ²}.
 
-그들의 `ε` (빈 매개변수, 데이터 fit) 의 *analytical 표현* = `ε = 1 - e^{-σ²}`.
+그들의 `ε` (정성적 개념 파라미터 — "intended family 밖으로 옮겨간 총 weight",
+미지정·fit 아님; arXiv:2605.16074 전문 확정검증 2026-06-14) 의 *analytical 표현*
+= `ε = 1 - e^{-σ²}`.
 
 ### Complementary positions
 
