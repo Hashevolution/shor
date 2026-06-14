@@ -1,7 +1,13 @@
 # A Noise-Invariant Determinism Theorem for Multi-Base Post-Processing in Shor's Order Finding
 
-*Draft, 2026-06-11.*
+*Draft, 2026-06-11 (v0.2.1); §3.6.bis self-correction added 2026-06-14 (v0.3.0).*
 *Companion code: [github.com/Hashevolution/shor](https://github.com/Hashevolution/shor).*
+
+**Current release: v0.3.0**
+[![DOI v0.3.0](https://zenodo.org/badge/DOI/10.5281/zenodo.20685015.svg)](https://doi.org/10.5281/zenodo.20685015) (v0.3.0, §3.6 self-correction + closed-form σ-curve framework)
+[![DOI v0.2.1](https://zenodo.org/badge/DOI/10.5281/zenodo.20681847.svg)](https://doi.org/10.5281/zenodo.20681847) (v0.2.1, theorems 1–5 + §3.6 original framework)
+
+**Reading note**: §3.6 of this paper describes the original "boundary-flip mechanism" framework (v0.2.1). §3.6.bis (v0.3.0) replaces that interpretation with a single closed-form σ-curve `p(σ) = ρ + (p_0 − ρ)·exp(−σ²)` verified across five algorithm classes (Grover, Shor, QPE, Simon, Hybrid; R² ∈ [0.88, 0.99]). The §3.6 measurement data is retained unchanged; the *interpretation* is corrected in §3.6.bis. See [release_notes_v0.3.0.md](release_notes_v0.3.0.md) and [sr_sigma_curve_model.md](sr_sigma_curve_model.md).
 
 ## Abstract
 

@@ -1,8 +1,11 @@
 # Shor's Algorithm — Multi-Base Order Finding and Noise-as-Resource Mechanism
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20681847.svg)](https://doi.org/10.5281/zenodo.20681847)
+[![DOI v0.3.0](https://zenodo.org/badge/DOI/10.5281/zenodo.20685015.svg)](https://doi.org/10.5281/zenodo.20685015)
+[![DOI v0.2.1](https://zenodo.org/badge/DOI/10.5281/zenodo.20681847.svg)](https://doi.org/10.5281/zenodo.20681847)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
+
+> **v0.3.0** (2026-06-14): §3.6 self-correction + closed-form σ-curve framework + 5-algorithm verification (Grover, Shor, QPE, Simon, Hybrid; R² ∈ [0.88, 0.99]) + analytical complement to Yang-Markidis ([arXiv:2605.16074](https://arxiv.org/abs/2605.16074)). See [release notes](release_notes_v0.3.0.md), [sr_sigma_curve_model.md](sr_sigma_curve_model.md), and paper.md §3.6.bis.
 
 A numpy-only implementation and analysis of Shor's quantum factoring algorithm with:
 

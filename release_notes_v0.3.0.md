@@ -1,9 +1,11 @@
 # Release notes — v0.3.0 (2026-06-14)
 
+**DOI**: [10.5281/zenodo.20685015](https://doi.org/10.5281/zenodo.20685015)
+
 ## Summary
 
 **v0.3.0** is an *errata + extension* release of paper v0.2.1 (DOI
-10.5281/zenodo.20681847).
+[10.5281/zenodo.20681847](https://doi.org/10.5281/zenodo.20681847)).
 
 The §3.6 boundary-flip mechanism described in v0.2.1 is replaced by a single
 analytic closed form derived from standard phase-noise dephasing of the FFT.
@@ -114,7 +116,8 @@ If you use this work, cite both v0.2.1 (for theorems 1-5 + raw data) and v0.3.0
             in Shor's order finding (v0.3.0, §3.6 errata)},
   author = {{Hashevolution}},
   year   = {2026},
-  doi    = {TBD},
+  doi    = {10.5281/zenodo.20685015},
+  url    = {https://doi.org/10.5281/zenodo.20685015},
   note   = {v0.3.0 supersedes §3.6 interpretation of v0.2.1
             (10.5281/zenodo.20681847)}
 }
