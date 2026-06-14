@@ -1,0 +1,61 @@
+# Yang-Markidis features closed form 검증
+# Under our universal form P_σ(y) = (1-u)/Q + u·P_0(y), u = exp(-σ²)
+# Predictions:
+#  A_peak(σ) = A_peak(0)            [σ-invariant — q_σ = u·q_0, ratio cancels]
+#  H_norm(σ): monotone, no closed form (asymptotes 0→1)
+#  M_1,frac(σ): rational function in u
+#  Δ_ver,frac(σ): rational function in u
+# N=437, Q=262144, σ ∈ [0.0, 0.025, 0.05, 0.1, 0.15, 0.2, 0.3, 0.5]
+# 3 setups × 2000 samples per cell
+
+## setup 1: a=35, b=262, r=99
+  baseline (σ=0): A_peak=0.9162  H_norm=0.4152  M_1,frac=1.0000  Δ_ver,frac=1.0000
+  closed-form params: r*=99 (m_0=0.590, |S|/Q=0.0164), r**=None (m_0=0.000, |S|/Q=0.0000), |S_ver|/Q=0.0164, M_ver(0)=0.5905
+  σ=0.000: A_peak=0.9354 (pred 0.9162), H_norm=0.4188, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (82s)
+  σ=0.025: A_peak=0.9342 (pred 0.9162), H_norm=0.4166, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (103s)
+  σ=0.050: A_peak=0.9358 (pred 0.9162), H_norm=0.4144, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (104s)
+  σ=0.100: A_peak=0.9257 (pred 0.9162), H_norm=0.4152, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (104s)
+  σ=0.150: A_peak=0.9347 (pred 0.9162), H_norm=0.4208, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (103s)
+  σ=0.200: A_peak=0.9289 (pred 0.9162), H_norm=0.4280, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (103s)
+  σ=0.300: A_peak=0.9282 (pred 0.9162), H_norm=0.4356, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (104s)
+  σ=0.500: A_peak=0.8839 (pred 0.9162), H_norm=0.4816, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (104s)
+
+## setup 2: a=234, b=71, r=99
+  baseline (σ=0): A_peak=0.9410  H_norm=0.4152  M_1,frac=1.0000  Δ_ver,frac=1.0000
+  closed-form params: r*=99 (m_0=0.604, |S|/Q=0.0164), r**=None (m_0=0.000, |S|/Q=0.0000), |S_ver|/Q=0.0164, M_ver(0)=0.6040
+  σ=0.000: A_peak=0.9375 (pred 0.9410), H_norm=0.4181, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (82s)
+  σ=0.025: A_peak=0.9497 (pred 0.9410), H_norm=0.4153, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (101s)
+  σ=0.050: A_peak=0.9387 (pred 0.9410), H_norm=0.4172, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (101s)
+  σ=0.100: A_peak=0.9409 (pred 0.9410), H_norm=0.4197, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (101s)
+  σ=0.150: A_peak=0.9369 (pred 0.9410), H_norm=0.4226, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (101s)
+  σ=0.200: A_peak=0.9196 (pred 0.9410), H_norm=0.4237, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (101s)
+  σ=0.300: A_peak=0.9368 (pred 0.9410), H_norm=0.4388, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (102s)
+  σ=0.500: A_peak=0.8708 (pred 0.9410), H_norm=0.4780, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (102s)
+
+## setup 3: a=210, b=246, r=11
+  baseline (σ=0): A_peak=0.9791  H_norm=0.2540  M_1,frac=1.0000  Δ_ver,frac=1.0000
+  closed-form params: r*=11 (m_0=0.911, |S|/Q=0.3310), r**=None (m_0=0.000, |S|/Q=0.0000), |S_ver|/Q=0.3310, M_ver(0)=0.9115
+  σ=0.000: A_peak=0.9738 (pred 0.9791), H_norm=0.2512, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (79s)
+  σ=0.025: A_peak=0.9750 (pred 0.9791), H_norm=0.2583, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (101s)
+  σ=0.050: A_peak=0.9786 (pred 0.9791), H_norm=0.2526, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (100s)
+  σ=0.100: A_peak=0.9805 (pred 0.9791), H_norm=0.2594, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (100s)
+  σ=0.150: A_peak=0.9781 (pred 0.9791), H_norm=0.2642, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (100s)
+  σ=0.200: A_peak=0.9787 (pred 0.9791), H_norm=0.2674, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (101s)
+  σ=0.300: A_peak=0.9737 (pred 0.9791), H_norm=0.2938, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (101s)
+  σ=0.500: A_peak=0.9698 (pred 0.9791), H_norm=0.3495, M_1,frac=1.0000 (pred 1.0000), Δ=1.0000 (pred 1.0000) (101s)
+
+
+## Closed-form fit summary
+
+| Feature | R² | RMSE | n |
+|---|---:|---:|---:|
+| A_peak (σ-invariant pred) | +0.5560 | 0.0189 | 24 |
+| M_1,frac (rational in u)  | +1.0000 | 0.0000 | 24 |
+| Δ_ver,frac (rational in u)| +1.0000 | 0.0000 | 24 |
+
+## H_norm trend (no closed form, expected monotone increase)
+  setup 1: σ=0.000→H=0.4188, σ=0.025→H=0.4166, σ=0.050→H=0.4144, σ=0.100→H=0.4152, σ=0.150→H=0.4208, σ=0.200→H=0.4280, σ=0.300→H=0.4356, σ=0.500→H=0.4816
+  setup 2: σ=0.000→H=0.4181, σ=0.025→H=0.4153, σ=0.050→H=0.4172, σ=0.100→H=0.4197, σ=0.150→H=0.4226, σ=0.200→H=0.4237, σ=0.300→H=0.4388, σ=0.500→H=0.4780
+  setup 3: σ=0.000→H=0.2512, σ=0.025→H=0.2583, σ=0.050→H=0.2526, σ=0.100→H=0.2594, σ=0.150→H=0.2642, σ=0.200→H=0.2674, σ=0.300→H=0.2938, σ=0.500→H=0.3495
+
+# Elapsed: 2624.6s (43.7 min)
