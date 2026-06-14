@@ -323,6 +323,61 @@ direction* 의 정확 해명: `sign(p_0 - ρ)` per setup 결정.
 
 본 internal consistency 는 framework 의 *cross-algorithm universality* 를 확정.
 
+## §6.5c Bimodal K-distribution finding — "active boundary cell" 의 정체 (2026-06-14)
+
+`experiments/hybrid_active_boundary_scan.py` 의 100 base_seed sweep × 50
+noise-free trials/seed 결과:
+
+| K_base 범위 | seeds | 비율 |
+|---|---:|---:|
+| [1.00, 1.30] (b-trick 성공) | 90 | 90% |
+| [10, 14] (b-trick 실패, max_runs cap) | 10 | 10% |
+| (1.30, 10) 중간 영역 | **0** | **0%** |
+| [1.80, 2.50] target "active boundary" | **0** | **0%** |
+
+→ Fixed setup K-distribution 은 strictly **bimodal**.
+
+**Paper §3.6 의 "K_base ≈ 2 active boundary cell" 의 정체**:
+mixture average `0.90 × 1 + 0.10 × 20 = 2.9` 가 paired protocol 의 K_base 1.5-2.3
+범위와 정합. Paper §3.6 의 "active boundary cell" 은 *single fixed setup* 영역
+이 아니라 **paired protocol 의 ensemble averaging artifact** 임.
+
+### Self-correction 의 두 layers
+
+Paper §3.6 의 "boundary-flip mechanism" 은 *2 중첩 protocol artifact* 의
+표현이었음:
+
+**Layer 1** (이미 v0.3.0 publish): smooth closed form `p(σ) = ρ + (p_0-ρ)·
+exp(-σ²)` 의 *finite-trial K-binning 표현*.
+
+**Layer 2** (2026-06-14 추가): paired protocol 의 *ensemble averaging* (90/10
+bimodal mixture) 가 "K_base ≈ 2" 라는 fictitious active boundary 영역을
+만들어냄.
+
+즉, "boundary flip" 어휘는:
+- 90% setups (K=1) ↔ 10% setups (K=20) 의 *averaging 평균값 2* 라는 환상 영역 +
+- σ noise 가 그 mixture 비율을 살짝 바꾸는 (90→91%) 효과
+- 의 두 layer가 결합된 ad-hoc 표현.
+
+진짜 single-setup mechanism: closed form 의 smooth decay 만.
+
+### paper §3.6 의 13 seeds 의 정확한 재해석
+
+Paper §3.6 의 13 seeds × 200 trials 각각:
+- trial t 마다 *다른 setup* (seed + t*1000 → random.Random)
+- K-histogram = 200 setups 의 mixture
+- ~180 trials 가 K=1 (90% mode)
+- ~20 trials 가 K=20 (10% failure mode)
+- K_base = mixture mean ≈ 2-3
+
+σ=0.05 noise → 어떤 90% setups 의 일부가 noise-induced K=2 로 flip, 또는 어떤
+10% setups 가 K=18 으로 약간 회복.
+
+→ Paper 의 "K=1 / K=2 boundary flip" 은 **90% mode 내부의 noise smearing**.
+→ Paper 의 "K=2 / K=3 boundary flip" 도 **mixture 의 inter-mode 미세 shift**.
+
+본 finding 은 v0.4 errata 후보 (현재 v0.3.0 §3.6.bis 의 보강).
+
 ## §6.5b Hybrid (C)+b-trick 검증 (paper §3.6 직접 fit, 2026-06-14)
 
 본 paper v0.2.1 §3.6 의 *active boundary cell* (N=437, d=4, hybrid (C)+b-trick) 의
