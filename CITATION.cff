@@ -20,9 +20,12 @@ authors:
     given-names: ""
 repository-code: "https://github.com/Hashevolution/shor"
 url: "https://github.com/Hashevolution/shor"
-doi: "10.5281/zenodo.20681847"
+doi: "10.5281/zenodo.20685015"
 identifiers:
-  - description: "v0.2.1 (current release)"
+  - description: "v0.3.0 (current release): §3.6 self-correction + closed-form σ-curve + 5-algorithm verification"
+    type: doi
+    value: "10.5281/zenodo.20685015"
+  - description: "v0.2.1 (previous release)"
     type: doi
     value: "10.5281/zenodo.20681847"
   - description: "v0.2.0 (initial release)"
@@ -34,8 +37,15 @@ keywords:
   - integer factoring
   - regev factoring
   - noise-invariance
-  - stochastic resonance
+  - phase noise
+  - dephasing
+  - closed-form sigma-curve
+  - cross-algorithm verification
+  - Grover
+  - QPE
+  - Simon's algorithm
+  - self-correction
   - quantum noise
 license: MIT
-version: "0.2.1"
+version: "0.3.0"
 date-released: 2026-06-14
