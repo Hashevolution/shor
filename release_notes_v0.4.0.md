@@ -1,6 +1,6 @@
 # Release notes — v0.4.0 (2026-06-14)
 
-**DOI**: minted by Zenodo on release (backfilled after archival).
+**DOI**: [10.5281/zenodo.20688069](https://doi.org/10.5281/zenodo.20688069)
 
 ## Summary
 
@@ -93,11 +93,9 @@ alongside v0.3.0 (closed-form framework) and v0.2.1 (theorems 1–5 + raw data):
             in Shor's order finding (v0.4.0, Theorem 6 SR no-go)},
   author = {{Hashevolution}},
   year   = {2026},
-  doi    = {10.5281/zenodo.XXXXXXXX},
-  url    = {https://doi.org/10.5281/zenodo.XXXXXXXX},
+  doi    = {10.5281/zenodo.20688069},
+  url    = {https://doi.org/10.5281/zenodo.20688069},
   note   = {v0.4.0 adds Theorem 6 and N-scaling to v0.3.0
             (10.5281/zenodo.20685015)}
 }
 ```
-
-(DOI backfilled once Zenodo archives the release.)

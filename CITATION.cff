@@ -24,11 +24,11 @@ authors:
     given-names: ""
 repository-code: "https://github.com/Hashevolution/shor"
 url: "https://github.com/Hashevolution/shor"
-doi: "10.5281/zenodo.20685015"
+doi: "10.5281/zenodo.20688069"
 identifiers:
-  - description: "v0.4.0 (current release): Theorem 6 SR no-go + cryptographic N-scaling + honest verified-and-bounded framing. DOI backfilled on Zenodo archival."
+  - description: "v0.4.0 (current release): Theorem 6 SR no-go + cryptographic N-scaling + honest verified-and-bounded framing"
     type: doi
-    value: "10.5281/zenodo.20685015"
+    value: "10.5281/zenodo.20688069"
   - description: "v0.3.0: §3.6 self-correction + closed-form σ-curve + 5-algorithm verification"
     type: doi
     value: "10.5281/zenodo.20685015"
