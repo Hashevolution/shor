@@ -1,0 +1,114 @@
+# Multi-noise closed-form universality verification
+# Model: p(noise) = (1-ε(noise))·p_0 + ε(noise)·g_∞
+# Noise levels: {'depolarizing': [0.0, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.9], 'bias_zero': [0.0, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.9], 'amplitude_damp': [0.0, 1e-05, 5e-05, 0.0001, 0.0005, 0.001, 0.005, 0.01]}
+# N=437, Q=262144, MC samples: p_0=1500, ρ=1500
+# 200 trials per (setup, noise, ε)
+
+## setup 1: a=35, b=262, r=99
+  p_0 = 0.6260, ρ = 0.0113, I(k=0) = 0
+
+  ── depolarizing ──
+  level=0.0000: p_pred=0.6260  K_pred=1.597  K_meas=1.680±1.10  diff=+0.083  (13s)
+  level=0.0500: p_pred=0.5953  K_pred=1.680  K_meas=1.655±1.02  diff=-0.025  (13s)
+  level=0.1000: p_pred=0.5645  K_pred=1.771  K_meas=1.885±1.33  diff=+0.114  (13s)
+  level=0.2000: p_pred=0.5031  K_pred=1.988  K_meas=2.005±1.35  diff=+0.017  (13s)
+  level=0.3000: p_pred=0.4416  K_pred=2.264  K_meas=2.655±2.02  diff=+0.391  (15s)
+  level=0.5000: p_pred=0.3187  K_pred=3.137  K_meas=3.385±2.86  diff=+0.248  (14s)
+  level=0.7000: p_pred=0.1957  K_pred=5.043  K_meas=5.045±4.08  diff=+0.002  (13s)
+  level=0.9000: p_pred=0.0728  K_pred=10.707  K_meas=10.860±6.97  diff=+0.153  (9s)
+
+  ── bias_zero ──
+  level=0.0000: p_pred=0.6260  K_pred=1.597  K_meas=1.680±0.98  diff=+0.083  (13s)
+  level=0.0500: p_pred=0.5947  K_pred=1.682  K_meas=1.660±1.02  diff=-0.022  (13s)
+  level=0.1000: p_pred=0.5634  K_pred=1.775  K_meas=1.835±1.22  diff=+0.060  (14s)
+  level=0.2000: p_pred=0.5008  K_pred=1.997  K_meas=1.845±1.21  diff=-0.152  (12s)
+  level=0.3000: p_pred=0.4382  K_pred=2.282  K_meas=2.485±1.96  diff=+0.203  (14s)
+  level=0.5000: p_pred=0.3130  K_pred=3.193  K_meas=3.085±2.39  diff=-0.108  (13s)
+  level=0.7000: p_pred=0.1878  K_pred=5.242  K_meas=5.405±4.62  diff=+0.163  (14s)
+  level=0.9000: p_pred=0.0626  K_pred=11.590  K_meas=12.220±7.21  diff=+0.630  (10s)
+
+  ── amplitude_damp ──
+  level=0.0000: p_pred=0.6260  K_pred=1.597  K_meas=1.780±1.10  diff=+0.183  (14s)
+  level=0.0000: p_pred=0.6254  K_pred=1.599  K_meas=1.605±1.03  diff=+0.006  (14s)
+  level=0.0001: p_pred=0.6229  K_pred=1.605  K_meas=1.710±1.05  diff=+0.105  (15s)
+  level=0.0001: p_pred=0.6199  K_pred=1.613  K_meas=1.875±1.21  diff=+0.262  (16s)
+  level=0.0005: p_pred=0.5960  K_pred=1.678  K_meas=3.525±2.78  diff=+1.847  (31s)
+  level=0.0010: p_pred=0.5675  K_pred=1.762  K_meas=5.835±4.80  diff=+4.073  (51s)
+  level=0.0050: p_pred=0.3841  K_pred=2.603  K_meas=14.175±6.90  diff=+11.572  (129s)
+  level=0.0100: p_pred=0.2375  K_pred=4.193  K_meas=15.795±6.48  diff=+11.602  (147s)
+
+## setup 2: a=234, b=71, r=99
+  p_0 = 0.6067, ρ = 0.0100, I(k=0) = 0
+
+  ── depolarizing ──
+  level=0.0000: p_pred=0.6067  K_pred=1.648  K_meas=1.790±1.15  diff=+0.142  (14s)
+  level=0.0500: p_pred=0.5768  K_pred=1.734  K_meas=1.675±0.97  diff=-0.059  (13s)
+  level=0.1000: p_pred=0.5470  K_pred=1.828  K_meas=1.695±1.10  diff=-0.133  (12s)
+  level=0.2000: p_pred=0.4873  K_pred=2.052  K_meas=2.005±1.38  diff=-0.047  (13s)
+  level=0.3000: p_pred=0.4277  K_pred=2.338  K_meas=2.355±1.74  diff=+0.017  (14s)
+  level=0.5000: p_pred=0.3083  K_pred=3.241  K_meas=3.355±2.83  diff=+0.114  (13s)
+  level=0.7000: p_pred=0.1890  K_pred=5.211  K_meas=4.605±4.31  diff=-0.606  (12s)
+  level=0.9000: p_pred=0.0697  K_pred=10.968  K_meas=10.715±6.98  diff=-0.253  (9s)
+
+  ── bias_zero ──
+  level=0.0000: p_pred=0.6067  K_pred=1.648  K_meas=1.710±1.12  diff=+0.062  (14s)
+  level=0.0500: p_pred=0.5763  K_pred=1.735  K_meas=1.735±1.06  diff=-0.000  (13s)
+  level=0.1000: p_pred=0.5460  K_pred=1.832  K_meas=1.995±1.44  diff=+0.163  (14s)
+  level=0.2000: p_pred=0.4853  K_pred=2.060  K_meas=2.180±1.74  diff=+0.120  (14s)
+  level=0.3000: p_pred=0.4247  K_pred=2.355  K_meas=2.420±1.65  diff=+0.065  (13s)
+  level=0.5000: p_pred=0.3033  K_pred=3.294  K_meas=3.285±2.49  diff=-0.009  (14s)
+  level=0.7000: p_pred=0.1820  K_pred=5.396  K_meas=5.060±4.46  diff=-0.336  (14s)
+  level=0.9000: p_pred=0.0607  K_pred=11.769  K_meas=11.675±6.93  diff=-0.094  (10s)
+
+  ── amplitude_damp ──
+  level=0.0000: p_pred=0.6067  K_pred=1.648  K_meas=1.635±1.03  diff=-0.013  (13s)
+  level=0.0000: p_pred=0.6061  K_pred=1.650  K_meas=1.800±1.13  diff=+0.150  (16s)
+  level=0.0001: p_pred=0.6037  K_pred=1.656  K_meas=2.000±1.34  diff=+0.344  (18s)
+  level=0.0001: p_pred=0.6007  K_pred=1.665  K_meas=1.825±1.28  diff=+0.160  (16s)
+  level=0.0005: p_pred=0.5776  K_pred=1.731  K_meas=3.985±3.61  diff=+2.254  (35s)
+  level=0.0010: p_pred=0.5499  K_pred=1.819  K_meas=6.200±5.14  diff=+4.381  (55s)
+  level=0.0050: p_pred=0.3719  K_pred=2.689  K_meas=14.235±6.88  diff=+11.546  (131s)
+  level=0.0100: p_pred=0.2295  K_pred=4.334  K_meas=16.710±5.72  diff=+12.376  (158s)
+
+## setup 3: a=210, b=246, r=11
+  p_0 = 0.9093, ρ = 0.3507, I(k=0) = 0
+
+  ── depolarizing ──
+  level=0.0000: p_pred=0.9093  K_pred=1.100  K_meas=1.130±0.44  diff=+0.030  (9s)
+  level=0.0500: p_pred=0.8814  K_pred=1.135  K_meas=1.170±0.54  diff=+0.035  (9s)
+  level=0.1000: p_pred=0.8535  K_pred=1.172  K_meas=1.150±0.45  diff=-0.022  (8s)
+  level=0.2000: p_pred=0.7976  K_pred=1.254  K_meas=1.250±0.54  diff=-0.004  (8s)
+  level=0.3000: p_pred=0.7417  K_pred=1.348  K_meas=1.375±0.78  diff=+0.027  (8s)
+  level=0.5000: p_pred=0.6300  K_pred=1.587  K_meas=1.585±1.00  diff=-0.002  (6s)
+  level=0.7000: p_pred=0.5183  K_pred=1.930  K_meas=1.895±1.29  diff=-0.035  (5s)
+  level=0.9000: p_pred=0.4065  K_pred=2.460  K_meas=2.435±1.87  diff=-0.025  (2s)
+
+  ── bias_zero ──
+  level=0.0000: p_pred=0.9093  K_pred=1.100  K_meas=1.085±0.33  diff=-0.015  (9s)
+  level=0.0500: p_pred=0.8639  K_pred=1.158  K_meas=1.115±0.38  diff=-0.043  (8s)
+  level=0.1000: p_pred=0.8184  K_pred=1.222  K_meas=1.220±0.50  diff=-0.002  (8s)
+  level=0.2000: p_pred=0.7275  K_pred=1.375  K_meas=1.305±0.62  diff=-0.070  (9s)
+  level=0.3000: p_pred=0.6365  K_pred=1.571  K_meas=1.590±1.00  diff=+0.019  (9s)
+  level=0.5000: p_pred=0.4547  K_pred=2.199  K_meas=2.105±1.41  diff=-0.094  (9s)
+  level=0.7000: p_pred=0.2728  K_pred=3.659  K_meas=3.285±2.68  diff=-0.374  (9s)
+  level=0.9000: p_pred=0.0909  K_pred=9.363  K_meas=9.205±6.65  diff=-0.158  (7s)
+
+  ── amplitude_damp ──
+  level=0.0000: p_pred=0.9093  K_pred=1.100  K_meas=1.075±0.30  diff=-0.025  (9s)
+  level=0.0000: p_pred=0.9088  K_pred=1.100  K_meas=1.055±0.23  diff=-0.045  (9s)
+  level=0.0001: p_pred=0.9065  K_pred=1.103  K_meas=1.105±0.31  diff=+0.002  (10s)
+  level=0.0001: p_pred=0.9038  K_pred=1.106  K_meas=1.105±0.38  diff=-0.001  (10s)
+  level=0.0005: p_pred=0.8821  K_pred=1.134  K_meas=1.105±0.32  diff=-0.029  (10s)
+  level=0.0010: p_pred=0.8562  K_pred=1.168  K_meas=1.160±0.42  diff=-0.008  (10s)
+  level=0.0050: p_pred=0.6895  K_pred=1.450  K_meas=1.190±0.52  diff=-0.260  (11s)
+  level=0.0100: p_pred=0.5562  K_pred=1.798  K_meas=1.265±0.55  diff=-0.533  (12s)
+
+
+## Per-noise-model fit summary
+| noise model | n | R² | RMSE |
+|---|---:|---:|---:|
+| depolarizing | 24 | +0.9953 | 0.177 |
+| bias_zero | 24 | +0.9963 | 0.190 |
+| amplitude_damp | 24 | +0.0328 | 5.000 |
+
+# Elapsed: 1647.7s (27.5 min)
