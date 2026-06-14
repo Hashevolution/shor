@@ -430,6 +430,25 @@ E[above]                  = ((1 − c) + c(1 − g)^K)^d
 
 Reproduce: `python -m experiments.rv_filter_lll factor`.
 
+### 3.5.bis Empirical robustness: the hybrid is ε-dominant (no noise-adaptive selector needed)
+
+A natural follow-on question is whether the *best* post-processing method changes with the noise level — i.e. whether there is a noise regime in which standalone (C)-lcm or standalone b-trick beats the hybrid, which would justify a **noise-adaptive selector** that switches method as a function of measured ε. We tested this directly with an ε×method bake-off (`experiments/method_bakeoff.py`): at each σ all three methods consume the *same* measurement sequence per trial, so the comparison is fair, and we report the always-hybrid *regret* = `E[K]_hybrid − min_method E[K]`.
+
+| σ | ε = 1−e^(−σ²) | (C) lcm | Regev b-trick | hybrid | always-hybrid regret |
+|---:|---:|---:|---:|---:|---:|
+| 0.00 | 0.000 | 2.55 | 1.30 | 1.30 | +0.00 |
+| 0.20 | 0.039 | 2.75 | 1.60 | 1.50 | +0.00 |
+| 0.40 | 0.148 | 2.85 | 1.65 | 1.50 | +0.00 |
+| 0.60 | 0.302 | 3.05 | 1.70 | 1.55 | +0.00 |
+| 0.80 | 0.473 | 4.60 | 2.25 | 2.10 | +0.00 |
+| 1.00 | 0.632 | 5.05 | 2.90 | 2.75 | +0.00 |
+| 1.50 | 0.895 | 7.45 | 5.55 | 5.25 | +0.00 |
+| 2.00 | 0.982 | 8.80 | 4.90 | 4.60 | +0.00 |
+
+(N = 1147, d = 4, 20 trials, max_runs = 20; success ≥ 80% gating; the σ = 0 tie 1.30 = 1.30 resolves to hybrid.) Across the full measured range `ε ∈ [0, 0.98]` the hybrid is the (weakly) best method at **every** noise level: max regret is `+0.00`, well inside one standard error. There is no crossover, so a noise-keyed selector would have **zero synergy** to capture.
+
+We record this honestly as an *empirical observation at these parameters*, not a theorem: the hybrid is ε-dominant over the tested grid, so adaptive method-switching on ε is unnecessary. This is distinct from (i) the Ragavan–Vaikuntanathan fixed filter-then-LLL pipeline (a single non-adaptive recovery rule), (ii) the Yang–Markidis recoverability predictor (which predicts *whether* a run is usable, not *which* method to run), and (iii) windowed phase estimation (arXiv:2509.05010, a circuit-level change). It is also the constructive counterpart to Theorem 6: not only is there no tunable interior noise optimum, there is likewise no noise regime in which a different post-processing method should be selected. Reproduce: `python -m experiments.method_bakeoff --N 1147 --trials 20`.
+
 ### 3.6 Trial-level noise sensitivity at K-bin boundaries (universal mechanism observation)
 
 We document a mechanistically clean phenomenon in the hybrid (C) + Regev b-trick algorithm at `(N, d) = (437, 4)`: under phase noise of magnitude `σ ∈ [0.005, 0.100]`, every sampled base set exhibits a small set of trials moving across one of the K-bin boundaries of single-run factoring — most often the `K = 1 / K = 2` boundary, occasionally the `K = 2 / K = 3` boundary. Across 13 independent seeds × 200 trials × 12 σ values (= 31,200 trial-measurements), the *boundary-flip mechanism is universal* (13/13 seeds), but the *direction* (success ↔ failure) is base-set-dependent and shows no statistically significant net bias: mean SR `= +0.144%`, sd `1.016%`, SE `0.282%`, `t = 0.51`, `p (1-sided) = 0.31` at σ = 0.050.
