@@ -14,7 +14,8 @@ A numpy-only implementation and analysis of Shor's quantum factoring algorithm w
 3. **Engineered amplification** demonstration: removing the (C) augmentation amplifies the per-seed |SR| by ~5× — confirming the borderline-trial population is the bottleneck.
 4. **Algorithm-structure regime map** for noise-as-resource susceptibility in multi-base quantum factoring.
 
-> Main paper: **[paper.md](paper.md)** (Markdown) / **[paper.tex](paper.tex)** (LaTeX).
+> Main paper (**canonical, single source of truth**): **[paper.md](paper.md)**.
+> `paper.tex` is **deprecated** — frozen at v0.2.1, missing the v0.3.0+ closed-form framework (Theorem 3'/6, σ-curve, Yang-Markidis). It will be regenerated from `paper.md` at submission time; do not treat it as current.
 > A Korean theoretical companion is at [README.ko.md](README.ko.md).
 
 ## Headline results
@@ -80,7 +81,8 @@ The regime map predicts that noise-as-resource in quantum factoring is naturally
 
 | File | Role |
 |------|------|
-| `paper.md` / `paper.tex` | **The formal paper (English): Theorems 1–5 + Lemma 5.1 + §3.6 mechanism observation** |
+| `paper.md` | **Canonical formal paper (English): Theorems 1–6 + Theorem 3' + Lemma 5.1 + closed-form σ-curve + §3.6 observation** |
+| `paper.tex` | *Deprecated* LaTeX export, frozen at v0.2.1 — regenerated from `paper.md` at submission time |
 | `README.md` | This file (English) |
 | `README.ko.md` | Korean theoretical companion (algorithm walkthrough, basic Shor mathematics) |
 | `release_notes_v0.2.0.md` | Detailed release notes for v0.2.0 |
@@ -180,7 +182,7 @@ See `CITATION.cff` for the GitHub-rendered citation widget (BibTeX, APA, etc. au
 - Plenio, M. B. & Huelga, S. F. (2008). *Dephasing-assisted transport: quantum networks and biomolecules*. New J. Phys.
 - Wellens, T., Shatokhin, V., & Buchleitner, A. (2004). *Stochastic resonance*. Rep. Prog. Phys.
 
-A full bibliography is in `paper.md` / `paper.tex` §References.
+A full bibliography is in `paper.md` §References.
 
 ## Acknowledgements
 
