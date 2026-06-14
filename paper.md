@@ -483,6 +483,56 @@ We document this as a universal trial-level mechanism observation with stochasti
 
 Reproduce: `python -m experiments.sigma_scan_437` (12 σ × 3 seeds × 200 trials baseline scan), `python -m experiments.sigma_scan_437_extend 4 13` (additional 10 seeds), `python -m experiments.analyze_histograms` (boundary-flip analysis).
 
+### 3.6.bis Self-correction (v0.3.0, 2026-06-14): closed-form replaces boundary-flip framework
+
+**The mechanism described above as "boundary flip" is, on closer analysis, the finite-trial expression of a single smooth closed form**:
+
+```
+p(σ) = ρ + (p_0 - ρ) · exp(-σ²)
+E[K(σ)] = (1 - (1-p(σ))^M) / p(σ)
+```
+
+derived directly from the noise-averaged FFT under per-amplitude phase noise:
+`E[|FFT(a·e^{iε})_k|²] = (1-e^{-σ²})/Q + e^{-σ²}·P_0(k)`.
+
+**This form has been verified to fit five algorithm classes**:
+
+| Algorithm | R² | Note |
+|---|---|---|
+| Grover | +0.88 | k-iter accumulation |
+| Shor (pure + b-trick) | +0.95 | gating |
+| QPE isolated (no b-trick) | +0.96 | clean QFT |
+| Simon | +0.99 | Hadamard + XOR |
+| Hybrid (C)+b-trick (this paper's §3.6 setup) | +0.91 | direct internal fit |
+
+**Reinterpretation of §3.6 observations under the closed form**:
+
+- *"Boundary flip" mechanism*: not a separate mechanism — it is the K-binning of a smoothly shifting p(σ) under finite-trial sampling.
+- *"Plateau"* (σ ∈ [0.005, 0.100], mean SR ≈ +0.15%): not structural; `α σ² · (p_0 - ρ)` simply falls below the finite-trial SE in that range.
+- *"Universal direction stochasticity"*: `sign(p_0 - ρ)` is determined per (a, b) setup. We previously called it "stochastic" because we did not derive that sign; now we can.
+- *"Plateau + overload" two-regime picture*: a single exponential decay rendered in two qualitative bands by the finite-trial resolution.
+
+**What is retained**:
+- The raw measurement data (13 seeds × 12 σ × 200 trials = 31,200 measurements).
+- The five-cell regime map predictions (5/5 measured, consistent with closed form).
+- The qualitative bridge to noise-as-resource literature.
+- The conclusion that SR-based factoring acceleration is precluded.
+
+**What is retracted**:
+- The "boundary flip" lexicon as a distinct mechanism.
+- The "deterministic flip set within plateau" reading (it is statistical, not deterministic).
+- The "stochastic direction" framing as unexplainable — `sign(p_0 - ρ)` explains it.
+
+**Bound on the SR effect (closed-form consequence)**:
+
+`|ΔK_max| = |1/ρ - 1/p_0|` (cap at max_runs M).
+
+For phase noise on Shor-class algorithms, this bound rules out asymptotic SR-based factoring speedup: as N grows, the gap `|p_0 - ρ|` does not produce O(1/log N) speedups; our N ∈ {437, 1147} measurements show |Δ| ∼ O(0.2–0.6) without N-dependent scaling toward 1.
+
+**Relation to Yang-Markidis (arXiv:2605.16074, ICS Workshops '26)**: their empirical two-stage noise propagation model `(1-ε)·P_s + ε·distractors` has the same structural form as our closed form. We provide the analytical foundation `ε = 1 - exp(-σ²)`; they provide hardware-level recoverability features from 680 IBM runs. The two are complementary.
+
+Reproduce: `python -m experiments.shor_sigma_curve_model` (Shor pure, R²=0.95), `python -m experiments.grover_sigma_curve_model` (Grover, R²=0.88), `python -m experiments.qpe_isolated_sigma` (QPE, R²=0.96), `python -m experiments.simon_sigma_curve` (Simon, R²=0.99), `python -m experiments.hybrid_sigma_curve` (this §3.6 setup, R²=0.91). See `sr_sigma_curve_model.md` for the unified framework.
+
 ### 3.7 Joint interpretation
 
 Theorem 1 says: *once* `r_a | L`, success is deterministic regardless of noise. Theorem 2 says: an ideal algorithm reaches this state in `O(log log log N)` bases in expectation. Theorem 3 says: under destructive noise, the actual algorithm reaches it in `E[K_λ^{ideal}] / g_M(η)` bases — i.e., overhead exactly `1/g_M(η)`. Theorem 4 says: under a marginal-distribution assumption, the (C) framework applies coordinate-wise to Regev's multi-base measurements with corresponding reduction in run count. Theorem 5 closes the loop: combining (C)'s `λ(N)` recovery with Regev's `b`-trick yields a complete factoring algorithm that empirically requires ~5× fewer runs than standalone Regev at `N ∈ {437, 1147, 2491, 4087}`. Together they explain the algorithm's empirical robustness: a noise-adjusted logarithmic number of measurements suffice to enter a regime immune to further measurement noise, and the framework composes naturally with Regev's multi-base circuit (modulo marginal assumption).

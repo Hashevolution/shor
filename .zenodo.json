@@ -1,6 +1,6 @@
 {
-  "title": "A Noise-Invariant Determinism Theorem for Multi-Base Post-Processing in Shor's Order Finding",
-  "description": "Five theorems on classical post-processing of multi-base order-finding measurements in Shor's algorithm: (1) noise-invariant determinism, (2) logarithmic coverage time, (3) exact noise scaling 1/g_M(η), (4) conditional compatibility with Regev's 2023 multi-base framework, and (5) a hybrid (C) + Regev b-trick factoring algorithm with closed-form bound matching N=437 empirical mean within 4%. Verified across 17,700 measurements at six composite sizes. Additionally documents a universal trial-level mechanism observation at (N, d) = (437, 4): across 13 independent base sets (200 trials × 12 sigma values each = 31,200 trial-measurements), phase noise universally flips trials at one of the K-bin boundaries (77% K=1/K=2, 15% K=2/K=3, 8% long-jump) of single-run hybrid factoring, with stochastic per-seed direction (mean SR +0.14%, t=0.51, p=0.31, not significant). The mechanism follows the classical Benzi-Buchleitner stochastic resonance shape (saturation plateau + overload decline) and provides a clean conceptual bridge between integer factoring and the noise-as-resource literature (ENAQT), with no cryptographic implication. Companion code is ~1000 lines of numpy with no quantum libraries required.",
+  "title": "A Noise-Invariant Determinism Theorem for Multi-Base Post-Processing in Shor's Order Finding (v0.3.0: closed-form σ-curve framework + §3.6 self-correction)",
+  "description": "v0.3.0 of the multi-base post-processing analysis of Shor's order finding. The original five theorems (v0.2.1, DOI 10.5281/zenodo.20681847) are retained unchanged: (1) noise-invariant determinism, (2) logarithmic coverage time, (3) exact noise scaling 1/g_M(η), (4) conditional compatibility with Regev's 2023 multi-base framework, and (5) a hybrid (C)+Regev b-trick factoring algorithm with closed-form bound matching N=437 empirical mean within 4%. New in v0.3.0: §3.6 of v0.2.1 is *self-corrected*. The previously claimed 'boundary-flip + universal direction stochasticity + plateau/overload' framework is shown to be the finite-trial expression of a single closed form p(σ) = ρ + (p_0 - ρ)·exp(-σ²) derived from the standard phase-noise dephasing of the FFT. The closed form is verified across five algorithm classes — Grover (R²=0.88), Shor pure (0.95), QPE isolated (0.96), Simon (0.99), Hybrid (C)+b-trick (paper §3.6 setup, 0.91). Positioning: analytical complement to Yang-Markidis (arXiv:2605.16074, ICS Workshops '26), whose empirical recoverability model (1-ε)·P_s + ε·distractors has the same structural form; we provide the analytical foundation ε = 1 - exp(-σ²). Implication: SR-based factoring acceleration is precluded by a closed-form bound on |ΔK|. v0.3.0 retracts the 'boundary flip' lexicon as a distinct mechanism; all raw measurement data and theorems 1-5 are retained.",
   "upload_type": "publication",
   "publication_type": "preprint",
   "creators": [
@@ -15,12 +15,18 @@
     "integer factoring",
     "regev factoring",
     "noise-invariance",
-    "stochastic resonance",
-    "quantum noise",
+    "phase noise",
+    "dephasing",
+    "closed-form sigma-curve",
+    "quantum stochastic resonance",
+    "cross-algorithm verification",
+    "Grover",
+    "QPE",
+    "Simon's algorithm",
+    "self-correction",
     "ENAQT",
     "post-processing",
     "multi-base",
-    "K-boundary flip",
     "trial-level mechanism"
   ],
   "license": "MIT",
@@ -34,6 +40,16 @@
       "identifier": "https://github.com/Hashevolution/shor",
       "relation": "isSupplementTo",
       "scheme": "url"
+    },
+    {
+      "identifier": "10.5281/zenodo.20681847",
+      "relation": "isNewVersionOf",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "arXiv:2605.16074",
+      "relation": "isSupplementedBy",
+      "scheme": "arxiv"
     }
   ]
 }
