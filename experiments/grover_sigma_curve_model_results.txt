@@ -1,0 +1,78 @@
+# Grover σ-curve closed-form 검증
+# Model: E[p_marked](σ) = (1 - cos(2μ)·exp(-2kσ²))/2
+#   μ = (2k+1)·θ + k·ϕ_oracle, θ = asin(√(M/N))
+# N_search=64 M=1 k_iter=2
+# σ ∈ [0.0, 0.005, 0.025, 0.05, 0.075, 0.1, 0.15, 0.2]
+# Compare against measured (5 seeds × 200 trials × 8 σ)
+
+## Per-seed predictions
+### seed 1 (ϕ=+0.0286, μ=0.6839, cos(2μ)=+0.2017, p_0=0.3992, K_0_pred=2.505)
+  σ=0.000: K_pred=2.505 K_meas=2.765 diff=+0.260  SR_pred=+9.395% SR_meas=+0.000%
+  σ=0.005: K_pred=2.505 K_meas=2.450 diff=-0.055  SR_pred=+9.397% SR_meas=+11.392%
+  σ=0.025: K_pred=2.504 K_meas=2.440 diff=-0.064  SR_pred=+9.452% SR_meas=+11.754%
+  σ=0.050: K_pred=2.499 K_meas=2.325 diff=-0.174  SR_pred=+9.622% SR_meas=+15.913%
+  σ=0.075: K_pred=2.491 K_meas=2.430 diff=-0.061  SR_pred=+9.901% SR_meas=+12.116%
+  σ=0.100: K_pred=2.481 K_meas=2.630 diff=+0.149  SR_pred=+10.283% SR_meas=+4.882%
+  σ=0.150: K_pred=2.452 K_meas=2.325 diff=-0.127  SR_pred=+11.323% SR_meas=+15.913%
+  σ=0.200: K_pred=2.415 K_meas=2.315 diff=-0.100  SR_pred=+12.657% SR_meas=+16.275%
+
+### seed 2 (ϕ=+0.0144, μ=0.6555, cos(2μ)=+0.2570, p_0=0.3715, K_0_pred=2.692)
+  σ=0.000: K_pred=2.691 K_meas=2.550 diff=-0.141  SR_pred=-5.547% SR_meas=+0.000%
+  σ=0.005: K_pred=2.691 K_meas=2.775 diff=+0.084  SR_pred=-5.543% SR_meas=-8.824%
+  σ=0.025: K_pred=2.689 K_meas=2.845 diff=+0.156  SR_pred=-5.456% SR_meas=-11.569%
+  σ=0.050: K_pred=2.682 K_meas=2.765 diff=+0.083  SR_pred=-5.185% SR_meas=-8.431%
+  σ=0.075: K_pred=2.671 K_meas=2.705 diff=+0.034  SR_pred=-4.742% SR_meas=-6.078%
+  σ=0.100: K_pred=2.655 K_meas=2.905 diff=+0.250  SR_pred=-4.136% SR_meas=-13.922%
+  σ=0.150: K_pred=2.614 K_meas=2.545 diff=-0.069  SR_pred=-2.499% SR_meas=+0.196%
+  σ=0.200: K_pred=2.561 K_meas=2.830 diff=+0.269  SR_pred=-0.417% SR_meas=-10.980%
+
+### seed 3 (ϕ=-0.0383, μ=0.5501, cos(2μ)=+0.4533, p_0=0.2733, K_0_pred=3.659)
+  σ=0.000: K_pred=3.652 K_meas=3.920 diff=+0.268  SR_pred=+6.825% SR_meas=+0.000%
+  σ=0.005: K_pred=3.652 K_meas=4.000 diff=+0.348  SR_pred=+6.832% SR_meas=-2.041%
+  σ=0.025: K_pred=3.645 K_meas=3.915 diff=+0.270  SR_pred=+7.015% SR_meas=+0.128%
+  σ=0.050: K_pred=3.623 K_meas=3.730 diff=+0.107  SR_pred=+7.578% SR_meas=+4.847%
+  σ=0.075: K_pred=3.587 K_meas=3.695 diff=+0.108  SR_pred=+8.493% SR_meas=+5.740%
+  σ=0.100: K_pred=3.539 K_meas=3.660 diff=+0.121  SR_pred=+9.726% SR_meas=+6.633%
+  σ=0.150: K_pred=3.412 K_meas=3.790 diff=+0.378  SR_pred=+12.971% SR_meas=+3.316%
+  σ=0.200: K_pred=3.257 K_meas=3.335 diff=+0.078  SR_pred=+16.916% SR_meas=+14.923%
+
+### seed 4 (ϕ=-0.0382, μ=0.5501, cos(2μ)=+0.4533, p_0=0.2733, K_0_pred=3.659)
+  σ=0.000: K_pred=3.652 K_meas=3.755 diff=+0.103  SR_pred=+2.733% SR_meas=+0.000%
+  σ=0.005: K_pred=3.652 K_meas=3.820 diff=+0.168  SR_pred=+2.741% SR_meas=-1.731%
+  σ=0.025: K_pred=3.645 K_meas=3.830 diff=+0.185  SR_pred=+2.932% SR_meas=-1.997%
+  σ=0.050: K_pred=3.623 K_meas=3.705 diff=+0.082  SR_pred=+3.519% SR_meas=+1.332%
+  σ=0.075: K_pred=3.587 K_meas=3.590 diff=+0.003  SR_pred=+4.474% SR_meas=+4.394%
+  σ=0.100: K_pred=3.539 K_meas=3.575 diff=+0.036  SR_pred=+5.762% SR_meas=+4.794%
+  σ=0.150: K_pred=3.411 K_meas=3.360 diff=-0.051  SR_pred=+9.149% SR_meas=+10.519%
+  σ=0.200: K_pred=3.257 K_meas=2.990 diff=-0.267  SR_pred=+13.267% SR_meas=+20.373%
+
+### seed 5 (ϕ=-0.0274, μ=0.5719, cos(2μ)=+0.4141, p_0=0.2929, K_0_pred=3.414)
+  σ=0.000: K_pred=3.410 K_meas=3.455 diff=+0.045  SR_pred=+1.291% SR_meas=+0.000%
+  σ=0.005: K_pred=3.410 K_meas=3.555 diff=+0.145  SR_pred=+1.297% SR_meas=-2.894%
+  σ=0.025: K_pred=3.404 K_meas=3.035 diff=-0.369  SR_pred=+1.463% SR_meas=+12.156%
+  σ=0.050: K_pred=3.387 K_meas=3.260 diff=-0.127  SR_pred=+1.975% SR_meas=+5.644%
+  σ=0.075: K_pred=3.358 K_meas=3.630 diff=+0.272  SR_pred=+2.807% SR_meas=-5.065%
+  σ=0.100: K_pred=3.319 K_meas=3.470 diff=+0.151  SR_pred=+3.933% SR_meas=-0.434%
+  σ=0.150: K_pred=3.216 K_meas=3.520 diff=+0.304  SR_pred=+6.915% SR_meas=-1.881%
+  σ=0.200: K_pred=3.089 K_meas=3.025 diff=-0.064  SR_pred=+10.580% SR_meas=+12.446%
+
+
+## Cross-seed mean SR: predicted vs measured
+| σ | mean SR predicted % | mean SR measured % | diff |
+|---:|---:|---:|---:|
+| 0.005 | +2.945 | -0.819 | -3.764 |
+| 0.025 | +3.081 | +2.094 | -0.987 |
+| 0.050 | +3.502 | +3.861 | +0.359 |
+| 0.075 | +4.187 | +2.221 | -1.965 |
+| 0.100 | +5.114 | +0.391 | -4.723 |
+| 0.150 | +7.572 | +5.613 | -1.959 |
+| 0.200 | +10.601 | +10.607 | +0.007 |
+
+## Per-seed goodness of fit (K_meas vs K_pred)
+seed 1: R² = +0.132, RMSE = 0.140 (over 8 σ values)
+seed 2: R² = -0.610, RMSE = 0.158 (over 8 σ values)
+seed 3: R² = -0.490, RMSE = 0.238 (over 8 σ values)
+seed 4: R² = +0.725, RMSE = 0.139 (over 8 σ values)
+seed 5: R² = +0.042, RMSE = 0.215 (over 8 σ values)
+
+# Aggregate (all seeds × σ): R² = +0.8837, RMSE = 0.182, n = 40

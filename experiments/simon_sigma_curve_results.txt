@@ -1,0 +1,31 @@
+# Simon σ-curve closed-form 검증
+# Model: p_o(σ) = 1/2 + (1/2)·exp(-σ²)  (p_0=1, p_∞=1/2, α=1)
+# K-distribution: Σ_{k=0}^{n-2} 1 / (p_o · (1 - 2^{k-(n-1)}))
+# n = 5, dim = 32, σ ∈ [0.0, 0.025, 0.05, 0.1, 0.15, 0.2, 0.3, 0.5]
+# 30 random hidden strings × 200 trials
+# max_runs = 30
+
+## p_o(σ) closed form vs measured
+| σ | p_o predicted | p_o measured (avg over s) | diff |
+|---:|---:|---:|---:|
+| 0.000 | 1.0000 | 1.0000 | +0.0000 |
+| 0.025 | 0.9997 | 0.9998 | +0.0001 |
+| 0.050 | 0.9988 | 0.9992 | +0.0004 |
+| 0.100 | 0.9950 | 0.9946 | -0.0004 |
+| 0.150 | 0.9889 | 0.9872 | -0.0017 |
+| 0.200 | 0.9804 | 0.9810 | +0.0006 |
+| 0.300 | 0.9570 | 0.9590 | +0.0020 |
+| 0.500 | 0.8894 | 0.8922 | +0.0028 |
+
+## K(σ) closed form vs measured (Simon's)
+σ=0.000: p_o_pred=1.0000  K_pred=5.543  K_meas=5.572±1.64  diff=+0.029  (0s)
+σ=0.025: p_o_pred=0.9997  K_pred=5.545  K_meas=5.567±1.64  diff=+0.023  (1s)
+σ=0.050: p_o_pred=0.9988  K_pred=5.550  K_meas=5.575±1.66  diff=+0.025  (1s)
+σ=0.100: p_o_pred=0.9950  K_pred=5.571  K_meas=5.559±1.67  diff=-0.012  (1s)
+σ=0.150: p_o_pred=0.9889  K_pred=5.605  K_meas=5.607±1.70  diff=+0.001  (1s)
+σ=0.200: p_o_pred=0.9804  K_pred=5.654  K_meas=5.673±1.75  diff=+0.019  (1s)
+σ=0.300: p_o_pred=0.9570  K_pred=5.792  K_meas=5.789±1.79  diff=-0.003  (1s)
+σ=0.500: p_o_pred=0.8894  K_pred=6.232  K_meas=6.237±2.01  diff=+0.005  (1s)
+
+# Aggregate fit: R² = +0.9932, RMSE = 0.018, n = 8 σ values
+# Elapsed: 6.2s

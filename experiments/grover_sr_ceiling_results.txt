@@ -1,0 +1,41 @@
+# Grover SR ceiling cell (K_base ≈ 1, §3.6 ceiling regime)
+# N_search=64 M=1 k_iter=6
+# σ ∈ [0.0, 0.025, 0.05, 0.1] (focused on plateau region only)
+# 5 seeds × 200 trials/cell × max_runs=20
+# ϕ_oracle range: U(-π/64, π/64) ≈ ±0.0491
+# Theoretical p (ϕ=0): 0.99659, K_theory ≈ 1.0034
+
+## Baseline σ=0.000
+seed 1 (ϕ=+0.0286): K_base=1.040±0.22
+seed 2 (ϕ=+0.0144): K_base=1.035±0.25
+seed 3 (ϕ=-0.0383): K_base=1.050±0.22
+seed 4 (ϕ=-0.0382): K_base=1.030±0.17
+seed 5 (ϕ=-0.0274): K_base=1.010±0.10
+
+
+## σ = 0.025
+seed 1: K=1.085 SR=-4.327%
+seed 2: K=1.015 SR=+1.932%
+seed 3: K=1.020 SR=+2.857%
+seed 4: K=1.035 SR=-0.485%
+seed 5: K=1.005 SR=+0.495%
+  → mean SR=+0.094% sd=2.786 SE=1.246 t=+0.08  direction=3+/2-
+
+## σ = 0.05
+seed 1: K=1.055 SR=-1.442%
+seed 2: K=1.040 SR=-0.483%
+seed 3: K=1.025 SR=+2.381%
+seed 4: K=1.055 SR=-2.427%
+seed 5: K=1.020 SR=-0.990%
+  → mean SR=-0.592% sd=1.810 SE=0.809 t=-0.73  direction=1+/4-
+
+## σ = 0.1
+seed 1: K=1.080 SR=-3.846%
+seed 2: K=1.075 SR=-3.865%
+seed 3: K=1.070 SR=-1.905%
+seed 4: K=1.065 SR=-3.398%
+seed 5: K=1.040 SR=-2.970%
+  → mean SR=-3.197% sd=0.811 SE=0.363 t=-8.82  direction=0+/5-
+
+# K_baseline: 1.033 ± 0.015
+# Elapsed: 0.0s
