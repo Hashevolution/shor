@@ -22,10 +22,13 @@ E[K(σ)] = (1 - (1-p)^M) / p   (truncated geometric, M = max measurement rounds)
 derived directly from the noise-averaged FFT: `E[|FFT(a·e^{iε})_k|²] =
 (1-e^{-σ²})/Q + e^{-σ²}·P_0(k)`. We verify the form across five algorithm classes:
 Grover (R²=0.88), Shor pure + b-trick (0.95), QPE isolated (0.96), Simon (0.99),
-and Hybrid (C)+b-trick (paper §3.6 setup of [v0.2.1], 0.91). The result
-provides the analytical foundation for the empirical two-stage noise propagation
-model of Yang-Markidis (arXiv:2605.16074, ICS Workshops '26): their `(1-ε)·P_s +
-ε·distractors` is structurally equivalent, with `ε = 1 - exp(-σ²)`. The closed
+and Hybrid (C)+b-trick (paper §3.6 setup of [v0.2.1], 0.91). The `exp(-σ²)` decay
+is itself the standard dephasing result (Nielsen-Chuang §8.3); we claim no new
+mechanism. Rather, the result lets us *verify* that the conceptual mixing weight
+of the Yang-Markidis two-stage model (arXiv:2605.16074, ICS Workshops '26;
+their Eq. (3), §5, where `ε` is left unspecified) coincides with this dephasing
+factor `ε = 1 - exp(-σ²)`, and to *map its boundary* (holds for phase/depol/bias,
+breaks for amplitude damping). The closed
 form also corrects an earlier author claim of a "boundary-flip mechanism" for
 stochastic resonance (SR) in Shor's algorithm [v0.2.1, §3.6]: the alleged SR
 mechanism is the finite-trial expression of the same smooth exponential decay.
@@ -50,13 +53,15 @@ precision-register distributions and identify four interpretable features
 verified mass fraction M_{1,frac}, verified margin fraction Δ_{ver,frac}) that
 predict recoverability via classical continued-fraction post-processing. Their
 predictive ML pipeline (AUROC 0.98 for M_{1,frac}) is *empirical*. They state a
-two-stage noise propagation model of the form:
+two-stage noise propagation model (their Eq. (3), §5) of the form:
 
 ```
 p_σ(y) = (1-ε)·[p_s ∗ K_{σ_0}](y) + ε · Σ_h ν_h·[p_h ∗ K_{σ_h}](y)         (1)
 ```
 
-with ε an empirical weight-transfer parameter.
+with ε a conceptual weight-transfer parameter — in their text "the total weight
+transferred out of the intended family", left unspecified (neither fitted nor
+given as a function of σ).
 
 **Hashevolution v0.2.1 (June 2026, DOI 10.5281/zenodo.20681847)** [ref]
 documents an SR-like phenomenon in a hybrid (C)+b-trick factoring algorithm at
@@ -81,8 +86,10 @@ Chuang §8.3]). Our contributions are:
    success probability.
 2. Cross-algorithm verification across 4 algorithm families (Grover, Shor /
    QPE, Simon) + the specific Hybrid setup of [v0.2.1] §3.6.
-3. The analytical foundation `ε = 1 - exp(-σ²)` for the Yang-Markidis
-   two-stage model (1).
+3. Numerical verification that the conceptual mixing weight ε of the
+   Yang-Markidis two-stage model (their Eq. (3), §5, left unspecified) equals
+   the standard-dephasing factor `ε = 1 - exp(-σ²)`, plus a boundary map
+   (holds for phase/depol/bias; breaks for amplitude damping, R²=0.03).
 4. A self-correction of the §3.6 SR framework of [v0.2.1].
 5. A closed-form bound on the SR-based factoring effect, precluding
    cryptographic-scale acceleration.

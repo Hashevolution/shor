@@ -1,5 +1,10 @@
 # LaTeX 컴파일·arXiv 업로드 가이드
 
+> ⚠ **`paper.tex` 는 v0.2.1 에 동결된 폐기 파일입니다.** 정본은 `paper.md`.
+> 제출 전 반드시 현재 `paper.md` (Theorem 3'/6, §3.3.bis/ter, §3.6.bis, closed-form
+> σ-curve, Yang-Markidis 포함) 로부터 `paper.tex` 를 **재생성**한 뒤 아래 절차를
+> 따르세요. 지금 그대로 컴파일하면 v0.3.0+ 내용이 빠진 옛 논문이 나옵니다.
+
 ## 로컬 컴파일
 
 LaTeX 배포판 (Windows 권장: MiKTeX, macOS: MacTeX, Linux: TeX Live) 설치 후:

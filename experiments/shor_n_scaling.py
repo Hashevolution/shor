@@ -28,10 +28,13 @@ from multi_base import convergent_denominators, minimize_order
 from shor import simulate_period_finding
 
 
-N_VALUES = [437, 1147, 2491, 4087, 8009]
+N_VALUES = [437, 1147, 2491, 4087]  # N=8009 dropped: state-vector memory infeasible
 N_SETUPS_PER_N = 3
-N_P0_SAMPLES = 1000
-N_RHO_SAMPLES = 1000
+# Per-N sample budget: FFT cost ~ Q grows ~64x from N=437 to N=4087, so we
+# trade precision for runtime at large N. 300 samples gives SE(|Δ|) ~ 0.04,
+# ample to confirm |Δ| ∈ [0.2, 0.6] with no N-scaling toward 1.
+SAMPLES_BY_N = {437: 1000, 1147: 500, 2491: 300, 4087: 300}
+DEFAULT_SAMPLES = 300
 MAX_RUNS = 20
 
 RESULTS_FILE = Path("experiments/shor_n_scaling_results.txt")
@@ -97,7 +100,7 @@ def main():
         f"# Model: p(σ) = ρ + (p_0 - ρ) · exp(-σ²)\n"
         f"# Effect bound: |Δp_max| = |p_0 - ρ|\n"
         f"# N values: {N_VALUES}\n"
-        f"# {N_SETUPS_PER_N} setups per N, MC samples: p_0={N_P0_SAMPLES}, ρ={N_RHO_SAMPLES}\n\n"
+        f"# {N_SETUPS_PER_N} setups per N, per-N MC samples: {SAMPLES_BY_N}\n\n"
     )
     print(header)
     lines.append(header)
@@ -106,8 +109,9 @@ def main():
 
     for N_ in N_VALUES:
         Q = 1 << (2 * max(1, (N_ - 1).bit_length()))
+        n_samp = SAMPLES_BY_N.get(N_, DEFAULT_SAMPLES)
         setups = find_setups(N_, N_SETUPS_PER_N)
-        section = f"## N = {N_} (Q = {Q}, {len(setups)} setups)\n"
+        section = f"## N = {N_} (Q = {Q}, {len(setups)} setups, {n_samp} samples)\n"
         print(section)
         lines.append(section)
 
@@ -115,8 +119,8 @@ def main():
             rng_p0 = np.random.default_rng(N_ * 991 + idx * 17)
             rng_rho = np.random.default_rng(N_ * 991 + idx * 23)
             t_mc = time.time()
-            p0 = measure_p0(a, N_, r_a, N_P0_SAMPLES, rng_p0)
-            rho = measure_rho(a, N_, r_a, Q, N_RHO_SAMPLES, rng_rho)
+            p0 = measure_p0(a, N_, r_a, n_samp, rng_p0)
+            rho = measure_rho(a, N_, r_a, Q, n_samp, rng_rho)
             mct = time.time() - t_mc
             delta = abs(p0 - rho)
             row = (
@@ -126,6 +130,10 @@ def main():
             print(row, end="")
             lines.append(row)
             rows.append((N_, a, r_a, p0, rho, delta))
+
+        # Incremental save: persist after each completed N so a long run
+        # never loses partial data if interrupted at a larger N.
+        RESULTS_FILE.write_text("".join(lines), encoding="utf-8")
 
     # Summary table
     summary = "\n## Summary: |Δ| = |p_0 - ρ| scaling with N\n"
