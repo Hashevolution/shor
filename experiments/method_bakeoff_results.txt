@@ -1,0 +1,66 @@
+# ε×method bake-off  (N=1147, d=4, 20 trials, max_runs=20)
+# ε = 1 - exp(-σ²).  best = min mean-K among methods with success ≥ 80%
+# regret(σ) = mean_K[hybrid] - mean_K[best].  crossover ⇔ best method changes with σ AND gap > 2·SE
+
+## σ=0.00  (ε=0.000)   [749s]
+  method                   mean K     ±SE   success
+  (C) lcm only               2.55    0.94      95%
+  Regev b-trick              1.30    0.12     100%
+  (C)+b-trick hybrid         1.30    0.12     100%
+  → best: Regev b-trick  (mean K=1.30); always-hybrid regret = +0.00
+
+## σ=0.20  (ε=0.039)   [987s]
+  method                   mean K     ±SE   success
+  (C) lcm only               2.75    0.91      95%
+  Regev b-trick              1.60    0.20     100%
+  (C)+b-trick hybrid         1.50    0.19     100%
+  → best: (C)+b-trick hybrid  (mean K=1.50); always-hybrid regret = +0.00
+
+## σ=0.40  (ε=0.148)   [997s]
+  method                   mean K     ±SE   success
+  (C) lcm only               2.85    0.92      95%
+  Regev b-trick              1.65    0.20     100%
+  (C)+b-trick hybrid         1.50    0.19     100%
+  → best: (C)+b-trick hybrid  (mean K=1.50); always-hybrid regret = +0.00
+
+## σ=0.60  (ε=0.302)   [999s]
+  method                   mean K     ±SE   success
+  (C) lcm only               3.05    0.92      95%
+  Regev b-trick              1.70    0.21     100%
+  (C)+b-trick hybrid         1.55    0.21     100%
+  → best: (C)+b-trick hybrid  (mean K=1.55); always-hybrid regret = +0.00
+
+## σ=0.80  (ε=0.473)   [1008s]
+  method                   mean K     ±SE   success
+  (C) lcm only               4.60    1.24      90%
+  Regev b-trick              2.25    0.40     100%
+  (C)+b-trick hybrid         2.10    0.41     100%
+  → best: (C)+b-trick hybrid  (mean K=2.10); always-hybrid regret = +0.00
+
+## σ=1.00  (ε=0.632)   [1020s]
+  method                   mean K     ±SE   success
+  (C) lcm only               5.05    1.30      90%
+  Regev b-trick              2.90    0.64     100%
+  (C)+b-trick hybrid         2.75    0.65     100%
+  → best: (C)+b-trick hybrid  (mean K=2.75); always-hybrid regret = +0.00
+
+## σ=1.50  (ε=0.895)   [1030s]
+  method                   mean K     ±SE   success
+  (C) lcm only               7.45    1.65      85%
+  Regev b-trick              5.55    1.31      95%
+  (C)+b-trick hybrid         5.25    1.23      95%
+  → best: (C)+b-trick hybrid  (mean K=5.25); always-hybrid regret = +0.00
+
+## σ=2.00  (ε=0.982)   [1034s]
+  method                   mean K     ±SE   success
+  (C) lcm only               8.80    1.73      70%
+  Regev b-trick              4.90    1.02      95%
+  (C)+b-trick hybrid         4.60    1.00      95%
+  → best: (C)+b-trick hybrid  (mean K=4.60); always-hybrid regret = +0.00
+
+## Crossover verdict
+  best method 가 σ 에 따라 바뀜: [('0.00', 'Regev b-trick'), ('0.20', '(C)+b-trick hybrid'), ('0.40', '(C)+b-trick hybrid'), ('0.60', '(C)+b-trick hybrid'), ('0.80', '(C)+b-trick hybrid'), ('1.00', '(C)+b-trick hybrid'), ('1.50', '(C)+b-trick hybrid'), ('2.00', '(C)+b-trick hybrid')]
+  σ 0.00→0.20: Regev b-trick→(C)+b-trick hybrid, Δmean=0.20 vs 2·SE=0.64 (노이즈 수준)
+  → winner 변동이 SE 안쪽 (노이즈) → crossover 미확정. trials 늘려 재측정 권장.
+
+# Elapsed: 7823.9s (130.4 min)
