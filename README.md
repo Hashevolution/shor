@@ -5,12 +5,12 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
 
-> **v0.3.0** (2026-06-14): §3.6 self-correction + closed-form σ-curve framework + 5-algorithm verification (Grover, Shor, QPE, Simon, Hybrid; R² ∈ [0.88, 0.99]) + analytical complement to Yang-Markidis ([arXiv:2605.16074](https://arxiv.org/abs/2605.16074)). See [release notes](release_notes_v0.3.0.md), [sr_sigma_curve_model.md](sr_sigma_curve_model.md), and paper.md §3.6.bis.
+> **v0.3.0** (2026-06-14): §3.6 self-correction + closed-form σ-curve framework + 5-algorithm verification (Grover, Shor, QPE, Simon, Hybrid; R² ∈ [0.88, 0.99]) + numerical verification and boundary-mapping of the Yang-Markidis two-stage model ([arXiv:2605.16074](https://arxiv.org/abs/2605.16074); their conceptual weight `ε` ≡ standard-dephasing `1−exp(−σ²)`, holds for phase/depol/bias, breaks for amplitude damping). See [release notes](release_notes_v0.3.0.md), [sr_sigma_curve_model.md](sr_sigma_curve_model.md), and paper.md §3.6.bis.
 
 A numpy-only implementation and analysis of Shor's quantum factoring algorithm with:
 
-1. **Five theorems** on noise-invariant determinism, logarithmic coverage time, exact noise scaling, conditional Regev compatibility, and a hybrid (C) + Regev *b*-trick factoring algorithm.
-2. **Universal trial-level boundary-flip mechanism** observation: 13 base sets × 12 σ values × 200 trials = 31,200 trial-measurements at `(N, d) = (437, 4)`.
+1. **Five theorems** on noise-invariant determinism, logarithmic coverage time, exact noise scaling, conditional Regev compatibility, and a hybrid (C) + Regev *b*-trick factoring algorithm — plus a v0.3.0 generalization (**Theorem 3'**, universal coherence-loss form) and its **Theorem 6** no-go corollary (no tuned stochastic resonance; closed-form bound on any SR factoring effect).
+2. **Universal trial-level boundary-flip observation**: 13 base sets × 12 σ values × 200 trials = 31,200 trial-measurements at `(N, d) = (437, 4)`. *(v0.3.0 self-correction: this is no longer claimed as a distinct "mechanism" — it is the finite-trial K-binning of a single smooth closed-form σ-curve `p(σ)=ρ+(p_0−ρ)exp(−σ²)`, now derived via Theorem 3' / §3.6.bis and bounded by Theorem 6.)*
 3. **Engineered amplification** demonstration: removing the (C) augmentation amplifies the per-seed |SR| by ~5× — confirming the borderline-trial population is the bottleneck.
 4. **Algorithm-structure regime map** for noise-as-resource susceptibility in multi-base quantum factoring.
 
@@ -26,6 +26,8 @@ A numpy-only implementation and analysis of Shor's quantum factoring algorithm w
 - **Theorem 3 — Exact noise scaling**: under destructive noise, `E[K_λ^{alg}(η)] = E[K_λ^{ideal}] / g_M(η)`.
 - **Theorem 4 — Conditional Regev compatibility**: `(C)` applies coordinate-wise to Regev's multi-base measurements under a marginal-distribution assumption.
 - **Theorem 5 — Hybrid (C) + Regev b-trick factoring**: empirically requires ~5× fewer runs than standalone Regev at `N ∈ {437, 1147, 2491, 4087}`, with **Lemma 5.1** giving a closed-form per-`b` nontrivial-sqrt probability bound.
+- **Theorem 3' — Universal coherence-loss form** (v0.3.0, §3.3.bis): `g_M = (1−ε)·g_0 + ε·g_∞` unifies destructive noise (Theorem 3) and phase noise (`ε = 1−exp(−σ²)`); amplitude damping is shown outside the class (structural).
+- **Theorem 6 — No-go for SR-based factoring acceleration** (§3.3.ter): for any class-(★) noise, `E[K(ε)]` is monotone in the noise weight *regardless of sign* of `g_0−g_∞`, so no tuned (interior-optimal) stochastic resonance exists; the swing is the closed-form constant `|1/g_∞−1/g_0|`. Some cells genuinely have `g_∞ > g_0` (noise helps), but the benefit is bounded and does not scale with `N`.
 
 Verified across **17,700 measurements at six composite sizes**, zero theorem violations.
 
@@ -133,8 +135,8 @@ All experimental scripts are *resumable* (immediate per-cell save, skip-existing
 
 ```
 Hashevolution. (2026). A Noise-Invariant Determinism Theorem for Multi-Base
-Post-Processing in Shor's Order Finding (Version 0.2.1). Zenodo.
-https://doi.org/10.5281/zenodo.20681847
+Post-Processing in Shor's Order Finding (Version 0.3.0). Zenodo.
+https://doi.org/10.5281/zenodo.20685015
 ```
 
 BibTeX:
@@ -147,13 +149,14 @@ BibTeX:
   month        = jun,
   year         = 2026,
   publisher    = {Zenodo},
-  version      = {v0.2.1},
-  doi          = {10.5281/zenodo.20681847},
-  url          = {https://doi.org/10.5281/zenodo.20681847}
+  version      = {v0.3.0},
+  doi          = {10.5281/zenodo.20685015},
+  url          = {https://doi.org/10.5281/zenodo.20685015}
 }
 ```
 
 Previous version DOIs:
+- v0.2.1: [10.5281/zenodo.20681847](https://doi.org/10.5281/zenodo.20681847)
 - v0.2.0: [10.5281/zenodo.20679807](https://doi.org/10.5281/zenodo.20679807)
 
 See `CITATION.cff` for the GitHub-rendered citation widget (BibTeX, APA, etc. auto-generated).
