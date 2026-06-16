@@ -68,13 +68,16 @@ Phase 4 (종합)     어느 게이트가 "안 겹침" 냈나    → 그 자리�
 
 **왜 신규 1순위:** 노트가 *아직 안 만진* 가장 가까운 좌표. 자기완결(외부 데이터 불요).
 
-> **✅ 실행 완료 (2026-06-16) — 게이트 2 판정: (a) 재발견.**
-> `phase2_magic_curvature.py` / `phase2b_selffalsify.py` 실행. 원시 신호(magic 비단조
-> 내부봉우리 ≠ 얽힘 단조)는 떴으나, 자가반증 T2(g-스캔)에서 magic 봉우리가 임계점을
-> 추종(g 따라 +0.21→−0.30 이동) → "임계 TFIM=magic 최대"의 재표현. T3 유한크기 표류로
-> 보강. **일반 스핀사슬에서 magic은 임계도로 환원 = 빈틈 아님.** 상세: `experiments/phase2_RESULTS.md`.
-> → **Phase 2′(정제):** 스핀사슬이 아니라 *얽힘이 기하를 짓는* 텐서망/홀로그래픽 코드에서
->    magic 측정해야 2026 결과와 맞물림. → 데이터 트랙(Phase 1) 즉시 1순위 승급.
+> **✅ 실행 (2026-06-16) → ⚠️ 문헌 정독 후 판정 정정.**
+> `phase2_magic_curvature.py`/`phase2b_selffalsify.py`: 원시 신호(magic 내부봉우리 ≠ 얽힘
+> 단조) 떴고, 자가반증 T2에서 봉우리가 임계점 추종처럼 보여 1차 판정 (a) 재발견.
+> **그러나 원논문 정독 결과 1차 판정 철회:** 우리가 잰 *전체* stabilizer Rényi 엔트로피는
+> 중력-관련 양이 아님. Cao et al.(arXiv:2306.14996)·backreaction-is-magical(2403.07056)·
+> magic-enriched codes(2603.13475)는 중력에 **비국소(nonlocal) magic** 을 요구; 전체 SRE는
+> 임계도 탐침으로도 불신(arXiv:2501.12146). → **재판정: 측도 오류로 INCONCLUSIVE.**
+> **Phase 2′:** 곡률 컷 가로지르는 *비국소* magic(상호 SRE, arXiv:2601.13314 / 부피법칙
+> 보정항)으로 재측정. 비국소 magic은 얽힘 컷에 묶여 노트 그림에 더 가까움 → magic 가설
+> 되살아남. 상세·근거: `experiments/phase2_RESULTS.md`.
 
 ---
 

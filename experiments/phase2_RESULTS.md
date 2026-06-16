@@ -33,6 +33,38 @@ S와 M2가 *비-중복*(다른 h-프로파일)인 것 자체는 진짜다. 단 �
 → 올바른 다음 검사 = 스핀사슬이 아니라 **얽힘이 기하를 만드는 텐서망/홀로그래픽 코드**
 에서 magic을 곡률과 함께 측정. (Phase 2′)
 
-## 게이트 통과 못 했으므로 — 작업순서상 데이터 트랙(Phase 1)이 즉시 1순위로 승급
-Phase 2가 (a)로 떨어졌으니, 빈틈의 가장 가까운 입구는 다시 **데이터(과제 C, de Sitter
-신호 진위)**. 핸드오버 원래 1순위로 복귀.
+## ⚠️ 문헌 정독 후 정정 (2026-06-16) — 판정 (a) 철회, "측도 오류"로 강등
+
+원논문들을 정독한 결과, **우리 검증이 잘못된 양을 쟀다**는 것이 드러남. 두 가지 비판:
+
+**비판 1 (결정타): 중력에 필요한 건 *전체* magic이 아니라 *비국소(nonlocal)* magic.**
+- Cao et al., *Non-trivial Area Operators Require Non-local Magic* (arXiv:2306.14996, JHEP 2024):
+  안정자 코드 + 국소 유니터리 변형은 **자명한(상태 독립) 넓이 연산자만** 줌 → 중력 안 나옴.
+  비자명한 넓이 연산자(=얽힘이 기하가 되는 것)는 **비국소 magic을 요구**.
+- *Gravitational Back-reaction is Magical* (arXiv:2403.07056, PRX Quantum) /
+  *State-dependent geometries from magic-enriched quantum codes* (arXiv:2603.13475, Quanta 기사 본체):
+  물질이 기하를 휘게 하는 **역반응(backreaction)** 이 magic에서 옴.
+- 비국소 magic 정의 = "분할면을 가로지르는 비안정자성 중 **국소 유니터리로 못 없애는 부분**".
+  우리가 잰 건 *전체 상태* stabilizer Rényi 엔트로피(M2) = **국소 magic까지 포함** =
+  중력과 무관한 부분이 섞인 양. → **우리는 중력-관련 양을 안 쟀다.**
+
+**비판 2: 전체 SRE는 임계도 탐침으로도 신뢰 못 함.**
+- arXiv:2501.12146 (PRX Quantum): 전체 상태 SRE는 임계점에서 **깔끔한 극값을 일반적으로
+  안 보임**("avoids extrema at critical points generally"). 정보량 있는 건 **부피법칙 보정항/
+  비국소 magic**. → 우리 T2의 "magic 봉우리=임계점 추종"도 *전체 SRE 아티팩트*일 수 있음.
+
+**재판정: (a) 재발견 → "측도 오류로 INCONCLUSIVE".**
+전체 magic으로 잰 dismissal은 무효. 중력-관련 양(비국소 magic)으로 다시 재야 함.
+그리고 비국소 magic은 *분할면(얽힘 컷)에 묶인* magic이라 **노트의 "얽힘이 기하가 된다"
+그림에 훨씬 가깝다** → 이 발견은 magic 가설을 죽인 게 아니라 *되살리고 날카롭게* 함.
+
+**Phase 2′ (재실험, 계산가능):** 곡률 컷을 가로지르는 **비국소 magic** 을 측정 —
+- 상호(two-point) stabilizer Rényi 엔트로피 (arXiv:2601.13314, 계산가능 proxy),
+- 또는 SRE 부피법칙 보정항 (arXiv:2501.12146),
+- 실험 시연 존재 (arXiv:2511.15576, 초전도 큐비트).
+같은 비균일 사슬에서 곡률 다이얼 h 대비 *비국소* magic 곡선을 그려, 얽힘 단조성과
+*다른* 컷-국한 응답이 남는지 본다. 남으면 비로소 (b) 후보.
+
+## 작업순서 영향
+- Phase 2 dismissal 무효 → **Phase 2′(비국소 magic)** 가 데이터 트랙(Phase 1)과 함께
+  공동 1순위. (Phase 2′는 여전히 자기완결·외부데이터 불요라 즉시 실행 가능.)
