@@ -113,10 +113,10 @@ def main() -> None:
 
     # 2) 정점 magic의 스케일링 (닫힌형으로 큰 n까지) + 점근 극한
     out("## 2. 정점 magic 스케일링 (닫힌형, M=1) — n↑ 에서 포화하는가?")
-    out(f"   {'n':>3} {'peak M2':>9} {'M2/n':>7} {'Δpeak':>8}   (극한 N→∞: 3.000)")
+    out(f"   {'n':>3} {'peak M2':>9} {'M2/n':>7} {'Δ(직전행)':>9}   (극한 N→∞: 3.000)")
     prev = None
     angs = np.linspace(0.30, 0.60, 1200) * (math.pi / 2)
-    for n in [3, 4, 6, 8, 10, 12, 14, 16, 18, 20, 24, 28]:
+    for n in [3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24, 28]:
         N = 2 ** n
         a = np.sin(angs)
         b = np.cos(angs) / math.sqrt(N - 1)

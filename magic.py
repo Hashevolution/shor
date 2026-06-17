@@ -53,7 +53,8 @@ def sre2(psi: np.ndarray) -> float:
         W = _fwht_1d(hx)
         total += np.sum(np.abs(W) ** 4)           # Σ_z |WHT[h_x](z)|⁴
     xi = total / N                                 # (1/2ⁿ) Σ_P ⟨P⟩⁴
-    return float(-np.log2(xi))
+    m2 = float(-np.log2(xi))
+    return 0.0 if abs(m2) < 1e-9 else m2            # M₂≥0; FP 잡음(±0 포함)만 0으로 정리
 
 
 # ── 검산용 (느림, n ≤ 5) ─────────────────────────────────────────────────────

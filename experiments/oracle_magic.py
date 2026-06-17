@@ -72,7 +72,7 @@ def main() -> None:
     out("## 1. Simon 선형 오라클 f(x)=x⊕(xₚ·s)  → M₂=0 기대 (클리포드 끝점)")
     out(f"   {'n':>3} {'s':>4} {'qubits':>7} {'M2':>9}")
     for n in [2, 3, 4]:
-        for s in [1, 3, (1 << (n - 1)) | 1]:
+        for s in sorted({1, 3, (1 << (n - 1)) | 1}):
             if s >= 2 ** n:
                 continue
             vals = simon_linear_oracle(n, s)
