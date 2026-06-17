@@ -50,6 +50,31 @@ def grover_state(n: int, marked: list[int], k: int) -> np.ndarray:
     return psi
 
 
+def two_amp_state(n: int, W: list[int], ang: float) -> np.ndarray:
+    """표시집합 W, 회전각 ang의 2-진폭 Grover 상태 (a=sin/√M 표시, b=cos/√(N−M) 그외)."""
+    N = 2 ** n
+    M = len(W)
+    a = math.sin(ang) / math.sqrt(M)
+    b = math.cos(ang) / math.sqrt(N - M)
+    psi = np.full(N, b, dtype=float)
+    for w in W:
+        psi[w] = a
+    return psi
+
+
+def _subspace(basis: list[int], off: int = 0) -> list[int]:
+    pts = {off}
+    for b in basis:
+        pts |= {p ^ b for p in pts}
+    return sorted(pts)
+
+
+def _flat(n: int, W: list[int]) -> np.ndarray:
+    psi = np.zeros(2 ** n)
+    psi[list(W)] = 1.0
+    return psi / math.sqrt(len(W))
+
+
 def sre2_grover_closed(n: int, a: float, b: float) -> float:
     """M=1 Grover 상태(진폭 a 1개, b N−1개)의 M₂ 닫힌형.
 
@@ -129,18 +154,26 @@ def main() -> None:
     out("   → 정점이 3 bit로 포화 (밀도 M₂/n → 0).  ↔ Shor: M₂ → L (밀도 → 1; 2605.05347).")
     out("")
 
-    # 3) 표시개수 M 의존성 (정점, 닫힌형은 M=1 전용이라 sre2로 직접)
-    out("## 3. 표시개수 M 의존성 (n=10, 정점 magic over k)")
-    n = 10
-    N = 2 ** n
-    out(f"   {'M':>4} {'peak M2':>9} {'M2/n':>7}")
-    for M in [1, 2, 4, 8, 16]:
-        marked = list(range(M))
-        kstar = int(round(math.pi / 4 * math.sqrt(N / M) - 0.5))
-        m = [sre2(grover_state(n, marked, k)) for k in range(max(2, kstar + 2))]
-        pk = max(m)
-        out(f"   {M:>4} {pk:>9.4f} {pk / n:>7.4f}")
-    out("   → 표시개수를 키워도 정점은 여전히 O(1) (밀도 낮음).")
+    # 3) 일반 M: 아핀(구조적) W vs 비아핀(비구조적) W
+    out("## 3. 일반 M — 표시집합 W의 구조에 따른 정점 magic (n=9)")
+    out("   분해: |ψ⟩ = b√N|+⟩^n + (a−b)|W̃⟩.  |+⟩^n은 안정자.")
+    n = 9
+    angs = np.linspace(0.05, math.pi / 2 - 0.05, 200)
+
+    def peak_W(W):
+        return max(sre2(two_amp_state(n, W, ang)) for ang in angs)
+
+    rng = np.random.default_rng(0)
+    out(f"   {'W 종류':<22} {'|W|':>4} {'flat_W M2':>10} {'peak M2':>9}")
+    for basis, lbl in [([], "M=1"), ([1], "affine"), ([1, 2], "affine"),
+                       ([1, 2, 4], "affine")]:
+        W = _subspace(basis)
+        out(f"   {'아핀 '+lbl:<22} {len(W):>4} {sre2(_flat(n, W)):>10.4f} {peak_W(W):>9.4f}")
+    for M in [4, 8]:
+        W = sorted(rng.choice(2 ** n, size=M, replace=False).tolist())
+        out(f"   {'비아핀(랜덤)':<20} {M:>4} {sre2(_flat(n, W)):>10.4f} {peak_W(W):>9.4f}")
+    out("   → 아핀 W: flat_W가 안정자(M₂=0) ⟹ Grover는 안정자 2개 중첩 ⟹ magic 유한(≤3).")
+    out("     비아핀 W: flat_W 자체가 magic을 가져 정점이 3 초과 — 초과분은 표시집합의 비구조성.")
     out("")
 
     # 결론

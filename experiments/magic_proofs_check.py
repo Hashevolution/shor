@@ -114,6 +114,31 @@ def main() -> None:
     assert peaks[30] < 3.0 and abs(peaks[30] - 3.0) < 0.01
     checks += 3
 
+    # 명제 2′: 아핀 W → Grover 정점 유한(≤3+ε), flat_W 안정자; 비아핀 W → flat_W magic>0
+    def two_amp(n, W, ang):
+        N = 2 ** n
+        a, b = math.sin(ang) / math.sqrt(len(W)), math.cos(ang) / math.sqrt(N - len(W))
+        psi = np.full(N, b)
+        psi[list(W)] = a
+        return psi
+
+    def _sub(basis):
+        pts = {0}
+        for bb in basis:
+            pts |= {p ^ bb for p in pts}
+        return sorted(pts)
+
+    nn = 8
+    angs = np.linspace(0.05, math.pi / 2 - 0.05, 120)
+    for basis in [[1], [1, 2], [1, 2, 4]]:
+        W = _sub(basis)
+        assert abs(sre2(flat(W, nn))) < 1e-9                       # 아핀 → flat 안정자
+        assert max(sre2(two_amp(nn, W, a)) for a in angs) < 3.0 + 1e-6   # 정점 유한 ≤3
+        checks += 2
+    Wnl = sorted(rng.choice(2 ** nn, size=8, replace=False).tolist())
+    assert sre2(flat(Wnl, nn)) > 1e-6                              # 비아핀 → magic>0
+    checks += 1
+
     elapsed = time.time() - t0
     print(f"ALL PROOFS CHECKED — {checks} assertions passed.")
     print(f"  보조정리 1, 따름정리 1, 명제 2: OK")

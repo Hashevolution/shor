@@ -140,7 +140,8 @@ T3가 무주공산인지 정조준 재검색한 결과, **인접 선행이 상�
   (Phys. Rev. Research, DOI 10.1103/7rwg-lhpv). DTQW의 SRE(1D 격자, single/two walker,
   coin states); magic↔얽힘 상보성, 노이즈 강건성. **전문 검색: grover/complete graph/
   marked/oracle/amplitude-amp = 0회.** "saturation"은 *walk 시간축* 포화(우리와 다른 축).
-- **arXiv:2504.19750 — "Nonstabilizerness generation in a multiparticle quantum walk."**
+- **arXiv:2504.19750 — "Nonstabilizerness generation in a multiparticle quantum walk"**
+  (Moca 외; **Phys. Rev. B 113, 075142 (2026), DOI 10.1103/nzrp-49mr** — 출판됨).
   1D doublon transport; 초기 $M_2\propto(v_ft)^2$, 장시간 $\sim\log[\ln(v_ft)]$, 경계반사 후
   *시간* 포화. **전문 검색: grover/complete graph/marked/oracle = 0회.**
 - → **신규성 게이트 통과:** 둘 다 *1D 격자 수송*이지 **Grover 탐색/완전그래프/2-진폭 표시상태가
@@ -228,3 +229,25 @@ IOP/Springer 등록본을 서버측에서 읽어 출판본을 잡음(이번에 P
   (walk magic ~ log time)
 - Combarro et al. 2021 (Comput. Math. Methods) — BV/DJ를 stabilizer formalism으로 설명
   (Simon/BV가 클리포드=magic 0임의 근거)
+
+### 게재 상태/DOI (저널측 검토 2026-06-17)
+*이 환경은 Crossref/저널 API egress 차단 — WebSearch로 저널 페이지를 읽어 확인. 구조화된
+전수질의는 아님.*
+
+**출판됨(DOI 확인):**
+- 2106.12587 — Stabilizer Rényi entropy → Phys. Rev. Lett. 128, 050402 (2022),
+  10.1103/PhysRevLett.128.050402
+- Lami–Collura (2303.05536) → Phys. Rev. Lett. 131, 180401 (2023),
+  10.1103/PhysRevLett.131.180401
+- 2504.19750 → Phys. Rev. B 113, 075142 (2026), 10.1103/nzrp-49mr  *(이전엔 프리프린트로 오기)*
+- 2506.17783 → Phys. Rev. Research, 10.1103/7rwg-lhpv
+- 2306.09292 → Commun. Math. Phys. (2025), 10.1007/s00220-025-05421-3
+- 2601.07824 — Computing quantum magic of state vectors → Quantum (2026), q-2026-04-10-2059
+
+**프리프린트(저널 DOI 미발견, peer-review 전):**
+- 2605.05347 (주 선점, Shor-magic), 2505.17185 (QAOA-magic), 2409.06659 (Amortized SRE),
+  2512.24685 (XOR-FWHT)
+- 2507.16543 (Krüger–Mauerer) — arXiv; IEEE QCE 2025 conference 판("Quantum Dark Magic") 존재.
+
+→ **함의:** 주 선점논문 2605.05347은 아직 미출판이라, 본 레포 결과의 신규성 창은 열려 있음.
+양자걷기 인접 2편(2504.19750·2506.17783)은 *출판된* 최근접 이웃이므로 인용 시 DOI 표기.

@@ -76,9 +76,23 @@ $$\sup_k M_2(\text{Grover}_n) \xrightarrow[n\to\infty]{} 3,\qquad \text{밀도}\
 $g(u)=u^4+(1-u)^4$ ($u=a^2$)는 $g'(u)=4u^3-4(1-u)^3=0\Rightarrow u=\tfrac12$에서 최소
 $g=\tfrac18$. 그러므로 $M_2$의 상한 $\to-\log_2\tfrac18=3$. $\blacksquare$
 
-*경계.* 명제 2–3은 단일표시($M{=}1$)에 대한 것. 일반 $M$은 표시집합 $W$의 자기상관
-$A_W(x)=|W\cap(W{\oplus}x)|$에 의존(2605.05347의 기하항 $\Lambda$와 동형)하며, 수치상
-고정 $M$의 정점은 여전히 $O(1)$(밀도 낮음, `grover_magic.py` §3). 해석적 일반화는 미완.
+## 명제 2′ (일반 $M$ — 구조적 분해)
+
+2-진폭 Grover 상태는 항상
+$$|\psi\rangle = b\sqrt N\,|{+}\rangle^{\otimes n} + (a-b)\,|\widetilde W\rangle,\qquad
+|\widetilde W\rangle=\textstyle\sum_{w\in W}|w\rangle=\sqrt M\,|{\rm flat}_W\rangle,$$
+로 쓰이고 $|{+}\rangle^{\otimes n}$ 은 안정자다. 따라서:
+- **$W$ 가 아핀부분공간이면** 보조정리 1로 $|{\rm flat}_W\rangle$ 도 안정자 → $|\psi\rangle$ 는
+  **안정자 두 개의 중첩** → magic은 **문제크기와 무관하게 유한**(명제 3의 $M{=}1$ 상한 3 bit가
+  극단; 수치: 아핀 $M{=}2,4,8$ 정점 $\le3$, $M$ 커지면 감소).
+- **$W$ 가 비아핀이면** $|{\rm flat}_W\rangle$ 자체가 magic을 가지며(보조정리 1) 그것이 Grover
+  magic에 *추가*된다(수치: 랜덤 $M{=}4$ 정점 $3.29>3$, $M{=}8$ 정점 $4.23$; 같은 $W$의
+  ${\rm flat}_W$ magic $=1.54,\,3.36$). **초과 magic의 원천 = 표시집합의 비구조성.**
+
+⟹ 표준 Grover($M{=}1$ 또는 구조적 $W$)의 magic은 유한; 초과 magic은 표시집합 *자체의
+비구조성*에서 온다 — 따름정리 1(magic은 (비)구조에 산다)과 같은 주제. *(명시적 닫힌형은
+$W$의 자기상관 $A_W(x)=|W\cap(W{\oplus}x)|$에 의존 = 2605.05347의 기하항 $\Lambda$와 동형;
+$M{=}1$에서 명제 2로 환원. 일반 닫힌형은 미완.)* `grover_magic.py` §3, `magic_proofs_check.py`.
 
 ---
 
