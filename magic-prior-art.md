@@ -114,6 +114,29 @@
 
 ---
 
+## 5b. T3(속도우위 유형별 magic) 정밀 조사 — "반쯤 열림"
+
+T3가 무주공산인지 정조준 재검색한 결과, **인접 선행이 상당함**. 구분:
+
+**점유된 것:**
+- **arXiv:2505.17185 — Capecci, Santra, Bottarelli, Tirrito, Hauke, "Role of
+  Nonstabilizerness in Quantum Optimization" (2025-05).** QAOA의 SRE 궤적 = **"magic
+  barrier"**(깊이 따라 상승→하강), 최종 magic↔성공확률, 단열까지. 후속 **2605.01620**
+  (Hypergraph QAOA). → "알고리즘 속 magic 궤적→성공" *방법론*은 신규 아님; **최적화 분야 점유.**
+- **양 끝점 기지:** Simon·BV·Deutsch–Jozsa는 (선형 오라클) **클리포드 → magic 0**
+  (Gottesman–Knill; Combarro 2021, "BV/DJ via stabilizer formalism"). Shor는 magic-rich
+  (2605.05347). → "Simon은 magic 없이 지수 쿼리 우위"의 절반은 **거의 자명**, 단독으론 약함.
+
+**비어있는 것 (방어 가능):**
+- **Grover의 magic/SRE 궤적 — 진짜 빈칸.** Grover 자원 분석은 거의 *coherence·entanglement*
+  (예: trace speed, Sci. Rep. 2020). magic/SRE 전용 분석은 검색에 안 잡힘. 2605.05347도
+  Grover/다항우위를 명시적 open으로 둠. → **가장 강한 단일 타깃.**
+- **속도우위 유형별 통일 벤치마크**(클리포드-자명→2차-Grover→지수-Shor, 단일 SRE 프레임) 미출판.
+- **"블랙박스가 magic을 숨긴다"**(오라클/FFT) 통일 관점 — 노트 §6의 FFT 지름길과 같은 현상.
+  비선형성이 magic의 진짜 원천임을 Simon(선형⟹분해해도 0) vs Shor(비선형⟹분해하면>0)로 정량화.
+
+---
+
 ## 6. 정직한 신규성 평가 + 다음 행동
 
 | 노트 항목 | 선행연구 | 신규성 |
@@ -125,7 +148,10 @@
 | §5 측정도구 (SRE via FWHT/MPS) | **2605.05347** Methods, 2601.07824, 2512.24685, 2106.12587 | 없음 |
 | T2 QFT의 T-count(게이트분해) | 2409.06659, 2103.09999, 2306.09292 | 없음 |
 | "comb SRE=0 ⟺ r=2의 거듭제곱" | 2605.05347: $r{=}2$만 엄밀 안정자, 일반은 $\tilde r_{\text{odd}}$가 통제 | **노트 주장은 부분적 오류** |
-| **T3 Simon vs Shor / poly-vs-exp 대조** | (직접 선행 미발견; 2605.05347이 **Grover/poly-advantage를 open으로 명시**) | **유일한 실질 잔여** |
+| T3 방법론(algo magic 궤적→성공) | **2505.17185**(QAOA magic barrier)+2605.01620 | 없음(최적화 점유) |
+| T3 끝점 Simon/BV=클리포드 | Gottesman–Knill, Combarro 2021 | 자명 |
+| **T3 Grover의 magic/SRE 궤적** | (전용 선행 미발견; Grover는 coherence/얽힘만) | **진짜 잔여** |
+| T3 속도우위 유형별 통일 벤치마크 + "블랙박스가 magic 숨김" | 미출판 | **잔여(독창 각도)** |
 
 **다음 행동(우선순위):**
 1. **재포지셔닝 필수.** magic-and-quantum-speedup.md는 2605.05347을 **주 레퍼런스로 인용**하고,
@@ -134,9 +160,9 @@
 2. **T1 정정.** "2의 거듭제곱 ⟹ magic 0"은 *이상적 comb($r\mid Q$)* 에서만 참이고 그 경우는
    자명/쉬운 케이스. 실제 비자명 케이스의 magic은 홀수부 $\tilde r_{\text{odd}}$가 통제(=논문 결과).
    노트의 가설 문장을 이 구분에 맞춰 수정.
-3. **T3가 유일한 실질 입구.** Simon(선형/Clifford스러운 구조) vs Shor의 magic 궤적 대조, 그리고
-   2605.05347이 명시적으로 open으로 남긴 **"다항 속도우위(예: Grover)에서 magic이 다르게
-   행동하나"**가 진짜 미개척. 여기에 노트의 차별점을 집중.
+3. **T3는 "반쯤 열림" — 좁혀서 공략(§5b 참조).** 방법론(QAOA, 2505.17185)과 Clifford 끝점
+   (Simon/BV)은 이미 점유/자명이므로 피하고, **(a) Grover의 magic/SRE 궤적**(진짜 빈칸)과
+   **(b) 오라클/FFT가 magic을 숨긴다는 통일 관점**에 차별점을 집중.
 4. 만약 굳이 comb-state 각도를 유지한다면, 차별점은 **shor.py의 FFT 지름길이 게이트 magic을
    '컴파일해 숨긴다'는 §3 관찰**(논문은 semiclassical-QFT 회로 상태를 직접 보므로 이 "숨김"
    현상은 안 다룸) 정도 — 좁고 주로 교육적 기여.
@@ -158,3 +184,8 @@
 - 2508.03534 — SRE for translation-invariant MPS (GHZ/W/Dicke 닫힌형, 패리티 의존)
 - 2306.14996 — Cao et al, 비국소 magic & 홀로그래픽 코드 (노트 §7 배경)
 - 2601.03076 — Multipartite Non-local Magic & SYK
+- 2505.17185 — Capecci, Santra, Bottarelli, Tirrito, Hauke, Role of Nonstabilizerness
+  in Quantum Optimization (QAOA "magic barrier") — T3 방법론 선행
+- 2605.01620 — Structured Parameterization & Non-Stabilizerness in Hypergraph QAOA
+- Combarro et al. 2021 (Comput. Math. Methods) — BV/DJ를 stabilizer formalism으로 설명
+  (Simon/BV가 클리포드=magic 0임의 근거)

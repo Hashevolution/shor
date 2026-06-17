@@ -54,32 +54,45 @@ $M_2>0$"* 였다. 2605.05347 전문 대조 결과:
 
 ---
 
-## 3. 남은 잔여 — T3: 선형(Simon) vs 비선형(Shor), 다항 vs 지수 속도우위
+## 3. 남은 잔여 — T3: 속도우위 유형별 magic (단, "반쯤 열린" 문제)
 
-직접적 선행을 못 찾았고, **2605.05347 스스로 Discussion에서 명시적 open으로 남긴** 유일한
-실질 입구:
+T3는 **무주공산이 아니다.** 정밀 조사 결과 인접 선행이 상당하다 — 정직하게 구분하면:
 
-> *"it would be interesting to study whether the behavior of magic changes in the
-> presence of a polynomial quantum advantage, rather than an exponential one as in
-> the case of Shor."* — 2605.05347, Discussion
+### 이미 점유된 것 (T3가 피해야 할 곳)
+- **"알고리즘 속 magic 궤적 → 성공확률" 방법론 자체**: Capecci–Santra–Bottarelli–Tirrito–Hauke,
+  *"Role of Nonstabilizerness in Quantum Optimization,"* arXiv:2505.17185 (2025-05). QAOA의
+  **"magic barrier"**(깊이 따라 상승 후 하강) + 최종 magic↔성공확률, 단열까지. 후속 2605.01620
+  (Hypergraph QAOA). → **틀은 새롭지 않고 최적화 분야는 점유됨.**
+- **양 끝점은 기지/자명**: **Simon·BV·Deutsch–Jozsa는 (선형 오라클이면) 클리포드 회로 →
+  magic 0, 고전 시뮬레이션 가능**(Gottesman–Knill; Combarro 2021의 stabilizer-formalism 설명).
+  Shor는 magic-rich(2605.05347). 따라서 *"Simon은 magic 없이 지수 쿼리 속도우위"*의 절반은
+  **거의 자명** — Simon 단독은 약하다.
 
-### T3 가설
-- **Simon 알고리즘**(주로 Hadamard + 오라클, $\mathbb F_2$-선형 숨은부분군)은 구조가
-  "Clifford스럽다". 만약 Simon의 핵심 상태가 (오라클 표를 안정자로 둘 때) **낮은/0에 가까운
-  $M_2$**를 보인다면, "선형(안정자스러운) 문제 vs 비선형(magic 필요) 문제"의 magic 차이가
-  직접 드러난다.
-- 대조축: **(i) 속도우위 유형**(Simon: 쿼리모델 지수분리; Grover: 다항 √N; Shor: 지수),
-  **(ii) 문제의 대수 구조**(선형 vs 곱셈적 주기). magic 궤적이 (i)을 따르는지 (ii)를
-  따르는지가 핵심 질문.
-- 검증/반증 모두 명확: Simon의 $M_2$ 궤적이 Shor처럼 $\log(\text{구조크기})$로 자라며
-  포화하면 "magic은 속도우위의 보편 통화", 거의 평탄하면 "magic은 *비선형* 구조의 표지".
+### 진짜로 비어있는 것 (T3의 방어 가능한 표적)
+1. **Grover의 magic/SRE 궤적 — 진짜 빈칸.** Grover 자원 분석은 대부분 *coherence·entanglement*
+   (trace speed, Sci. Rep. 2020; 얽힘 관점)로 했고, **magic/SRE 전용 분석은 검색에 안 잡힘.**
+   "2차(다항) 속도우위에 magic이 필요한가/얼마나, 궤적은 어떤가"는 미개척. 2605.05347도 Grover/
+   다항우위를 명시적 open으로 남김. → **가장 강한 단일 타깃.**
+2. **속도우위 유형별 통일 벤치마크.** 클리포드-자명(Simon/BV) → 2차(Grover) → 지수(Shor)를
+   **하나의 SRE 프레임**으로 줄세운 비교는 출판된 바 없음.
+3. **개념적 긴장 — 이 레포 고유의 각도:** 쿼리 모델의 속도우위는 *오라클 상대적*이다. 오라클을
+   열면 비선형 $f$는 magic(Toffoli)을 요구. 즉 **"보이는 회로의 magic" ≠ "오라클 구현에 드는
+   magic".** 이는 §6의 *FFT 지름길이 magic을 숨긴다*와 **같은 현상** — **"블랙박스(오라클/FFT)가
+   magic을 숨긴다"는 통일 관점**이 정직하고 독창적인 기여가 된다.
+
+### T3 가설 (좁혀서)
+- (a) **Grover**: $M_2$ 궤적을 반복(iteration) 수의 함수로. 2차 속도우위가 magic을 *얼마나*
+  요구하는가, 그 양이 탐색공간 $N$·해 개수와 어떻게 스케일하나. (Shor의 $M_2\sim\log r$ 포화와
+  대조군.)
+- (b) **블랙박스 가설**: Simon의 클리포드 외형과 shor.py의 FFT 외형은 *둘 다* magic을 오라클/
+  FFT로 옮겨 숨긴다. "보이는 magic=0이어도 오라클을 게이트분해하면 magic이 드러난다"를
+  Simon(선형⟹클리포드⟹분해해도 0)과 Shor(비선형 모듈러 곱⟹Toffoli⟹분해하면 >0)의
+  대비로 정량화 → "magic은 회로 표면이 아니라 *문제의 비선형성*에 산다"를 명시.
 
 ### 이 레포에서의 실현
-- 레포에 `experiments/simon_sigma_curve.py`가 이미 있다 → Simon 측 상태의 $M_2$ 궤적을
-  Shor와 **동일한 SRE 파이프라인**(2605.05347이 쓴 FWHT/MPS, 또는 작은 $t$는 정확합)으로
-  계산해 한 그래프에 겹쳐 그린다.
-- Shor 측은 2605.05347의 셋업(반고전 QFT, 각 측정 직전 $M_2$)을 그대로 재현하면 비교가
-  공정하다.
+- `experiments/simon_sigma_curve.py`로 Simon 측 $M_2$가 (오라클을 클리포드로 두면) 0임을
+  대조군으로 박제하고, **Grover를 추가 구현**해 $M_2$ 궤적을 Shor(2605.05347 셋업 재현)와 한
+  그래프에 겹친다. SRE 파이프라인은 §5 공통.
 
 ---
 
