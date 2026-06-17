@@ -135,15 +135,18 @@ T3가 무주공산인지 정조준 재검색한 결과, **인접 선행이 상�
 - (참고) **arXiv:2303.11317 "Opening the Black Box Inside Grover's Algorithm"**(PRX 2024)는
   *오라클 구조/dequantization*이지 magic이 아님 — 용어 충돌 주의용 인용.
 
-**인접(양자걷기 magic) — Grover의 최근접 이웃, 반드시 인용:**
-- **arXiv:2506.17783 — "Quantum Magic in Discrete-Time Quantum Walk"** (Phys. Rev.
-  Research 게재, DOI 10.1103/7rwg-lhpv). DTQW의 SRE 계산(1D 격자, coin/walker). **Grover
-  탐색은 아님.**
+**인접(양자걷기 magic) — Grover의 최근접 이웃, 반드시 인용 [전문 확인 2026-06-17]:**
+- **arXiv:2506.17783 — Mittal & Huang, "Quantum Magic in Discrete-Time Quantum Walk"**
+  (Phys. Rev. Research, DOI 10.1103/7rwg-lhpv). DTQW의 SRE(1D 격자, single/two walker,
+  coin states); magic↔얽힘 상보성, 노이즈 강건성. **전문 검색: grover/complete graph/
+  marked/oracle/amplitude-amp = 0회.** "saturation"은 *walk 시간축* 포화(우리와 다른 축).
 - **arXiv:2504.19750 — "Nonstabilizerness generation in a multiparticle quantum walk."**
-  walk magic가 **시간에 로그적 성장.**
-- → Grover = *완전그래프 위 양자걷기*이므로 Grover-magic 연구는 이들을 인용해야 하고,
-  "walk magic ~ log(time)"라는 기성 결과가 바를 약간 올린다. **그러나 Grover 탐색 특수형
-  (2D 불변부분공간 회전)을 직접 다룬 건 아직 없음.**
+  1D doublon transport; 초기 $M_2\propto(v_ft)^2$, 장시간 $\sim\log[\ln(v_ft)]$, 경계반사 후
+  *시간* 포화. **전문 검색: grover/complete graph/marked/oracle = 0회.**
+- → **신규성 게이트 통과:** 둘 다 *1D 격자 수송*이지 **Grover 탐색/완전그래프/2-진폭 표시상태가
+  아니며, 우리의 "문제크기 $n$의 함수로 정점→3 bit 포화(밀도→0)"와 축·기하·상태구조가 모두
+  다름.** Grover-magic 결과(§B 아래)의 신규성은 유지. 단 이 2편을 DTQW-magic 최근접 이웃으로
+  인용하고 "완전그래프/탐색/문제크기 포화"로 차별화 서술.
 
 **비어있는 것 (방어 가능, 단 더 좁아짐):**
 - **Grover의 magic/SRE 궤적 — 여전히 진짜 빈칸.** Grover 자원 분석은 거의 *coherence·
