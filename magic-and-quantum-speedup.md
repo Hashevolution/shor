@@ -188,5 +188,10 @@ arXiv:2306.14996)는 효과를 수치로 재현했다. 그 과정에서 **magic�
 
 ---
 
-## 부록 — 선행연구 전체 목록
-→ `magic-prior-art.md` (2605.05347 전문 분석 + T-count·SRE·구조화상태 magic 관련 문헌).
+## 부록 — 명제·증명, 선행연구
+- **명제·증명:** `magic-results.md` (보조정리 1: 평탄상태 안정자성 ⟺ 받침 아핀; 따름정리 1:
+  그래프상태 $M_2{=}0\iff f$ 아핀; 명제 2–3: Grover 닫힌형·정점→3 bit). 재현 검증
+  `experiments/magic_proofs_check.py` (35 assert).
+- **선행연구 전체:** `magic-prior-art.md` (2605.05347 전문 분석 + T-count·SRE·양자걷기·
+  알고리즘 magic 문헌, 신규성 게이트).
+- **실험:** `magic.py`(SRE 도구), `experiments/{grover_magic,shor_comb_magic,oracle_magic}.py`.
