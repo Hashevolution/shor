@@ -11,7 +11,9 @@
 
 > 쇼어가 magic을 *필요로 한다*는 것도, **magic의 *양*이 주기 $r$의 수론적 난이도와
 > 정량적으로 묶인다**는 것도 이제 **확정**됐다(2605.05347, 해석이론 + 수치).
-> 이 레포 고유의 잔여는 단 하나 — **Simon/다항 속도우위와의 대조(T3)**.
+> 이 레포 고유의 잔여는 **다항 속도우위와의 대조(T3)** — 그 첫 결과로 **Grover의 magic은
+> 정점 3 bit로 포화(밀도→0)하고 정답에서 0으로 되돌려짐**을 확인했다(§3, `grover_magic.py`).
+> Shor($M_2\to L$)와 정반대 — magic의 *밀도*가 속도우위 유형을 가른다.
 
 ---
 
@@ -88,6 +90,19 @@ T3는 **무주공산이 아니다.** 정밀 조사 결과 인접 선행이 상�
   Simon(선형⟹0)과 Shor(비선형⟹>0)로 정량화 → "magic은 회로 표면이 아니라 *문제의 비선형성*에
   산다." (2507.16543의 Clifford-가림과 구분: 이쪽은 *오라클 추상화*가 가리는 것.)
 
+### T3(a) 결과 — 구현·확인됨 (`experiments/grover_magic.py`, `magic.py`)
+단일 표시($M{=}1$) Grover 상태의 $M_2$를 직접 계산(SRE via XOR-FWHT, brute-force 검증):
+- **궤적:** $M_2$는 0(균일 중첩=안정자)에서 올라 *탐색 중간*에서 정점, **정답 $k^*$에서 다시
+  ≈0**(정답=계산기저=안정자). 즉 Grover는 magic을 **썼다가 되돌린다.**
+- **닫힌형:** $\Sigma_P\langle P\rangle^4 = 1+(N{-}1)(a^2{-}b^2)^4+(N{-}1)(b^2(N{-}2){+}2ab)^4
+  +(N{-}1)(\tfrac N2{-}1)(2b(a{-}b))^4$ (진폭 $a$ 1개, $b$ $N{-}1$개). 수치와 $10^{-13}$ 일치.
+- **점근(핵심):** $N\to\infty$에서 $M_2\to-\log_2(a^8+(1-a^2)^4)$, $a^2=\tfrac12$에서 **정점
+  $=-\log_2(1/8)=3$ bit**로 *포화*. 따라서 **magic 밀도 $M_2/n\to0$.**
+- **대조:** Shor는 $M_2\to L$(밀도 $\to1$; 2605.05347). → **비안정자성의 양/밀도가 속도우위
+  유형(다항 vs 지수)을 가른다**는 직접 증거. (단 양자걷기 magic 2506.17783/2504.19750을
+  최근접 이웃으로 인용하고, Grover=완전그래프 walk라는 점에서 차별화해 서술.)
+- **남은 일:** (b) 오라클-가림 정식화, Grover 회로의 게이트분해 T-count 대조, 일반 $M$·다중해.
+
 ### 이 레포에서의 실현
 - `experiments/simon_sigma_curve.py`로 Simon 측 $M_2$가 (오라클을 클리포드로 두면) 0임을
   대조군으로 박제하고, **Grover를 추가 구현**해 $M_2$ 궤적을 Shor(2605.05347 셋업 재현)와 한
@@ -111,10 +126,11 @@ T3는 **무주공산이 아니다.** 정밀 조사 결과 인접 선행이 상�
 
 순수상태 $|\psi\rangle$($L$큐비트)의 stabilizer 2-Rényi 엔트로피:
 $$M_2 = -\log_2\!\Big(\frac1{2^L}\sum_{P\in\mathcal P_L}\langle\psi|P|\psi\rangle^4\Big),\qquad M_2(\text{안정자})=0.$$
-- 작은 경우($L\lesssim10$)는 $4^L$ Pauli 합으로 정확 계산.
-- 큰 경우는 **fast Walsh–Hadamard(2512.24685)** 또는 **MPS Perfect Pauli Sampling
-  (Lami–Collura, PRL 131 180401)** — 둘 다 2605.05347이 실제로 사용. state-vector용
-  정확·고속 SRE는 2601.07824(Quantum 2026)도 참고.
+- **이 레포 구현:** `magic.py` — `sre2(psi)`가 위 식을 **XOR-FWHT로 $O(n\,4^n)$ 정확 계산**
+  ($\Sigma_P\langle P\rangle^4=\sum_{x,z}|\mathrm{WHT}[h_x](z)|^4,\ h_x(c)=\psi^*_{c\oplus x}\psi_c$).
+  `sre2_bruteforce`(Pauli 행렬 직접, $n\le5$)로 검증 완료(랜덤·GHZ·$T$텐서 모두 일치).
+- 더 큰 경우는 **MPS Perfect Pauli Sampling**(Lami–Collura, PRL 131 180401) — 2605.05347
+  사용. state-vector용 고속 SRE는 2512.24685·2601.07824 참고.
 
 ---
 
