@@ -1,6 +1,6 @@
 {
-  "title": "A Noise-Invariant Determinism Theorem for Multi-Base Post-Processing in Shor's Order Finding (v0.3.0: closed-form σ-curve framework + §3.6 self-correction)",
-  "description": "v0.3.0 of the multi-base post-processing analysis of Shor's order finding. The original five theorems (v0.2.1, DOI 10.5281/zenodo.20681847) are retained unchanged: (1) noise-invariant determinism, (2) logarithmic coverage time, (3) exact noise scaling 1/g_M(η), (4) conditional compatibility with Regev's 2023 multi-base framework, and (5) a hybrid (C)+Regev b-trick factoring algorithm with closed-form bound matching N=437 empirical mean within 4%. New in v0.3.0: §3.6 of v0.2.1 is *self-corrected*. The previously claimed 'boundary-flip + universal direction stochasticity + plateau/overload' framework is shown to be the finite-trial expression of a single closed form p(σ) = ρ + (p_0 - ρ)·exp(-σ²) derived from the standard phase-noise dephasing of the FFT. The closed form is verified across five algorithm classes — Grover (R²=0.88), Shor pure (0.95), QPE isolated (0.96), Simon (0.99), Hybrid (C)+b-trick (paper §3.6 setup, 0.91). Positioning: analytical complement to Yang-Markidis (arXiv:2605.16074, ICS Workshops '26), whose empirical recoverability model (1-ε)·P_s + ε·distractors has the same structural form; we provide the analytical foundation ε = 1 - exp(-σ²). Implication: SR-based factoring acceleration is precluded by a closed-form bound on |ΔK|. v0.3.0 retracts the 'boundary flip' lexicon as a distinct mechanism; all raw measurement data and theorems 1-5 are retained.",
+  "title": "A Noise-Invariant Determinism Theorem for Multi-Base Post-Processing in Shor's Order Finding (v0.5.0: nonstabilizerness / magic across quantum speedups)",
+  "description": "v0.5.0 of the multi-base post-processing analysis of Shor's order finding, adding a new research direction: nonstabilizerness (\"magic\") across quantum speedups, measured and proven on the repository's numpy statevector simulation. RETAINED (unchanged): the six theorems on classical post-processing of multi-base order-finding measurements — (T1) noise-invariant determinism, (T2) logarithmic coverage time, (T3) exact noise scaling 1/g_M(eta), (T4) conditional compatibility with Regev's 2023 multi-base framework, (T5) a hybrid (C)+Regev b-trick factoring algorithm, and (T6) a sign-agnostic stochastic-resonance no-go — together with the closed-form sigma-curve p(sigma)=rho+(p0-rho)exp(-sigma^2) verified across five algorithm classes. NEW IN v0.5.0 (magic): using a verified stabilizer 2-Renyi entropy (SRE) tool computed by the XOR fast Walsh-Hadamard transform (cross-checked against three independent implementations to 1e-15), the work shows that the amount and density of nonstabilizerness separates the TYPE of quantum speedup. Main results: (i) Grover's unstructured-search state has magic that peaks at EXACTLY 3 bits as a function of problem size n and returns to zero at the answer, so its magic density M2/n -> 0 (closed form for a single marked item; peak = max of -log2(a^8+(1-a^2)^4) at a^2=1/2); (ii) the function graph state (1/sqrt N) sum_x |x>|f(x)> has M2 = 0 if and only if f is F2-affine, so Simon's algorithm with a linear (Clifford) oracle generates zero magic despite an exponential query speedup, while Shor's modular-exponentiation oracle is nonlinear and forces magic — formalizing how an oracle or FFT black box can HIDE the nonlinearity that is magic's true source; (iii) Shor's post-measurement comb state has magic growing with problem size, completing a speedup ladder: Clifford/affine -> 0, Grover (quadratic) -> bounded with density 0, Shor (exponential) -> growing toward maximal. A flat-state lemma (M2=0 iff the support is an F2-affine subspace) underpins the corollaries. Includes a reproducible 42-assertion proposition checker and a prior-art survey relating the results to arXiv:2605.05347 (Shor magic, preprint), published quantum-walk magic (Phys. Rev. Research 10.1103/7rwg-lhpv; Phys. Rev. B 113 075142, 10.1103/nzrp-49mr), and algorithm-magic comparisons (arXiv:2505.17185, 2507.16543). numpy + Python standard library only; no quantum libraries required.",
   "upload_type": "publication",
   "publication_type": "preprint",
   "creators": [
@@ -11,23 +11,29 @@
   ],
   "keywords": [
     "quantum computing",
-    "shor's algorithm",
+    "nonstabilizerness",
+    "magic",
+    "stabilizer Renyi entropy",
+    "quantum resource theory",
+    "quantum speedup",
+    "Grover's algorithm",
+    "Shor's algorithm",
+    "Simon's algorithm",
+    "quantum Fourier transform",
+    "Clifford circuits",
+    "Gottesman-Knill",
+    "T-count",
     "integer factoring",
     "regev factoring",
+    "order finding",
     "noise-invariance",
     "phase noise",
     "dephasing",
     "closed-form sigma-curve",
     "quantum stochastic resonance",
     "cross-algorithm verification",
-    "Grover",
-    "QPE",
-    "Simon's algorithm",
-    "self-correction",
-    "ENAQT",
     "post-processing",
-    "multi-base",
-    "trial-level mechanism"
+    "multi-base"
   ],
   "license": "MIT",
   "access_right": "open",
@@ -42,9 +48,14 @@
       "scheme": "url"
     },
     {
-      "identifier": "10.5281/zenodo.20681847",
+      "identifier": "10.5281/zenodo.20688069",
       "relation": "isNewVersionOf",
       "scheme": "doi"
+    },
+    {
+      "identifier": "arXiv:2605.05347",
+      "relation": "cites",
+      "scheme": "arxiv"
     },
     {
       "identifier": "arXiv:2605.16074",
