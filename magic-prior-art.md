@@ -135,14 +135,31 @@ T3가 무주공산인지 정조준 재검색한 결과, **인접 선행이 상�
 - (참고) **arXiv:2303.11317 "Opening the Black Box Inside Grover's Algorithm"**(PRX 2024)는
   *오라클 구조/dequantization*이지 magic이 아님 — 용어 충돌 주의용 인용.
 
+**인접(양자걷기 magic) — Grover의 최근접 이웃, 반드시 인용:**
+- **arXiv:2506.17783 — "Quantum Magic in Discrete-Time Quantum Walk"** (Phys. Rev.
+  Research 게재, DOI 10.1103/7rwg-lhpv). DTQW의 SRE 계산(1D 격자, coin/walker). **Grover
+  탐색은 아님.**
+- **arXiv:2504.19750 — "Nonstabilizerness generation in a multiparticle quantum walk."**
+  walk magic가 **시간에 로그적 성장.**
+- → Grover = *완전그래프 위 양자걷기*이므로 Grover-magic 연구는 이들을 인용해야 하고,
+  "walk magic ~ log(time)"라는 기성 결과가 바를 약간 올린다. **그러나 Grover 탐색 특수형
+  (2D 불변부분공간 회전)을 직접 다룬 건 아직 없음.**
+
 **비어있는 것 (방어 가능, 단 더 좁아짐):**
 - **Grover의 magic/SRE 궤적 — 여전히 진짜 빈칸.** Grover 자원 분석은 거의 *coherence·
-  entanglement*(trace speed, Sci. Rep. 2020)뿐; 위 두 비교논문(2505.17185, 2507.16543)
-  **모두 Grover 미포함.** "2차(다항) 속도우위에 magic이 필요한가/얼마나/스케일은"은 미개척.
-  2605.05347도 Grover/다항우위를 명시적 open으로 둠. → **가장 강한 단일 타깃.**
+  entanglement*(trace speed, Sci. Rep. 2020)뿐; 비교논문 2편(2505.17185, 2507.16543)
+  **모두 Grover 미포함**; 양자걷기 magic 2편도 **Grover 탐색은 아님**. "2차(다항) 속도우위에
+  magic이 필요한가/얼마나/스케일은"은 미개척. 2605.05347도 명시적 open으로 둠. → **가장
+  강한 단일 타깃.** (단 착수 시 Grover 상태가 2D 실진폭 상태라 magic이 작을 가능성 유의.)
 - **쿼리/오라클 모델의 "블랙박스 가림"** — 2507.16543의 *Clifford-가림*과 **다른 메커니즘**:
   오라클/FFT 블랙박스가 *비선형성*의 magic을 숨긴다(Simon 선형⟹0 vs Shor 비선형⟹>0).
   이건 미정식화 — 단, 이제 2507.16543과 명시적으로 차별화해 서술해야 함.
+
+**조사 범위 메모(정직):** arXiv + 저널 DOI 양쪽 검색함. 이 환경은 Crossref/저널 REST API가
+egress 차단이라 *구조화된 DOI 전수질의는 불가*; 대신 WebSearch가 PRX/PRR/Quantum/npj/IEEE/
+IOP/Springer 등록본을 서버측에서 읽어 출판본을 잡음(이번에 PRR·IEEE·npj판 실제 포착).
+게재상태: 2605.05347·2505.17185 = 프리프린트(저널 DOI 미발견), 2507.16543 = IEEE QCE 게재,
+양자걷기 2편 = PRR 게재. → 핵심 Shor-magic 선점논문은 아직 peer-review 전.
 
 ---
 
@@ -202,5 +219,9 @@ T3가 무주공산인지 정조준 재검색한 결과, **인접 선행이 상�
 - 2605.01620 — Structured Parameterization & Non-Stabilizerness in Hypergraph QAOA
 - 2303.11317 — Opening the Black Box Inside Grover's Algorithm (PRX 2024; 오라클 구조,
   magic 아님 — 용어 충돌 주의)
+- 2506.17783 — Quantum Magic in Discrete-Time Quantum Walk (Phys. Rev. Research,
+  DOI 10.1103/7rwg-lhpv) — 양자걷기 magic; Grover의 최근접 이웃(단 탐색 아님)
+- 2504.19750 — Nonstabilizerness generation in a multiparticle quantum walk
+  (walk magic ~ log time)
 - Combarro et al. 2021 (Comput. Math. Methods) — BV/DJ를 stabilizer formalism으로 설명
   (Simon/BV가 클리포드=magic 0임의 근거)
