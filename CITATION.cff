@@ -19,6 +19,13 @@ abstract: >-
   is monotone, so no interior optimum, and the swing |1/g_inf - 1/g_0| is a
   closed-form constant), and confirms via a cryptographic N-scaling measurement
   (N in {437,1147,2491,4087}) that |p_0 - rho| stays bounded with no growth.
+  v0.5.0 adds a new direction (nonstabilizerness / "magic"): using a verified
+  stabilizer-2-Renyi-entropy tool (XOR-FWHT), it shows that the amount/density
+  of magic separates speedup types -- Grover's search magic peaks at exactly
+  3 bits (density M2/n -> 0) and returns to zero at the answer, while Shor's
+  grows with problem size; magic vanishes iff the underlying function is
+  F2-affine (Simon's linear oracle), formalizing how an oracle/FFT black box
+  can hide the nonlinearity that is magic's true source.
 authors:
   - family-names: "Hashevolution"
     given-names: ""
