@@ -123,17 +123,26 @@ T3가 무주공산인지 정조준 재검색한 결과, **인접 선행이 상�
   Nonstabilizerness in Quantum Optimization" (2025-05).** QAOA의 SRE 궤적 = **"magic
   barrier"**(깊이 따라 상승→하강), 최종 magic↔성공확률, 단열까지. 후속 **2605.01620**
   (Hypergraph QAOA). → "알고리즘 속 magic 궤적→성공" *방법론*은 신규 아님; **최적화 분야 점유.**
+- **arXiv:2507.16543 — Krüger & Mauerer, "Geometric and Resource-Theoretic
+  Characterisation of Non-Stabiliserness in Quantum Algorithms"** (IEEE판 "Quantum Dark
+  Magic"). **여러 알고리즘에 걸친 magic 궤적 비교 프레임**(대상: VQE·QAOA·QFT 등 변분/구조
+  회로)을 이미 구축. 게다가 **"Clifford 연산에 가려진 magic을 드러내는 permutation-agnostic
+  거리"** 도입 → 노트의 **"블랙박스가 magic을 숨긴다"** 각도의 *일부를 선점*(단 메커니즘은
+  Clifford-가림). magic이 ~75% 깊이에서 정점 후 감소. → **비교 프레임·"숨김" 개념 점유.**
 - **양 끝점 기지:** Simon·BV·Deutsch–Jozsa는 (선형 오라클) **클리포드 → magic 0**
-  (Gottesman–Knill; Combarro 2021, "BV/DJ via stabilizer formalism"). Shor는 magic-rich
-  (2605.05347). → "Simon은 magic 없이 지수 쿼리 우위"의 절반은 **거의 자명**, 단독으론 약함.
+  (Gottesman–Knill; Combarro 2021). Shor는 magic-rich(2605.05347). → "Simon은 magic 없이
+  지수 쿼리 우위"의 절반은 **거의 자명**, 단독으론 약함.
+- (참고) **arXiv:2303.11317 "Opening the Black Box Inside Grover's Algorithm"**(PRX 2024)는
+  *오라클 구조/dequantization*이지 magic이 아님 — 용어 충돌 주의용 인용.
 
-**비어있는 것 (방어 가능):**
-- **Grover의 magic/SRE 궤적 — 진짜 빈칸.** Grover 자원 분석은 거의 *coherence·entanglement*
-  (예: trace speed, Sci. Rep. 2020). magic/SRE 전용 분석은 검색에 안 잡힘. 2605.05347도
-  Grover/다항우위를 명시적 open으로 둠. → **가장 강한 단일 타깃.**
-- **속도우위 유형별 통일 벤치마크**(클리포드-자명→2차-Grover→지수-Shor, 단일 SRE 프레임) 미출판.
-- **"블랙박스가 magic을 숨긴다"**(오라클/FFT) 통일 관점 — 노트 §6의 FFT 지름길과 같은 현상.
-  비선형성이 magic의 진짜 원천임을 Simon(선형⟹분해해도 0) vs Shor(비선형⟹분해하면>0)로 정량화.
+**비어있는 것 (방어 가능, 단 더 좁아짐):**
+- **Grover의 magic/SRE 궤적 — 여전히 진짜 빈칸.** Grover 자원 분석은 거의 *coherence·
+  entanglement*(trace speed, Sci. Rep. 2020)뿐; 위 두 비교논문(2505.17185, 2507.16543)
+  **모두 Grover 미포함.** "2차(다항) 속도우위에 magic이 필요한가/얼마나/스케일은"은 미개척.
+  2605.05347도 Grover/다항우위를 명시적 open으로 둠. → **가장 강한 단일 타깃.**
+- **쿼리/오라클 모델의 "블랙박스 가림"** — 2507.16543의 *Clifford-가림*과 **다른 메커니즘**:
+  오라클/FFT 블랙박스가 *비선형성*의 magic을 숨긴다(Simon 선형⟹0 vs Shor 비선형⟹>0).
+  이건 미정식화 — 단, 이제 2507.16543과 명시적으로 차별화해 서술해야 함.
 
 ---
 
@@ -148,10 +157,11 @@ T3가 무주공산인지 정조준 재검색한 결과, **인접 선행이 상�
 | §5 측정도구 (SRE via FWHT/MPS) | **2605.05347** Methods, 2601.07824, 2512.24685, 2106.12587 | 없음 |
 | T2 QFT의 T-count(게이트분해) | 2409.06659, 2103.09999, 2306.09292 | 없음 |
 | "comb SRE=0 ⟺ r=2의 거듭제곱" | 2605.05347: $r{=}2$만 엄밀 안정자, 일반은 $\tilde r_{\text{odd}}$가 통제 | **노트 주장은 부분적 오류** |
-| T3 방법론(algo magic 궤적→성공) | **2505.17185**(QAOA magic barrier)+2605.01620 | 없음(최적화 점유) |
+| T3 방법론(algo magic 궤적→성공) | **2505.17185**(QAOA)+**2507.16543**(변분/QFT)+2605.01620 | 없음(점유) |
+| T3 "magic 숨김" 개념 | **2507.16543** (Clifford-가림 permutation-agnostic 거리) | 대부분 점유 |
 | T3 끝점 Simon/BV=클리포드 | Gottesman–Knill, Combarro 2021 | 자명 |
-| **T3 Grover의 magic/SRE 궤적** | (전용 선행 미발견; Grover는 coherence/얽힘만) | **진짜 잔여** |
-| T3 속도우위 유형별 통일 벤치마크 + "블랙박스가 magic 숨김" | 미출판 | **잔여(독창 각도)** |
+| **T3 Grover의 magic/SRE 궤적** | 전용 선행 미발견; 비교논문 2편 모두 Grover 미포함 | **진짜 잔여** |
+| T3 쿼리모델 오라클-가림(비선형성) | 미정식화(2507.16543의 Clifford-가림과 별개) | **잔여(좁음)** |
 
 **다음 행동(우선순위):**
 1. **재포지셔닝 필수.** magic-and-quantum-speedup.md는 2605.05347을 **주 레퍼런스로 인용**하고,
@@ -186,6 +196,11 @@ T3가 무주공산인지 정조준 재검색한 결과, **인접 선행이 상�
 - 2601.03076 — Multipartite Non-local Magic & SYK
 - 2505.17185 — Capecci, Santra, Bottarelli, Tirrito, Hauke, Role of Nonstabilizerness
   in Quantum Optimization (QAOA "magic barrier") — T3 방법론 선행
+- 2507.16543 — Krüger & Mauerer, Geometric & Resource-Theoretic Characterisation of
+  Non-Stabiliserness in Quantum Algorithms ("Quantum Dark Magic") — **T3 비교프레임 +
+  "Clifford-가림 magic 드러내기" 선행 (Grover/Shor 미포함)**
 - 2605.01620 — Structured Parameterization & Non-Stabilizerness in Hypergraph QAOA
+- 2303.11317 — Opening the Black Box Inside Grover's Algorithm (PRX 2024; 오라클 구조,
+  magic 아님 — 용어 충돌 주의)
 - Combarro et al. 2021 (Comput. Math. Methods) — BV/DJ를 stabilizer formalism으로 설명
   (Simon/BV가 클리포드=magic 0임의 근거)
