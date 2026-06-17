@@ -1,38 +1,65 @@
 # 선행 연구 조사 — magic↔쇼어 속도우위 (magic-and-quantum-speedup.md 의 prior art)
 
-*조사일 2026-06-16. WebSearch 기반(이 환경은 arxiv.org egress 차단 — 본문 전체는 미열람,
-제목·초록 요약에 의존). 각 항목은 노트의 어느 부분과 겹치는지 표시.*
+*조사일 2026-06-16, 본문 정독 갱신 2026-06-17(2605.05347 전문+Supplemental 확보).
+각 항목은 노트의 어느 부분과 겹치는지 표시.*
 
 ---
 
 ## 0. 한 줄 결론
 
-> 노트의 **핵심 주장(magic의 양 ↔ 쇼어의 number-theoretic 난이도)은 이미 1개월 전
+> 노트의 **핵심 주장(magic의 양 ↔ 쇼어의 number-theoretic 난이도)은 이미 한 달 전
 > 논문에 선점**되어 있다 — **arXiv:2605.05347, "The true cost of factoring:
-> Linking magic and number-theoretic complexity in Shor's algorithm" (2026-05).**
-> T2(QFT의 magic/T-count)와 측정도구(Sec 5)도 각각 기성 문헌이 있다.
-> 다만 **"comb 상태 SRE = 0 ⟺ r이 2의 거듭제곱"이라는 정확한 정리 형태**가
-> 2605.05347 안에 명시돼 있는지는 본문 미열람으로 미확인 — 여기만 잔여 여지일 수 있음.
+> Linking magic and number-theoretic complexity in Shor's algorithm"**
+> (Paviglianiti, Seclì, Tirrito, Savona, EPFL, 2026-05-06).
+> **전문 확인 결과**: 이 논문은 노트의 **T1·T4·§5(SRE 도구)·"QFT 손실→실패"까지
+> 전부** 다룬다 — SRE $M_2$(노트 §5와 동일식)를 fast Walsh–Hadamard + MPS Pauli
+> 샘플링으로 계산하고, 주기를 $r=2^k\tilde r_{\text{odd}}$로 분해해 **magic이 홀수부
+> $\tilde r_{\text{odd}}$로 통제**되며 $M_2\sim\log r\to L\log2$로 포화함을 해석이론으로 증명.
+> **T1의 "2의 거듭제곱 ⟹ 안정자" 직관은 부분적으로만 맞음**(§1 정정 참조).
+> **남은 진짜 잔여는 T3(Simon/poly-vs-exp 대조)뿐** — 이 논문도 이를 명시적 open으로 남김.
 
 ---
 
-## 1. 치명적 선점 — 노트의 중심 주장 (T1·T4·Sec 2 프레이밍)
+## 1. 치명적 선점 — 노트의 중심 주장 (T1·T4·§5·QFT역할) [전문 확인]
 
-**arXiv:2605.05347 — "The true cost of factoring: Linking magic and
-number-theoretic complexity in Shor's algorithm" (2026-05-06).**
-- 초록 요지: 쇼어 인수분해에서 **비안정자성(magic) 생성**을 분석, **내재적 양자 복잡도와
-  바탕 수론 문제의 계산적 난이도 사이의 깊은 연결**을 드러냄. **명시적 해석(analytic)
-  이론**을 세워 magic이 알고리즘 성공에 하는 근본적 역할을 보이고, **쇼어 루틴이 그
-  자원을 최대로(maximally) 활용**함을 보임. 게이트수·큐비트수 같은 표준 비용 대신
-  **자원 기반 지표**로 보완.
-- **노트와의 겹침:** 이게 정확히 노트 §0·§2·T1·T4의 명제다 — "magic이 단순 부산물이
-  아니라 *문제의 난이도(수론 구조)와 묶여 있다*"가 이 논문의 제목 그 자체.
-  → **노트의 헤드라인 기여는 신규성이 거의 없음.** 반드시 주 레퍼런스로 인용하고
-  재포지셔닝해야 함.
-- **확인 못한 것(잔여 여지):** 이 논문이 (i) **측정후 comb/주기 상태**를 직접 다루는지,
-  (ii) **stabilizer Rényi 엔트로피**를 쓰는지, (iii) **"r이 2의 거듭제곱이면 magic=0,
-  홀수 인수 있으면 >0"**이라는 깔끔한 정리를 명시하는지 — 초록만으로는 불명.
-  → 본문 확보 필요(아래 §6).
+**arXiv:2605.05347 — Paviglianiti, Seclì, Tirrito, Savona (EPFL), 2026-05-06.**
+전문(본문 6쪽 + Supplemental 4쪽) 정독 결과, 노트와 겹치는 부분을 항목별로:
+
+- **측정도구(노트 §5)와 동일:** SRE $M_2(|\psi\rangle)=-\log(\frac1{2^L}\sum_P\langle\psi|P|\psi\rangle^4)$
+  (식 1) — 노트 §5의 그 식. 계산은 **fast Walsh–Hadamard transform**(그들의 ref [55] =
+  바로 노트가 §5에서 가리킨 2512.24685)과 **Lami–Collura의 MPS Perfect Pauli Sampling**
+  (ref [35])으로 $O(4^L)$ 비용을 우회. → **노트가 "쓰겠다"던 도구를 이미 그대로 사용.**
+
+- **T1(주기구조↔magic) = 이 논문의 메인 결과:** 주기를 $r=2^k\tilde r_{\text{odd}}$로 분해.
+  회로 각 단계의 상태가 균일진폭+유사난수위상 중첩 $|\psi\rangle=\frac1{\sqrt D}\sum_{m\in
+  D}e^{i\theta_m}|m\rangle$ 임을 보이고, 닫힌형 $M_2=4\log D-\log(4\Lambda+6D^2-5D)$ 유도.
+  핵심: **평탄역(plateau)의 magic은 홀수부 크기 $D=\tilde r_{\text{odd}}$가 통제**하고,
+  $M_2\sim\log r$로 자라 $r\gtrsim2^{L/2}$에서 상한 $L\log2$(최대 magic)로 포화.
+  (N=18923 등에서 수치+해석 일치, Fig 3.)
+
+- **T4(속도우위 연결) = 이 논문의 §"Period occurrence and success rate":**
+  조건부 성공률 $S=g\cdot p_{\text{succ}}\sim(r/N)^\alpha,\ \alpha\approx1$ — 큰 $r$(=큰 magic)
+  realization이 전체 성공확률을 지배. $N$이 커질수록 작은 $r$(저-magic) 기여는 소멸.
+  → "magic이 속도우위/문제크기/성공확률과 정량 연결"이라는 T4가 **이미 수행됨**(Fig 4).
+
+- **노트의 "QFT 역할 / 손실"(§2-3, §6):** 회로를 짧게 잘라 magic 생성을 막으면
+  ($t<\lceil\log_2 r\rceil$) 성공확률이 즉시 0 — **"magic 손실 = 알고리즘 실패"**를 증명,
+  근사 QFT/게이트 절단(48–50) 위험성을 경고(Fig 5). → 노트가 던진 "QFT가 magic을
+  생성/재분배/구조화하나"에 대한 직접적 답변에 해당.
+
+- **정정 — T1의 "2의 거듭제곱 ⟹ M₂=0"은 부분적으로만 참:**
+  논문은 **$r=2$ (그리고 $\tau{=}1$의 $D{=}2$)만이 회로 전 구간 정확히 안정자**($M_2=0$)임을
+  증명. $r=4,8,\dots$ 같은 **일반 2-거듭제곱은 회로상 magic을 생성**한다(Fig 3에서 r=4가
+  0이 아님) — 평탄 magic은 $\tilde r_{\text{odd}}$가, 마지막 $k$스텝의 추가 성장은 $2^k$가 만든다.
+  - 노트의 **이상적 comb 상태**(엄밀히 $r\mid Q=2^t$ 가정) $\frac1{\sqrt m}\sum_j|x_0+jr\rangle$
+    한정으로는 "$r=2^s$ ⟹ (하위 $s$비트 고정)⊗($|+\rangle$들) = 안정자, $M_2=0$"가 **맞다.**
+    그러나 **실제 쇼어에선 $r\nmid 2^t$가 일반**(그래서 연분수가 필요)이라, 흥미로운 경우의
+    측정후 상태는 비균일 근사-comb이고 magic은 논문의 $\tilde r_{\text{odd}}$ 분석을 따른다.
+  - 즉 노트 T1의 깔끔한 정리는 **자명한 이상화($r\mid Q$, 게다가 $r=2^s$는 쉬운 경우)**에서만
+    성립하고, **비자명한 실제 케이스의 magic은 이 논문이 이미 정확히 기술**한다.
+
+→ **결론: 노트의 헤드라인(T1+T4)과 §5 도구·"QFT 손실→실패"는 신규성이 사실상 없음.**
+  반드시 2605.05347을 주 레퍼런스로 인용. 차별화하려면 §6의 잔여(T3, FFT-지름길 관찰)로.
 
 ---
 
@@ -92,27 +119,33 @@ number-theoretic complexity in Shor's algorithm" (2026-05-06).**
 | 노트 항목 | 선행연구 | 신규성 |
 |---|---|---|
 | §1 필요성 (Gottesman–Knill 등) | 교과서 | 없음 |
-| §2·T1·T4 magic↔수론 난이도 | **2605.05347** | **거의 없음(선점)** |
-| T2 QFT magic/T-count | 2409.06659, 2103.09999, 2306.09292 | 없음 |
-| §5 측정도구 (state-vector SRE) | 2601.07824, 2512.24685, 2106.12587 | 없음 |
-| comb=구조→magic 패턴 | 2508.03534 | 방법론 선례 존재 |
-| T3 Simon vs Shor 대조 | (직접 선행 미발견) | **잠재적 잔여** |
-| "comb SRE=0 ⟺ r=2의 거듭제곱" 정확 정리 | 2605.05347 본문 미확인 | **확인 필요한 잔여** |
+| §2·T1 magic↔주기구조 | **2605.05347** [전문확인] | **없음(선점, 해석이론까지)** |
+| **T4** magic↔성공률·문제크기 | **2605.05347** §success-rate (Fig 4) | **없음(선점)** |
+| §2-3 "QFT가 magic을 생성/재분배" + §6 손실 | **2605.05347** Fig 5 (손실→실패) | **없음(선점)** |
+| §5 측정도구 (SRE via FWHT/MPS) | **2605.05347** Methods, 2601.07824, 2512.24685, 2106.12587 | 없음 |
+| T2 QFT의 T-count(게이트분해) | 2409.06659, 2103.09999, 2306.09292 | 없음 |
+| "comb SRE=0 ⟺ r=2의 거듭제곱" | 2605.05347: $r{=}2$만 엄밀 안정자, 일반은 $\tilde r_{\text{odd}}$가 통제 | **노트 주장은 부분적 오류** |
+| **T3 Simon vs Shor / poly-vs-exp 대조** | (직접 선행 미발견; 2605.05347이 **Grover/poly-advantage를 open으로 명시**) | **유일한 실질 잔여** |
 
 **다음 행동(우선순위):**
-1. **2605.05347 본문 확보**(arxiv.org를 egress allowlist에 추가하거나 PDF 직접). 이 논문이
-   (a) 측정후 comb 상태를 다루는지, (b) 2의 거듭제곱/홀수인수 분기를 명시하는지 확인.
-   - 명시돼 있으면 → 노트는 **이 논문의 *수치 재현/검증*(이 레포 시뮬레이터)** 으로 재포지션.
-   - 명시 안 돼 있으면 → "**측정후 comb 상태의 SRE에 대한 정확한 period-structure 정리 +
-     FFT 지름길이 magic을 '컴파일해 숨긴다'는 §3 관찰**"이 좁지만 진짜 잔여 기여.
-2. T1 수치실험은 **2601.07824의 fast-Hadamard SRE**를 그대로 채택($t\gg10$까지).
-3. T3(Simon vs Shor magic 궤적 대조)는 직접 선행을 못 찾았으니 **가장 신규성 높은 입구**일
-   수 있음 — 우선순위 상향 고려.
+1. **재포지셔닝 필수.** magic-and-quantum-speedup.md는 2605.05347을 **주 레퍼런스로 인용**하고,
+   T1·T4·§5·"QFT 손실"을 "이 논문이 해결한 것"으로 명시. 노트를 "열린 문제 제안"이 아니라
+   **(a) 이 레포 시뮬레이터에서의 독립 재현/검증** 또는 **(b) 잔여 질문**으로 다시 써야 함.
+2. **T1 정정.** "2의 거듭제곱 ⟹ magic 0"은 *이상적 comb($r\mid Q$)* 에서만 참이고 그 경우는
+   자명/쉬운 케이스. 실제 비자명 케이스의 magic은 홀수부 $\tilde r_{\text{odd}}$가 통제(=논문 결과).
+   노트의 가설 문장을 이 구분에 맞춰 수정.
+3. **T3가 유일한 실질 입구.** Simon(선형/Clifford스러운 구조) vs Shor의 magic 궤적 대조, 그리고
+   2605.05347이 명시적으로 open으로 남긴 **"다항 속도우위(예: Grover)에서 magic이 다르게
+   행동하나"**가 진짜 미개척. 여기에 노트의 차별점을 집중.
+4. 만약 굳이 comb-state 각도를 유지한다면, 차별점은 **shor.py의 FFT 지름길이 게이트 magic을
+   '컴파일해 숨긴다'는 §3 관찰**(논문은 semiclassical-QFT 회로 상태를 직접 보므로 이 "숨김"
+   현상은 안 다룸) 정도 — 좁고 주로 교육적 기여.
 
 ---
 
 ### 인용 모음 (검증된 식별자)
-- 2605.05347 — True cost of factoring: magic ↔ number-theoretic complexity in Shor (2026-05)
+- 2605.05347 — Paviglianiti, Seclì, Tirrito, Savona (EPFL), True cost of factoring:
+  magic ↔ number-theoretic complexity in Shor (2026-05-06) — **전문 확인, 주 선점 문헌**
 - 2409.06659 — Amortized Stabilizer Rényi Entropy of Quantum Dynamics (QFT T-count 하한)
 - 2103.09999 — Lower bound for T-count via unitary stabilizer nullity
 - 2306.09292 — Stabilizer Testing and Magic Entropy via Quantum Fourier Analysis (CMP 2025)
