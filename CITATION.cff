@@ -31,9 +31,12 @@ authors:
     given-names: ""
 repository-code: "https://github.com/Hashevolution/shor"
 url: "https://github.com/Hashevolution/shor"
-doi: "10.5281/zenodo.20688069"
+doi: "10.5281/zenodo.20725965"
 identifiers:
-  - description: "v0.4.0 (current release): Theorem 6 SR no-go + cryptographic N-scaling + honest verified-and-bounded framing"
+  - description: "v0.5.0 (current release): nonstabilizerness (magic) across quantum speedups — Grover 3-bit saturation, oracle-hiding M2=0 iff affine, Shor comb scaling"
+    type: doi
+    value: "10.5281/zenodo.20725965"
+  - description: "v0.4.0: Theorem 6 SR no-go + cryptographic N-scaling + honest verified-and-bounded framing"
     type: doi
     value: "10.5281/zenodo.20688069"
   - description: "v0.3.0: §3.6 self-correction + closed-form σ-curve + 5-algorithm verification"
@@ -60,6 +63,9 @@ keywords:
   - Simon's algorithm
   - self-correction
   - quantum noise
+  - nonstabilizerness
+  - magic
+  - stabilizer Renyi entropy
 license: MIT
-version: "0.4.0"
-date-released: 2026-06-14
+version: "0.5.0"
+date-released: 2026-06-17

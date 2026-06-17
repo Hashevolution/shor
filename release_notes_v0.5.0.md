@@ -1,6 +1,6 @@
 # Release notes — v0.5.0 (2026-06-17)
 
-**DOI**: _v0.5.0 GitHub 릴리스의 Zenodo 보관 시 발급 (발행 후 CITATION.cff·README 갱신)_
+**DOI**: [10.5281/zenodo.20725965](https://doi.org/10.5281/zenodo.20725965)
 
 ## Summary
 
