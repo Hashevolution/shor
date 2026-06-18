@@ -99,6 +99,32 @@ $M{=}1$에서 명제 2로 환원. 일반 닫힌형은 미완.)* `grover_magic.py
 
 ---
 
+## 명제 4 (일반 $M$ flat 마커상태 닫힌형 — 가법 에너지)
+
+$|{\rm flat}_W\rangle=|W|^{-1/2}\sum_{x\in W}|x\rangle$ ($M=|W|$, $N=2^n$)에 대해
+$$\boxed{\,M_2(|{\rm flat}_W\rangle)=-\log_2\!\Big(\tfrac1{M^4}\sum_{x\in\mathbb F_2^n}E\big(W\cap(W{\oplus}x)\big)\Big)\,},\qquad
+E(S)=\#\{(a,b,c,d)\in S^4:a{\oplus}b{\oplus}c{\oplus}d=0\}=\sum_{v}A_S(v)^2,$$
+즉 magic은 **이동 자기교집합 $S_x=W\cap(W{\oplus}x)$의 가법 에너지(additive energy)** 합으로 닫힌다.
+
+*증명(개요).* 실진폭이라 $\langle Z^zX^x\rangle=\tfrac1M\hat g_x(z)$, $g_x=1_{S_x}$.
+$\sum_z\hat g_x(z)^4=N\sum_{a\oplus b\oplus c\oplus d=0}1_{S_x}(a)\cdots1_{S_x}(d)=N\,E(S_x)$ (Parseval;
+$E(S)=\tfrac1N\sum_z\hat1_S(z)^4$). 대입하면 위 식. **특수값:** $W$ 아핀부분공간이면
+$S_x=W\,(x\in V)$ 또는 $\varnothing$, $E(W)=M^3$, $|V|=M$ ⟹ $\sum_x E(S_x)=M^4$ ⟹ $M_2=0$
+(보조정리 1 재확인); $M=1$이면 $\sum=E(W)=1$ ⟹ $M_2=0$. 명제 2($M{=}1$)·2′의 미완 닫힌형을
+완성. 수치 $\le4\times10^{-15}$ 일치. `experiments/marker_code_closed_form.py`. $\blacksquare$
+
+## 명제 5 (랜덤 마커 통계식 — Sidon 값)
+
+$W$가 **Sidon(B$_2$) 집합**(0 아닌 XOR 차분이 모두 서로 다름)이면 $S_0{=}W$에 $E(W){=}3M^2{-}2M$,
+0 아닌 차분 $x$($M(M{-}1)/2$개)마다 $|S_x|{=}2,\ E(S_x){=}8$ 이므로
+$$\boxed{\,M_2=\log_2\!\frac{M^3}{7M-6}\ \xrightarrow{M\to\infty}\ 2\log_2 M-\log_2 7\,}.$$
+랜덤 $W$는 $M\ll2^{n/2}$에서 whp Sidon이라 $\mathbb E[M_2]\to$ 이 값(수치 $10^{-16}$ 일치). 즉
+**구조 없는 마커상태의 magic은 $\sim2\log_2 M$로 자란다.** 유한 $N$에서 $M^2\gtrsim N$이면 가법
+quadruple(충돌)이 늘어 $E\uparrow,\ \xi\uparrow,\ M_2\downarrow$ — 보정은 *하락*이고 $M^2/N$로 통제
+(수치: $M{=}8$ gap $0.53\to0.17\to0.00$ as $n{=}6{\to}8{\to}10$). `marker_code_closed_form.py` §2.
+
+---
+
 ## 속도우위 사다리 (요약)
 
 | 알고리즘 | 속도우위 | $M_2$ 거동 | 밀도 $M_2/n$ | 근거 |

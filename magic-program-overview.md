@@ -74,16 +74,16 @@ $$M_2=-\log_2\!\Big(\tfrac1{N M^4}\sum_{x,z}\hat g_x(z)^4\Big),\quad g_x(c)=1_W(
 
 ## Part II — 앞으로의 새 과제 (TODO)
 
-### 과제 A ★ — 부호이론 통계적 근사식 (가장 강한 단일 표적)
-랜덤 비아핀 $W$의 **평균 magic 예측식** $E[M_2]\approx F(M,n,\tau)$ 유도.
-- 출발 데이터: `marker_code_magic.py` §3 표(E[M2]는 $M$과 함께 증가, $n$ 의존 약함).
-- 방법: 랜덤 $W$의 **기대 4차 푸리에 모멘트** $\mathbb E_W\sum_{x,z}\hat g_x(z)^4$ 해석 평가
-  (조합론적 카운팅). $\tau$를 1차 설명변수로 한 닫힌형/점근식.
-- 산출: 예측식 + 검증 스크립트(예측 vs 실측 산점, 잔차), 논문 그림(스케일링 곡선).
+### 과제 A ✅ 완료 — 부호이론 통계적 예측식 (Sidon 값)
+랜덤 비아핀 $W$의 평균 magic = **Sidon 값** $\,M_2=\log_2(M^3/(7M-6))\approx 2\log_2 M-\log_2 7$
+(명제 5). 랜덤 $W$는 $M\ll2^{n/2}$에서 whp Sidon → $\mathbb E[M_2]\to$ 이 값(수치 검증). 유한-$N$
+보정은 가법충돌로 *하락*, $M^2/N$로 통제. `marker_code_closed_form.py` §2.
+*잔여(M4로):* $M^2\gtrsim N$ 영역의 보정항 $\Delta(M,N)$ 해석 전개(현재 경험적 단조).
 
-### 과제 B — 일반-M Grover 해석적 닫힌형
-명제 2′의 미완 부분: $|{\rm flat}_W\rangle$ 및 2-진폭 Grover의 $M_2$를 **$A_W$로 닫힌형 유도**
-(명제 2의 $M{=}1$로 환원 확인). 2605.05347의 $\Lambda$와의 동형성을 명시적으로.
+### 과제 B ✅ 완료 — 일반-M flat 마커상태 닫힌형
+$M_2(|{\rm flat}_W\rangle)=-\log_2\!\big(\tfrac1{M^4}\sum_x E(W\cap(W{\oplus}x))\big)$, $E$=가법에너지
+(명제 4). $M{=}1$·아핀 → 0 환원 확인, $\Lambda$(2605.05347)와 동형. 수치 $4{\times}10^{-15}$.
+*잔여(선택):* 2-진폭 Grover(비-flat)의 명시 닫힌형(현재 명제 2′ 분해 + 명제 4로 환원 가능).
 
 ### 과제 C — Grover 게이트분해 T-count 대조
 정점 3-bit가 **게이트수준 T-count**와 어떻게 대응하는지(상태 magic vs 회로 magic 구분).
@@ -108,11 +108,11 @@ M1 (완료) ── 측정 인프라 + 명제 1·따름정리 1·2 + 명제 2/3/2
 M2 (완료) ── 부호이론 보정 + 선행조사(B 전문확인)
    │          산출: marker_code_magic.py, magic-prior-art.md §5c (위상vs support / RM2 vs RM1)
    ▼
-M3 (다음) ── 과제 A: 통계적 근사식 E[M2](M,n,τ)  ← 핵심
-   │          + 과제 B: 일반-M 닫힌형(A_W)
-   │          산출: 예측식 + 검증 스크립트 + 스케일링 그림.  게이트: 예측 vs 실측 R²·잔차
+M3 (완료) ── 과제 B: 일반-M 닫힌형 = 가법에너지 (명제 4)
+   │          + 과제 A: 통계 예측식 = Sidon 값 log₂(M³/(7M−6))≈2log₂M−log₂7 (명제 5)
+   │          산출: marker_code_closed_form.py (닫힌형 4e-15, Sidon 1e-16, 랜덤W→Sidon 수렴)
    ▼
-M4 ──────── 과제 C(T-count) + 과제 D(오라클-가림 정식화) + 과제 E(A·C 전문 대조)
+M4 (다음) ── 과제 C(T-count) + 과제 D(오라클-가림 정식화) + 과제 E(A·C 전문 대조)
    │          산출: 게이트수준 대조, 차별화 서술 완성
    ▼
 M5 ──────── 논문화: Grover 다항우위 magic + 부호이론 마커 SRE
