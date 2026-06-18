@@ -183,18 +183,23 @@ $|{\rm flat}_W\rangle$의 SRE를 $W$의 대수적 특성으로 예측)를 정조
   이론; **2308.05152** Quantum Lego: 텐서망 enumerator로 SRE 계산). → **여기서 "부호→magic"은
   *부호화된/증류되는* 상태의 얘기**지, *평탄 마커상태의 SRE를 support의 자기상관으로 예측*하는
   우리 각도가 아니다. **용어 충돌 주의**(2303.11317 "black box"식 충돌과 동급) — 명시적 구분 필요.
-- **(B) Boolean 함수 비선형성 ↔ 하이퍼그래프 상태 magic — *최근접 이웃* [스니펫 다중확인 2026-06-18].**
-  **2308.01886 "Magic of quantum hypergraph states"** (Chen–Yan–Zhou, **Quantum 8, 1351 (2024)**),
-  **2602.23687 "SRE of 3-uniform hypergraph states"** (Kagamihara–Tsuchiya, 2026-05-14):
-  하이퍼그래프 상태 $|H\rangle=\prod_{e\in E}C_e|{+}\rangle^{\otimes n}=\frac1{\sqrt N}\sum_x(-1)^{f(x)}|x\rangle$
-  ($f$의 단항식=하이퍼에지; 2602.23687은 CCZ만→$f$ 3차)의 magic을 **Boolean 함수 $f$의 2차
-  비선형성(nonquadraticity, 즉 RM(2,n)까지 거리)**으로 유계·계산(2308.01886은 일반-α SRE 공식,
-  2602.23687은 SRE를 행렬계수로 $O(N^3 2^N)$). 그래프상태=2차위상=안정자(magic 0)가 기준점.
+- **(B) Boolean 함수 비선형성 ↔ 하이퍼그래프 상태 magic — *최근접 이웃* [전문 확인 2026-06-18, 저자제공 PDF].**
+  **2308.01886 "Magic of quantum hypergraph states"** (Chen–Yan–Zhou, **Quantum 8, 1351 (2024)**, v2),
+  **2602.23687 "SRE of 3-uniform hypergraph states"** (Kagamihara–Tsuchiya, v2 2026-05-14):
+  하이퍼그래프 상태 $|G\rangle=U(G)|{+}\rangle^{\otimes n}=\prod_{e\in E}CZ_e|{+}\rangle^{\otimes n}
+  =\frac1{\sqrt N}\sum_x(-1)^{f_G(x)}|x\rangle$ (2308.01886 **Def 1·Eq(1)**; $f_G$의 $c$차 단항식=$c$-edge;
+  2602.23687 **Eq(3)**은 CCZ만→$f$ 3차). 즉 **Boolean 함수가 *위상*에, 받침은 항상 균일 $\mathbb F_2^n$
+  전체.** magic의 원천은 **2차 초과(degree $\ge3$)=nonquadraticity**: 그래프상태(2-edge=2차위상)는
+  클리포드·안정자(magic 0)이고 $\ge3$-edge에서 magic 발생(2308.01886 본문, Ref[49]=Liu–Winter
+  PRX Q 3,020333의 nonquadraticity 최소화와 연결; 2602.23687 **Thm 1**: SRE$=$GF(2) 대칭행렬
+  $C(x){+}C(x)^T$의 rank(2차형식)로 $O(N^3 2^N)$). 2308.01886은 평균차수 상계(**Thm 2**)·랜덤상태
+  최대magic 집중·순열대칭(3-complete) 상태가 $\alpha{\ge}2$에서 상수/지수적 소(小) magic을 보임.
   → 우리와 결정적으로 다른 두 축: **(i) 인코딩 — 그쪽은 $f$가 *위상*(균일 support), 우리는 $1_W$가
-  *support*(균일 위상); (ii) 부호 — 그쪽 관련부호는 *RM(2,n)*(2차/nonquadraticity), 우리는
-  *RM(1,n)/아핀부분공간*(1차).** 또 그쪽 지표는 *함수* 비선형성, 우리 지표는 *지시함수 $1_W$의
-  자기상관*. **두 논문 모두 flat/indicator(support) 상태·자기상관은 다루지 않음**(위상상태 전용).
-  **반드시 (B)를 최근접 이웃으로 인용하고 "위상 vs support / RM(2) vs RM(1)"로 차별화.**
+  *support*(균일 위상); (ii) 부호 — 그쪽 magic 원천은 *RM(2,n)*(2차)까지 거리=nonquadraticity, 우리는
+  *RM(1,n)/아핀부분공간*(1차)에서의 이탈.** 그쪽 지표는 *위상함수* 비선형성, 우리 지표는 *지시함수
+  $1_W$의 자기상관*. **두 논문 모두 flat/indicator(support) 상태·받침 자기상관은 전혀 다루지 않음**
+  (전 본문이 위상상태 전용; 전문 대조로 확인). **반드시 (B)를 최근접 이웃으로 인용하고 "위상 vs
+  support / RM(2) vs RM(1)"로 차별화.**
 - **(C) 구조적 support의 평탄상태 = Dicke/순열불변 상태 magic.** Dicke 상태는 곧
   $W=\{x:\mathrm{wt}(x)=k\}$ 위 평탄상태(=비아핀 구조적 support). **arXiv:2402.08551
   "Nonstabilizerness of Permutationally Invariant Systems"**, 대칭상태 SRE(소수의 집합스핀
@@ -215,13 +220,13 @@ $|{\rm flat}_W\rangle$의 SRE를 $W$의 대수적 특성으로 예측)를 정조
   (`marker_code_magic.py` §1: $\{0,1,2,3\}$ vs $\{0,1,2,4\}$ 동일 $d_{\min}{=}1$, magic 0 vs 1.54).
   cf. bent 함수(아핀까지 최대거리)는 *위상* 함수 개념이라 support 마커와는 다른 대상.
 
-**조사 범위 메모(정직):** 이 환경은 **WebFetch가 전면 403**(arXiv abs/pdf/html·ar5iv·Quantum
-저널·NASA ADS·Semantic Scholar 모두 본문 미확보) — **WebSearch 서버측 스니펫 + HF 논문검색만**
-가능. (B)의 결정적 2점(① 하이퍼그래프=*위상* 인코딩 $\prod C_e|{+}\rangle^n=\sum(-1)^{f}|x\rangle$,
-② 지표=*nonquadraticity*=RM(2)까지 거리)은 **정의식·요약 스니펫으로 다중 교차확인**했으나
-*전문 정독은 미수행*. (A)(C)도 식별·요약 수준. → 정식 논문 인용/제출 전 **(B) 2편(Quantum 8,1351;
-2602.23687) 전문 1회 대조**로 "위상 vs support / RM(2) vs RM(1)" 구분을 최종 확정할 것
-(네트워크 정책상 arXiv egress 허용 환경 필요).
+**조사 범위 메모(정직):** 이 환경은 **WebFetch가 전면 403**(arXiv·Quantum 저널·NASA ADS·
+Semantic Scholar 본문 미확보) — WebSearch 스니펫 + HF 논문검색만 가능. **단 (B) 2편은 사용자가
+PDF를 제공하여 전문 정독 완료**(2026-06-18): 결정적 2점(① 위상 인코딩 — 2308.01886 Def 1·Eq(1),
+2602.23687 Eq(3); ② magic 원천=nonquadraticity/degree$\ge3$=RM(2)까지 거리 — 2308.01886 Thm 2·
+Ref[49], 2602.23687 Thm 1의 2차형식 rank)을 **본문 식·정리로 확정**, 또한 **둘 다 support/indicator·
+받침 자기상관은 전혀 다루지 않음**을 확인. → "위상 vs support / RM(2) vs RM(1)" 차별화 **최종 확정.**
+(A)(C)는 여전히 식별·요약 수준(전문 미대조) — 정식 제출 전 1회 대조 권장.
 
 ---
 
@@ -242,7 +247,7 @@ $|{\rm flat}_W\rangle$의 SRE를 $W$의 대수적 특성으로 예측)를 정조
 | **T3 Grover의 magic/SRE 궤적** | 전용 선행 미발견; 비교논문 2편 모두 Grover 미포함 | **진짜 잔여** |
 | T3 쿼리모델 오라클-가림(비선형성) | 미정식화(2507.16543의 Clifford-가림과 별개) | **잔여(좁음)** |
 | 부호: RM ↔ magic상태 증류/가중치열거자 | PRX 2,041021, 2510.10852, 1702.06990, 2501.10163, 2308.05152 | 없음(다른 의미·용어충돌) |
-| 부호: Boolean 비선형성 ↔ magic | **2308.01886·2602.23687** (위상인코딩, RM(2)/nonquadraticity) | 없음 — 단 위상 vs support·RM(2) vs RM(1)로 차별 |
+| 부호: Boolean 비선형성 ↔ magic | **2308.01886·2602.23687** [전문확인] (위상인코딩, RM(2)/nonquadraticity, support 미취급) | 없음 — 단 위상 vs support·RM(2) vs RM(1)로 차별 |
 | 부호: 구조적 support 평탄상태 magic | 2402.08551(순열불변), Dicke/대칭 SRE | 대칭case 점유 |
 | **flat 마커상태 SRE = 자기상관/Walsh-4차, 아핀⟺$A_W{\in}\{0,M\}$, Grover 다중표시** | (A)(B)(C) 어디에도 없음; 자기상관 객체는 2605.05347 $\Lambda$ | **좁은 잔여(방어가능)** |
 | 인수인계서 "최소 해밍거리→magic" | 반례로 무력화(`marker_code_magic.py` §1) | **정정(지표 부정확)** |
@@ -300,9 +305,11 @@ $|{\rm flat}_W\rangle$의 SRE를 $W$의 대수적 특성으로 예측)를 정조
   - 2501.10163 — Invariant Theory, Magic State Distillation, and Bounds on Classical Codes
   - 2308.05152 — Quantum Lego Expansion Pack: Enumerators from Tensor Networks (가중치열거자→SRE)
   - **2308.01886 — Chen, Yan, Zhou, Magic of quantum hypergraph states, Quantum 8, 1351 (2024)**
-    (위상 인코딩 $\sum(-1)^f|x\rangle$; magic↔nonquadraticity=RM(2)) — 최근접 이웃
-  - **2602.23687 — Kagamihara, Tsuchiya, SRE of 3-uniform hypergraph states (2026-05-14)**
-    (CCZ만→3차 위상; SRE=행렬계수 $O(N^3 2^N)$) — 최근접 이웃
+    [**전문 확인**] Def 1·Eq(1) 위상 인코딩 $\prod CZ_e|{+}\rangle^n$; Thm 2 평균차수 상계;
+    nonquadraticity 연결(Ref[49]=Liu–Winter PRX Q 3,020333); support상태 미취급 — 최근접 이웃
+  - **2602.23687 — Kagamihara, Tsuchiya, SRE of 3-uniform hypergraph states (v2 2026-05-14)**
+    [**전문 확인**] Eq(3) ∏CCZ 위상; Thm 1 SRE=GF(2)행렬 $C{+}C^T$ rank, $O(N^3 2^N)$;
+    support상태 미취급 — 최근접 이웃
   - 2402.08551 — Nonstabilizerness of Permutationally Invariant Systems (대칭 support 평탄상태)
   - (참고) 2510.01380 — Non-stabilizerness in quantum-enhanced metrological protocols (대칭상태 SRE 환원)
   - 2512.19657 — Extremizing Measures of Magic on Pure States by Clifford-stabilizer States (검색상 인접; 전문 미확보)
