@@ -183,14 +183,18 @@ $|{\rm flat}_W\rangle$의 SRE를 $W$의 대수적 특성으로 예측)를 정조
   이론; **2308.05152** Quantum Lego: 텐서망 enumerator로 SRE 계산). → **여기서 "부호→magic"은
   *부호화된/증류되는* 상태의 얘기**지, *평탄 마커상태의 SRE를 support의 자기상관으로 예측*하는
   우리 각도가 아니다. **용어 충돌 주의**(2303.11317 "black box"식 충돌과 동급) — 명시적 구분 필요.
-- **(B) Boolean 함수 비선형성 ↔ 하이퍼그래프 상태 magic — *최근접 이웃*.**
-  **arXiv:2308.01886 "Magic of quantum hypergraph states"**, **arXiv:2602.23687 "SRE of 3-uniform
-  hypergraph states"**: 하이퍼그래프 상태 $|\psi_f\rangle=\frac1{\sqrt N}\sum_x(-1)^{f(x)}|x\rangle$의
-  magic을 **Boolean 함수 $f$의 비선형성·2차 비선형성(nonquadraticity, 즉 RM(2,n)까지 거리)**으로
-  유계·계산. → 우리와 결정적으로 다른 점: **그쪽은 $f$가 *위상*에 인코딩(균일 support)이고
-  관련 부호는 *RM(2,n)*(2차)**; **우리는 $1_W$가 *support*에 인코딩(균일 위상)이고 관련 부호는
-  *RM(1,n)/아핀부분공간*(1차)**. 또 그쪽 지표는 *함수* 비선형성, 우리 지표는 *지시함수 $1_W$의
-  자기상관*. **반드시 (B)를 최근접 이웃으로 인용하고 "위상 vs support / RM(2) vs RM(1)"로 차별화.**
+- **(B) Boolean 함수 비선형성 ↔ 하이퍼그래프 상태 magic — *최근접 이웃* [스니펫 다중확인 2026-06-18].**
+  **2308.01886 "Magic of quantum hypergraph states"** (Chen–Yan–Zhou, **Quantum 8, 1351 (2024)**),
+  **2602.23687 "SRE of 3-uniform hypergraph states"** (Kagamihara–Tsuchiya, 2026-05-14):
+  하이퍼그래프 상태 $|H\rangle=\prod_{e\in E}C_e|{+}\rangle^{\otimes n}=\frac1{\sqrt N}\sum_x(-1)^{f(x)}|x\rangle$
+  ($f$의 단항식=하이퍼에지; 2602.23687은 CCZ만→$f$ 3차)의 magic을 **Boolean 함수 $f$의 2차
+  비선형성(nonquadraticity, 즉 RM(2,n)까지 거리)**으로 유계·계산(2308.01886은 일반-α SRE 공식,
+  2602.23687은 SRE를 행렬계수로 $O(N^3 2^N)$). 그래프상태=2차위상=안정자(magic 0)가 기준점.
+  → 우리와 결정적으로 다른 두 축: **(i) 인코딩 — 그쪽은 $f$가 *위상*(균일 support), 우리는 $1_W$가
+  *support*(균일 위상); (ii) 부호 — 그쪽 관련부호는 *RM(2,n)*(2차/nonquadraticity), 우리는
+  *RM(1,n)/아핀부분공간*(1차).** 또 그쪽 지표는 *함수* 비선형성, 우리 지표는 *지시함수 $1_W$의
+  자기상관*. **두 논문 모두 flat/indicator(support) 상태·자기상관은 다루지 않음**(위상상태 전용).
+  **반드시 (B)를 최근접 이웃으로 인용하고 "위상 vs support / RM(2) vs RM(1)"로 차별화.**
 - **(C) 구조적 support의 평탄상태 = Dicke/순열불변 상태 magic.** Dicke 상태는 곧
   $W=\{x:\mathrm{wt}(x)=k\}$ 위 평탄상태(=비아핀 구조적 support). **arXiv:2402.08551
   "Nonstabilizerness of Permutationally Invariant Systems"**, 대칭상태 SRE(소수의 집합스핀
@@ -211,10 +215,13 @@ $|{\rm flat}_W\rangle$의 SRE를 $W$의 대수적 특성으로 예측)를 정조
   (`marker_code_magic.py` §1: $\{0,1,2,3\}$ vs $\{0,1,2,4\}$ 동일 $d_{\min}{=}1$, magic 0 vs 1.54).
   cf. bent 함수(아핀까지 최대거리)는 *위상* 함수 개념이라 support 마커와는 다른 대상.
 
-**조사 범위 메모(정직):** arXiv abs/pdf/html 및 ar5iv는 이 환경에서 egress 403(WebFetch 본문
-미확보) — WebSearch 스니펫 + HF 논문검색으로 식별·요약만 확인했고 (A)(B)(C) 핵심 논문의 *전문
-대조는 미수행*. 특히 (B) 2308.01886/2602.23687은 "위상 인코딩·RM(2)"라는 구분이 신규성의 핵심
-근거이므로, **착수 전 전문 확보해 위상 vs support / RM(2) vs RM(1) 구분을 재확인**할 것.
+**조사 범위 메모(정직):** 이 환경은 **WebFetch가 전면 403**(arXiv abs/pdf/html·ar5iv·Quantum
+저널·NASA ADS·Semantic Scholar 모두 본문 미확보) — **WebSearch 서버측 스니펫 + HF 논문검색만**
+가능. (B)의 결정적 2점(① 하이퍼그래프=*위상* 인코딩 $\prod C_e|{+}\rangle^n=\sum(-1)^{f}|x\rangle$,
+② 지표=*nonquadraticity*=RM(2)까지 거리)은 **정의식·요약 스니펫으로 다중 교차확인**했으나
+*전문 정독은 미수행*. (A)(C)도 식별·요약 수준. → 정식 논문 인용/제출 전 **(B) 2편(Quantum 8,1351;
+2602.23687) 전문 1회 대조**로 "위상 vs support / RM(2) vs RM(1)" 구분을 최종 확정할 것
+(네트워크 정책상 arXiv egress 허용 환경 필요).
 
 ---
 
@@ -292,8 +299,10 @@ $|{\rm flat}_W\rangle$의 SRE를 $W$의 대수적 특성으로 예측)를 정조
   - 1702.06990 — Signed quantum weight enumerators characterize qubit magic state distillation
   - 2501.10163 — Invariant Theory, Magic State Distillation, and Bounds on Classical Codes
   - 2308.05152 — Quantum Lego Expansion Pack: Enumerators from Tensor Networks (가중치열거자→SRE)
-  - **2308.01886 — Magic of quantum hypergraph states** (Boolean 비선형성↔magic; *위상* 인코딩) — 최근접 이웃
-  - **2602.23687 — Stabilizer Rényi entropy of 3-uniform hypergraph states** (nonquadraticity=RM(2)) — 최근접 이웃
+  - **2308.01886 — Chen, Yan, Zhou, Magic of quantum hypergraph states, Quantum 8, 1351 (2024)**
+    (위상 인코딩 $\sum(-1)^f|x\rangle$; magic↔nonquadraticity=RM(2)) — 최근접 이웃
+  - **2602.23687 — Kagamihara, Tsuchiya, SRE of 3-uniform hypergraph states (2026-05-14)**
+    (CCZ만→3차 위상; SRE=행렬계수 $O(N^3 2^N)$) — 최근접 이웃
   - 2402.08551 — Nonstabilizerness of Permutationally Invariant Systems (대칭 support 평탄상태)
   - (참고) 2510.01380 — Non-stabilizerness in quantum-enhanced metrological protocols (대칭상태 SRE 환원)
   - 2512.19657 — Extremizing Measures of Magic on Pure States by Clifford-stabilizer States (검색상 인접; 전문 미확보)
