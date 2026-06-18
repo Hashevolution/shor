@@ -167,6 +167,57 @@ IOP/Springer 등록본을 서버측에서 읽어 출판본을 잡음(이번에 P
 
 ---
 
+## 5c. 부호 이론 융합(표시집합→magic) 정밀 조사 — "다층 점유, 좁은 잔여" [2026-06-18]
+
+`marker_code_magic.py`/T3의 "다음 과제: 부호 이론" 각도(표시집합 $W$를 고전 부호로 보고
+$|{\rm flat}_W\rangle$의 SRE를 $W$의 대수적 특성으로 예측)를 정조준 재검색한 결과,
+**부호↔magic 공간은 세 갈래로 이미 점유**돼 있다. 인수인계서의 "RM(1,n)까지의 최소
+해밍 거리" 지표는 *고전 암호 Boolean 함수론*과 *하이퍼그래프 magic*의 기성 개념과
+충돌하므로, 차별화가 필수다.
+
+**점유된 것 (세 갈래):**
+- **(A) RM 부호 ↔ 매직상태 증류 / 가중치 열거자.** "Reed–Muller ↔ magic"은 수십 년 트랙:
+  RM 부호의 transversal 비클리포드 게이트로 매직상태 증류(**PRX 2, 041021**, Campbell–Anwar–
+  Browne; Hastings–Haah; **2510.10852** punctured RM 서브로그 증류). 부호의 *가중치 열거자*가
+  증류 성능·SRE를 통제(**1702.06990** signed quantum weight enumerators; **2501.10163** 불변량
+  이론; **2308.05152** Quantum Lego: 텐서망 enumerator로 SRE 계산). → **여기서 "부호→magic"은
+  *부호화된/증류되는* 상태의 얘기**지, *평탄 마커상태의 SRE를 support의 자기상관으로 예측*하는
+  우리 각도가 아니다. **용어 충돌 주의**(2303.11317 "black box"식 충돌과 동급) — 명시적 구분 필요.
+- **(B) Boolean 함수 비선형성 ↔ 하이퍼그래프 상태 magic — *최근접 이웃*.**
+  **arXiv:2308.01886 "Magic of quantum hypergraph states"**, **arXiv:2602.23687 "SRE of 3-uniform
+  hypergraph states"**: 하이퍼그래프 상태 $|\psi_f\rangle=\frac1{\sqrt N}\sum_x(-1)^{f(x)}|x\rangle$의
+  magic을 **Boolean 함수 $f$의 비선형성·2차 비선형성(nonquadraticity, 즉 RM(2,n)까지 거리)**으로
+  유계·계산. → 우리와 결정적으로 다른 점: **그쪽은 $f$가 *위상*에 인코딩(균일 support)이고
+  관련 부호는 *RM(2,n)*(2차)**; **우리는 $1_W$가 *support*에 인코딩(균일 위상)이고 관련 부호는
+  *RM(1,n)/아핀부분공간*(1차)**. 또 그쪽 지표는 *함수* 비선형성, 우리 지표는 *지시함수 $1_W$의
+  자기상관*. **반드시 (B)를 최근접 이웃으로 인용하고 "위상 vs support / RM(2) vs RM(1)"로 차별화.**
+- **(C) 구조적 support의 평탄상태 = Dicke/순열불변 상태 magic.** Dicke 상태는 곧
+  $W=\{x:\mathrm{wt}(x)=k\}$ 위 평탄상태(=비아핀 구조적 support). **arXiv:2402.08551
+  "Nonstabilizerness of Permutationally Invariant Systems"**, 대칭상태 SRE(소수의 집합스핀
+  기댓값으로 환원; 2510.01380) 등이 **대칭 support 평탄상태의 magic을 이미 다룬다.** → "평탄상태의
+  magic을 support 구조로"의 *대칭 특수case*는 점유. 우리 차별점: **임의/랜덤 $W$ + 자기상관
+  영점판정 + Grover 다중표시 맥락**(대칭 가정 없음).
+
+**우리 고유 객체의 출처 정직고지:** 자기상관 $A_W$/Walsh-4차모멘트라는 핵심 양 자체는
+**2605.05347의 기하항 $\Lambda$**(균일진폭·유사난수위상 comb)에서 왔다 — 이미 주 선점문헌으로
+인용 중. 따라서 신규 기여는 "자기상관 아이디어"가 아니라 **그 *평탄(균일위상) 마커상태*로의
+특수화 + 아핀⟺$A_W\in\{0,M\}$ 영점판정 + 최소거리 무력성 반례**다.
+
+**진짜로 비어있는 좁은 잔여 (방어 가능):**
+- **$|{\rm flat}_W\rangle$(support+균일위상)의 SRE 정확형 = $\tfrac1{NM^4}\sum_{x,z}\hat g_x(z)^4$
+  ($g_x=1_W\cdot 1_{W\oplus x}$)와 그 부호이론적 영점판정 "아핀 ⟺ 자기상관 2값($\{0,M\}$)"**,
+  그리고 이를 **Grover 다중표시 magic(명제 2′)에 직접 적용**한 조합은 (A)(B)(C) 어디에도 없다.
+- **인수인계서 지표 정정의 박제값:** 최소 해밍 거리(=1차 비선형성류)는 magic을 결정하지 못함
+  (`marker_code_magic.py` §1: $\{0,1,2,3\}$ vs $\{0,1,2,4\}$ 동일 $d_{\min}{=}1$, magic 0 vs 1.54).
+  cf. bent 함수(아핀까지 최대거리)는 *위상* 함수 개념이라 support 마커와는 다른 대상.
+
+**조사 범위 메모(정직):** arXiv abs/pdf/html 및 ar5iv는 이 환경에서 egress 403(WebFetch 본문
+미확보) — WebSearch 스니펫 + HF 논문검색으로 식별·요약만 확인했고 (A)(B)(C) 핵심 논문의 *전문
+대조는 미수행*. 특히 (B) 2308.01886/2602.23687은 "위상 인코딩·RM(2)"라는 구분이 신규성의 핵심
+근거이므로, **착수 전 전문 확보해 위상 vs support / RM(2) vs RM(1) 구분을 재확인**할 것.
+
+---
+
 ## 6. 정직한 신규성 평가 + 다음 행동
 
 | 노트 항목 | 선행연구 | 신규성 |
@@ -183,6 +234,11 @@ IOP/Springer 등록본을 서버측에서 읽어 출판본을 잡음(이번에 P
 | T3 끝점 Simon/BV=클리포드 | Gottesman–Knill, Combarro 2021 | 자명 |
 | **T3 Grover의 magic/SRE 궤적** | 전용 선행 미발견; 비교논문 2편 모두 Grover 미포함 | **진짜 잔여** |
 | T3 쿼리모델 오라클-가림(비선형성) | 미정식화(2507.16543의 Clifford-가림과 별개) | **잔여(좁음)** |
+| 부호: RM ↔ magic상태 증류/가중치열거자 | PRX 2,041021, 2510.10852, 1702.06990, 2501.10163, 2308.05152 | 없음(다른 의미·용어충돌) |
+| 부호: Boolean 비선형성 ↔ magic | **2308.01886·2602.23687** (위상인코딩, RM(2)/nonquadraticity) | 없음 — 단 위상 vs support·RM(2) vs RM(1)로 차별 |
+| 부호: 구조적 support 평탄상태 magic | 2402.08551(순열불변), Dicke/대칭 SRE | 대칭case 점유 |
+| **flat 마커상태 SRE = 자기상관/Walsh-4차, 아핀⟺$A_W{\in}\{0,M\}$, Grover 다중표시** | (A)(B)(C) 어디에도 없음; 자기상관 객체는 2605.05347 $\Lambda$ | **좁은 잔여(방어가능)** |
+| 인수인계서 "최소 해밍거리→magic" | 반례로 무력화(`marker_code_magic.py` §1) | **정정(지표 부정확)** |
 
 **다음 행동(우선순위):**
 1. **재포지셔닝 필수.** magic-and-quantum-speedup.md는 2605.05347을 **주 레퍼런스로 인용**하고,
@@ -229,6 +285,18 @@ IOP/Springer 등록본을 서버측에서 읽어 출판본을 잡음(이번에 P
   (walk magic ~ log time)
 - Combarro et al. 2021 (Comput. Math. Methods) — BV/DJ를 stabilizer formalism으로 설명
   (Simon/BV가 클리포드=magic 0임의 근거)
+- **부호 이론 융합(§5c) 관련:**
+  - PRX 2, 041021 — Campbell–Anwar–Browne, Magic-state distillation in all prime dimensions
+    using quantum Reed–Muller codes (RM ↔ 증류)
+  - 2510.10852 — Sublogarithmic Distillation in all Prime Dimensions using Punctured RM Codes
+  - 1702.06990 — Signed quantum weight enumerators characterize qubit magic state distillation
+  - 2501.10163 — Invariant Theory, Magic State Distillation, and Bounds on Classical Codes
+  - 2308.05152 — Quantum Lego Expansion Pack: Enumerators from Tensor Networks (가중치열거자→SRE)
+  - **2308.01886 — Magic of quantum hypergraph states** (Boolean 비선형성↔magic; *위상* 인코딩) — 최근접 이웃
+  - **2602.23687 — Stabilizer Rényi entropy of 3-uniform hypergraph states** (nonquadraticity=RM(2)) — 최근접 이웃
+  - 2402.08551 — Nonstabilizerness of Permutationally Invariant Systems (대칭 support 평탄상태)
+  - (참고) 2510.01380 — Non-stabilizerness in quantum-enhanced metrological protocols (대칭상태 SRE 환원)
+  - 2512.19657 — Extremizing Measures of Magic on Pure States by Clifford-stabilizer States (검색상 인접; 전문 미확보)
 
 ### 게재 상태/DOI (저널측 검토 2026-06-17)
 *이 환경은 Crossref/저널 API egress 차단 — WebSearch로 저널 페이지를 읽어 확인. 구조화된
