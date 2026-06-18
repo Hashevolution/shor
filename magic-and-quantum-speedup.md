@@ -134,6 +134,26 @@ T3는 **무주공산이 아니다.** 정밀 조사 결과 인접 선행이 상�
 - ⟹ **magic의 원천은 회로 표면이 아니라 *문제의 비선형성*이고, 쿼리 오라클(과 shor.py의
   `np.fft` 지름길)이 그 magic을 블랙박스로 *숨긴다*.** (2507.16543의 Clifford-가림과 구분.)
 
+### 다음 과제 — 부호 이론 융합: 자기상관 기반 일반-$M$ 예측 (`experiments/marker_code_magic.py`)
+명제 2′이 남긴 잔여(일반 $M$ 닫힌형 미완)를 표시집합 $W$를 **고전 부호**로 보고 공략한다.
+인수인계서(PROJECT JAMES v0.5.0)의 "최소 해밍 거리 + 가중치 분포" 지표는 **부정확**하여 정정한다.
+
+- **정정된 정확 객체 = 자기상관 $A_W(x)=|W\cap(W{\oplus}x)|$ / Walsh 4차 모멘트.** flat 상태에서
+  $\langle Z^zX^x\rangle=\tfrac1M\hat g_x(z)$ ($g_x(c)=[c\in W\wedge c{\oplus}x\in W]$, $\sum_c g_x=A_W(x)$)
+  이므로 $\;\boxed{M_2=-\log_2\!\big(\tfrac1{N M^4}\sum_{x,z}\hat g_x(z)^4\big)}$. 수치로 `sre2`와
+  $4{\times}10^{-15}$ 일치(§0). magic은 $1_W$의 자기상관(=쌍대부호 가중치 분포 계열)이 결정한다.
+- **최소 해밍 거리는 지표로 불충분(반례 박제).** $\{0,1,2,3\}$(아핀, $M_2{=}0$)와 $\{0,1,2,4\}$(비아핀,
+  $M_2{=}1.54$)는 $d_{\min}{=}1$로 같으나 magic이 갈린다. $d_{\min}$·1차 가중치 분포가 같아도 magic은 다름.
+- **정정된 영점 판정(보조정리 1의 부호이론적 재서술):**
+  $\;|{\rm flat}_W\rangle\ \text{안정자}\iff W\ \text{아핀}\iff A_W(x)\in\{0,M\}\ \forall x$ (자기상관 2값).
+  비아핀이면 $0<A_W(x)<M$ 인 $x$의 "중간 질량"이 magic 원천. 이를 스칼라로 잡은 비아핀성
+  $\tau(W)=\tfrac1N\sum_{x\neq0}\tfrac{A_W}{M}(1-\tfrac{A_W}{M})$ 는 $\tau=0\iff M_2=0$ (위반 0건/124샘플),
+  Pearson $r(\tau,M_2)=0.76$, 추세 $M_2\approx7.7\,\tau^{0.32}$ — magnitude의 단조 근사 지표.
+- **남은 표적(통계적 근사식):** 랜덤 비아핀 $W$의 $E[M_2]$는 $M$(표시 수)과 함께 증가하고 $n$ 의존은
+  약함(§3 표). 이를 $M,n,\tau$로 닫는 평균 예측식 유도가 다음 정량 과제. (단 RM/CSS↔비안정자성은
+  magic state distillation 등에서 잘 닦인 분야이므로, 착수 전 `magic-prior-art.md`식 선행조사로
+  "표시집합 부호 파라미터 → 알고리즘 SRE 예측"이라는 *좁은* 신규 각도만 주장할 것.)
+
 ### 이 레포에서의 실현
 - `experiments/simon_sigma_curve.py`로 Simon 측 $M_2$가 (오라클을 클리포드로 두면) 0임을
   대조군으로 박제하고, **Grover를 추가 구현**해 $M_2$ 궤적을 Shor(2605.05347 셋업 재현)와 한
@@ -194,4 +214,5 @@ arXiv:2306.14996)는 효과를 수치로 재현했다. 그 과정에서 **magic�
   `experiments/magic_proofs_check.py` (35 assert).
 - **선행연구 전체:** `magic-prior-art.md` (2605.05347 전문 분석 + T-count·SRE·양자걷기·
   알고리즘 magic 문헌, 신규성 게이트).
-- **실험:** `magic.py`(SRE 도구), `experiments/{grover_magic,shor_comb_magic,oracle_magic}.py`.
+- **실험:** `magic.py`(SRE 도구), `experiments/{grover_magic,shor_comb_magic,oracle_magic}.py`,
+  `experiments/marker_code_magic.py`(부호 이론: 자기상관 기반 일반-$M$ 예측·보정 지표 $\tau$).

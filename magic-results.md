@@ -93,6 +93,9 @@ $$|\psi\rangle = b\sqrt N\,|{+}\rangle^{\otimes n} + (a-b)\,|\widetilde W\rangle
 비구조성*에서 온다 — 따름정리 1(magic은 (비)구조에 산다)과 같은 주제. *(명시적 닫힌형은
 $W$의 자기상관 $A_W(x)=|W\cap(W{\oplus}x)|$에 의존 = 2605.05347의 기하항 $\Lambda$와 동형;
 $M{=}1$에서 명제 2로 환원. 일반 닫힌형은 미완.)* `grover_magic.py` §3, `magic_proofs_check.py`.
+부호이론적 정정·보정 지표는 `experiments/marker_code_magic.py`: $M_2=-\log_2(\tfrac1{N M^4}\sum_{x,z}\hat g_x(z)^4)$
+($g_x(c){=}[c{\in}W\wedge c{\oplus}x{\in}W]$, $\hat{}$는 Walsh), 정정 영점판정 **아핀 $\iff A_W(x){\in}\{0,M\}$**,
+비아핀성 스칼라 $\tau$($\tau{=}0\iff M_2{=}0$). 최소 해밍 거리는 지표로 불충분(반례 박제).
 
 ---
 
