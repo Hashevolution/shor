@@ -160,6 +160,7 @@ M5 (진행) ── 논문화 초안 작성: `magic-paper-draft.md` (명제 1–6
 | `experiments/marker_code_closed_form.py` | 명제 4·5 (가법에너지 닫힌형 / Sidon 법칙) |
 | `experiments/marker_code_expected.py` | 명제 5′ (E[ξ] 정확 닫힌형) |
 | `experiments/oracle_tcount_magic.py` | 명제 6 (상태 magic ⟺ 오라클 T-비용) |
+| `experiments/oracle_ftqc_estimate.py` | 명제 6 FTQC 환산 (ANF→Toffoli→T-count, 정직한 상한) |
 | `experiments/grover_magic.py` | Grover magic 궤적·정점 포화·일반 M |
 | `experiments/shor_comb_magic.py` | comb magic, 정정된 T1, Shor 대조 |
 | `experiments/oracle_magic.py` | 오라클-가림 (아핀 ⟺ M₂=0) |

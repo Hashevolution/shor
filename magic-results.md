@@ -161,6 +161,10 @@ $T_{\rm proxy}{=}0,1,2,3,4 \Rightarrow M_2{=}0,1.54,2.48,3.70,4.43$). 끝점: **
 $T_{\rm proxy}{=}0,\ M_2{=}0$인데도 지수 쿼리 우위) vs **Shor** modexp(비선형, $T_{\rm proxy}{=}4{\to}156,\
 M_2{=}1.54{\to}5.23$). ⟹ 쿼리 오라클이 숨기는 "보이지 않는 magic"은 곧 게이트분해의 $T$-비용이다.
 *(2507.16543의 Clifford-가림과 구분: 이쪽은 오라클/추상화가 가림.)* `experiments/oracle_tcount_magic.py`.
+**FTQC 환산(`experiments/oracle_ftqc_estimate.py`):** 차수 $d{\ge}2$ ANF 단항식 $\to(2d{-}3)$ Toffoli
+$\to7T$(ancilla $4T$). $T_{\rm est}{=}0\iff M_2{=}0$; modexp ANF-합성 상한 $N{=}15{\to}4$ Toffoli
+$\sim N{=}35{\to}4171$. **단 출력비트별 ANF 합성은 상한**(산술 오라클은 windowed로 훨씬 낮음 — 실
+Shor는 Gidney–Ekerå 2021). 실용: 정확한 영점판정 + 정성 magic↔T 법칙 + 구조없는 오라클 상한 지표.
 
 ---
 
