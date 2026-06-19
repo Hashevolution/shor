@@ -172,6 +172,29 @@ modexp ($T_{\rm proxy}=4\to156$, $M_2=1.54\to5.23$). Thus *the magic a query ora
 the $T$-cost of its gate decomposition* — distinct from the Clifford-conjugation hiding of
 Krüger–Mauerer (arXiv:2507.16543).
 
+### 4.1 Practical implications (honest)
+
+The three results sit at different points on the utility scale; we state this plainly.
+
+- **Oracle-hiding $=$ $T$-cost (most practical).** $T$-count is the dominant cost in fault-tolerant
+  quantum computing (each $T$ consumes one distilled magic state). Prop. 6 turns the *nonlinearity*
+  of an oracle function into a fault-tolerant resource signal: under the explicit synthesis model
+  "degree-$d$ ($\ge2$) ANF monomial $\to(2d{-}3)$ Toffolis $\to 7T$ each (or $4T$ with ancilla)"
+  (`oracle_ftqc_estimate.py`), $T_{\rm est}=0\iff M_2=0\iff f$ affine, and $T_{\rm est}$ tracks $M_2$
+  (Shor modexp ANF-synthesis upper bound: $N{=}15\to4$ Toffolis, $21\to580$, $33\to1375$,
+  $35\to4171$). **Honest caveat:** per-output-bit ANF synthesis is an *upper bound* that ignores
+  subterm sharing and arithmetic structure; real modexp uses windowed modular arithmetic with far
+  lower $T$-count (Gidney–Ekerå 2021: RSA-2048 $\approx2.7\times10^9$ Toffolis). So the usable value is
+  (i) the exact affine zero-test, (ii) the qualitative magic$\leftrightarrow T$ law, and (iii) a quick
+  upper-bound indicator for *unstructured* oracles — not a replacement for production estimators.
+- **Marker-set coding-theory (methodological).** Predicts/zeroes magic from cheap combinatorial
+  invariants (autocorrelation, Sidon-ness) instead of an $O(n4^n)$ SRE evaluation; the zero-test
+  $A_W\in\{0,M\}$ flags classically-easy (stabilizer) multi-solution structures; brings additive
+  combinatorics to bear on magic estimation. The $d_{\min}$ refutation prevents use of the wrong metric.
+- **Grover ladder (foundational/diagnostic).** Evidence that magic *density* classifies speedup type;
+  useful for understanding the source of advantage and classical-simulability, not for cost reduction.
+  Caveat: the 3-bit figure is a *state* quantity, not the gate-level $T$-count of a full Grover circuit.
+
 ---
 
 ## 5. Positioning and novelty
