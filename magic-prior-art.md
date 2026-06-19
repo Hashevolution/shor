@@ -167,6 +167,89 @@ IOP/Springer 등록본을 서버측에서 읽어 출판본을 잡음(이번에 P
 
 ---
 
+## 5c. 부호 이론 융합(표시집합→magic) 정밀 조사 — "다층 점유, 좁은 잔여" [2026-06-18]
+
+`marker_code_magic.py`/T3의 "다음 과제: 부호 이론" 각도(표시집합 $W$를 고전 부호로 보고
+$|{\rm flat}_W\rangle$의 SRE를 $W$의 대수적 특성으로 예측)를 정조준 재검색한 결과,
+**부호↔magic 공간은 세 갈래로 이미 점유**돼 있다. 인수인계서의 "RM(1,n)까지의 최소
+해밍 거리" 지표는 *고전 암호 Boolean 함수론*과 *하이퍼그래프 magic*의 기성 개념과
+충돌하므로, 차별화가 필수다.
+
+**점유된 것 (세 갈래):**
+- **(A) RM 부호 ↔ 매직상태 증류 / 가중치 열거자 [전문 확인 2026-06-18: 2308.05152].** "Reed–Muller
+  ↔ magic"은 수십 년 트랙: RM 부호의 transversal 비클리포드 게이트로 매직상태 증류(**PRX 2, 041021**,
+  Campbell–Anwar–Browne; Hastings–Haah; **2510.10852** punctured RM 서브로그 증류). 부호의
+  *가중치 열거자*가 증류 성능·SRE를 통제(**1702.06990** signed quantum weight enumerators;
+  **2501.10163** 불변량 이론; **2308.05152** Quantum Lego: **higher-genus 가중치열거자=SRE**(식
+  III.41–47)를 텐서망으로 계산 — 전문 확인). → **여기서 "부호→magic"은 *부호화/증류되는* 상태의
+  가중치열거자(SRE *계산 도구*)** 지, *평탄 마커상태의 SRE를 support 자기상관으로 닫고 Sidon/아핀
+  판정으로 예측*하는 우리 각도가 아니다. **용어 충돌 주의**(2303.11317식) — 명시적 구분, 포섭 없음.
+- **(B) Boolean 함수 비선형성 ↔ 하이퍼그래프 상태 magic — *최근접 이웃* [전문 확인 2026-06-18, 저자제공 PDF].**
+  **2308.01886 "Magic of quantum hypergraph states"** (Chen–Yan–Zhou, **Quantum 8, 1351 (2024)**, v2),
+  **2602.23687 "SRE of 3-uniform hypergraph states"** (Kagamihara–Tsuchiya, v2 2026-05-14):
+  하이퍼그래프 상태 $|G\rangle=U(G)|{+}\rangle^{\otimes n}=\prod_{e\in E}CZ_e|{+}\rangle^{\otimes n}
+  =\frac1{\sqrt N}\sum_x(-1)^{f_G(x)}|x\rangle$ (2308.01886 **Def 1·Eq(1)**; $f_G$의 $c$차 단항식=$c$-edge;
+  2602.23687 **Eq(3)**은 CCZ만→$f$ 3차). 즉 **Boolean 함수가 *위상*에, 받침은 항상 균일 $\mathbb F_2^n$
+  전체.** magic의 원천은 **2차 초과(degree $\ge3$)=nonquadraticity**: 그래프상태(2-edge=2차위상)는
+  클리포드·안정자(magic 0)이고 $\ge3$-edge에서 magic 발생(2308.01886 본문, Ref[49]=Liu–Winter
+  PRX Q 3,020333의 nonquadraticity 최소화와 연결; 2602.23687 **Thm 1**: SRE$=$GF(2) 대칭행렬
+  $C(x){+}C(x)^T$의 rank(2차형식)로 $O(N^3 2^N)$). 2308.01886은 평균차수 상계(**Thm 2**)·랜덤상태
+  최대magic 집중·순열대칭(3-complete) 상태가 $\alpha{\ge}2$에서 상수/지수적 소(小) magic을 보임.
+  → 우리와 결정적으로 다른 두 축: **(i) 인코딩 — 그쪽은 $f$가 *위상*(균일 support), 우리는 $1_W$가
+  *support*(균일 위상); (ii) 부호 — 그쪽 magic 원천은 *RM(2,n)*(2차)까지 거리=nonquadraticity, 우리는
+  *RM(1,n)/아핀부분공간*(1차)에서의 이탈.** 그쪽 지표는 *위상함수* 비선형성, 우리 지표는 *지시함수
+  $1_W$의 자기상관*. **두 논문 모두 flat/indicator(support) 상태·받침 자기상관은 전혀 다루지 않음**
+  (전 본문이 위상상태 전용; 전문 대조로 확인). **반드시 (B)를 최근접 이웃으로 인용하고 "위상 vs
+  support / RM(2) vs RM(1)"로 차별화.**
+- **(C) 구조적 support의 평탄상태 = Dicke/순열불변 상태 magic [전문 확인 2026-06-18: 2402.08551].**
+  Dicke 상태는 곧 $W=\{x:\mathrm{wt}(x)=k\}$ 위 평탄상태(=비아핀 구조적 support). **arXiv:2402.08551
+  "Nonstabilizerness of Permutationally Invariant Systems"** (Passarelli–Fazio–Lucignano): *순열대칭*을
+  이용해 Pauli 계산을 Dicke 기저에서 $O(N^3)$로 환원, LMG·Dicke 상태에 적용. → **대칭 support
+  특수case만 점유**(전문 확인: 임의/랜덤 $W$·자기상관·Sidon·아핀판정·Grover 없음). 우리 차별점:
+  **임의/랜덤 $W$ + 자기상관 영점판정 + Sidon/E[ξ] + Grover 다중표시**(대칭 가정 없음).
+- **(D) flat/SMF 상태 SRE 닫힌형 — *명제 4의 직접 선점* [전문 확인 2026-06-18].**
+  **2311.08463 "Magic in generalized Rokhsar–Kivelson wavefunctions"** (Tarabunga–Castelnovo,
+  *Quantum* **8**, 1347 (2024)). 임의 $|\psi\rangle{=}\sum_\sigma c_\sigma|\sigma\rangle$의 $M_2$를 4-copy 공식
+  **Eq (8)** $e^{-M_2}{=}\sum_{\sigma^{(1..4)}}c_{\sigma^{(1)}}c_{\sigma^{(2)}}c_{\sigma^{(3)}}c_{\sigma^{(1)}\sigma^{(2)}\sigma^{(3)}}c^*_{\sigma^{(1)}\sigma^{(2)}\sigma^{(4)}}c^*_{\sigma^{(1)}\sigma^{(3)}\sigma^{(4)}}c^*_{\sigma^{(2)}\sigma^{(3)}\sigma^{(4)}}c^*_{\sigma^{(4)}}$
+  ($\sigma\sigma\sigma$=점곱=XOR)로 쓰고, SMF면 $M_2{=}-\log(Z_M/Z^4)$ (Eq 9, 4-copy 분배함수). 균일
+  flat 상태($c_\sigma{=}1/\sqrt M$ on $W$)를 대입하면, 전단사
+  $(\sigma^{(1)},\sigma^{(2)},\sigma^{(3)},\sigma^{(4)}){=}(a,b,c,a{\oplus}b{\oplus}c{\oplus}x)$ 로
+  **그들 Eq (8) = 우리 명제 4** $e^{-M_2}M^4{=}\sum_x E(W\cap(W{\oplus}x))$ 가 정확히 일치(검산 완료).
+  ⟹ **명제 4(가법에너지 닫힌형)는 신규 아님 — 2311.08463 Eq (8)의 균일-$W$ 특수화 + 재명명.**
+  "$2\log_2 M$"도 그들 Eq (7) $M_2{\le}4D_{\min}$ 및 표준 $M_\alpha{\le}2\log R$의 포화로 기지.
+  **그러나 그들은 이 공식을 *물리 SMF 모델*(1D/2D/3D Ising, J1-J2, 삼각격자 AFM, EA 스핀글래스)
+  에만 적용**; 임의/Grover 마커·부호이론은 다루지 않음. ⟹ 명제 4는 **인용·credit**하고, 우리
+  기여는 아래 *부호이론 특수화*로 재포지션.
+
+**우리 고유 객체의 출처 정직고지:** 자기상관 $A_W$/Walsh-4차모멘트라는 핵심 양 자체는
+**2605.05347의 기하항 $\Lambda$**(균일진폭·유사난수위상 comb)에서 왔고, **flat 상태 SRE 닫힌형은
+2311.08463 Eq (8)이 선점**(명제 4 = 그 특수화). 따라서 신규 기여는 "닫힌형/자기상관 아이디어"가
+아니라 **그 공식의 *부호이론 특수화*: 아핀⟺$A_W\in\{0,M\}$ 영점판정 + Sidon 정확법칙 + 랜덤-$W$
+정확 기댓값(명제 5′) + 최소거리 무력성 반례 + Grover 다중표시 적용**이다.
+
+**진짜로 비어있는 좁은 잔여 (방어 가능, RK 선점 반영 후):**
+- **부호이론 특수화** — (i) 아핀 ⟺ 자기상관 2값($A_W\in\{0,M\}$) 영점판정, (ii) Sidon 정확법칙
+  $\log_2\frac{M^3}{7M-6}$(상수·유한형), (iii) 랜덤-$W$ 정확 기댓값 $\mathbb E[\xi]$(명제 5′ 4중쌍 분류),
+  (iv) **Grover 다중표시(명제 2′)에 적용** — 은 (A)(B)(C)(D) 어디에도 없다(RK는 물리 SMF 모델만).
+- **인수인계서 지표 정정의 박제값:** 최소 해밍 거리(=1차 비선형성류)는 magic을 결정하지 못함
+  (`marker_code_magic.py` §1: $\{0,1,2,3\}$ vs $\{0,1,2,4\}$ 동일 $d_{\min}{=}1$, magic 0 vs 1.54).
+  cf. bent 함수(아핀까지 최대거리)는 *위상* 함수 개념이라 support 마커와는 다른 대상.
+- **명제 6(오라클-가림 = T-비용)** 은 RK와 무관 — 상대적으로 안전(단 ANF↔Toffoli·따름정리 1은 기지).
+
+**조사 범위 메모(정직):** 이 환경은 **WebFetch가 전면 403**(arXiv·Quantum 저널·NASA ADS·
+Semantic Scholar 본문 미확보) — WebSearch 스니펫 + HF 논문검색만 가능. **단 (B) 2편은 사용자가
+PDF를 제공하여 전문 정독 완료**(2026-06-18): 결정적 2점(① 위상 인코딩 — 2308.01886 Def 1·Eq(1),
+2602.23687 Eq(3); ② magic 원천=nonquadraticity/degree$\ge3$=RM(2)까지 거리 — 2308.01886 Thm 2·
+Ref[49], 2602.23687 Thm 1의 2차형식 rank)을 **본문 식·정리로 확정**, 또한 **둘 다 support/indicator·
+받침 자기상관은 전혀 다루지 않음**을 확인. → "위상 vs support / RM(2) vs RM(1)" 차별화 **최종 확정.**
+**(A)(C)(D)도 전문 확인 완료(2026-06-18, 사용자 제공 PDF):** (A) 2308.05152=가중치열거자→SRE 계산도구,
+(C) 2402.08551=순열대칭 환원(대칭 support만), (D) 2311.08463 Eq(8)=flat-state 닫힌형 선점. ⟹ **부호↔magic
+4갈래(A·B·C·D) 전문 대조 종료.** 결론: **명제 4·"2logM"은 선점(D·표준한계)**, 살아남는 신규는
+**부호이론 특수화**(아핀⟺$A_W{\in}\{0,M\}$·Sidon 상수·랜덤 E[ξ]·$d_{\min}$ 반례·Grover 적용) **+ 명제 6
++ Grover 3-bit 사다리**. (잔여 전문 미대조: 2510.10852·1702.06990·2501.10163 — 모두 *증류* 쪽이라 영향 없음.)
+
+---
+
 ## 6. 정직한 신규성 평가 + 다음 행동
 
 | 노트 항목 | 선행연구 | 신규성 |
@@ -183,6 +266,13 @@ IOP/Springer 등록본을 서버측에서 읽어 출판본을 잡음(이번에 P
 | T3 끝점 Simon/BV=클리포드 | Gottesman–Knill, Combarro 2021 | 자명 |
 | **T3 Grover의 magic/SRE 궤적** | 전용 선행 미발견; 비교논문 2편 모두 Grover 미포함 | **진짜 잔여** |
 | T3 쿼리모델 오라클-가림(비선형성) | 미정식화(2507.16543의 Clifford-가림과 별개) | **잔여(좁음)** |
+| 부호: RM ↔ magic상태 증류/가중치열거자 | PRX 2,041021, 2510.10852, 1702.06990, 2501.10163, 2308.05152 | 없음(다른 의미·용어충돌) |
+| 부호: Boolean 비선형성 ↔ magic | **2308.01886·2602.23687** [전문확인] (위상인코딩, RM(2)/nonquadraticity, support 미취급) | 없음 — 단 위상 vs support·RM(2) vs RM(1)로 차별 |
+| 부호: 구조적 support 평탄상태 magic | 2402.08551(순열불변), Dicke/대칭 SRE | 대칭case 점유 |
+| flat/SMF 상태 SRE 닫힌형 (=명제 4) | **2311.08463 Eq (8)** [전문확인] (RK, 임의 $c_\sigma$) | **없음(선점)** — 명제 4는 그 특수화 |
+| "$2\log_2 M$" 성장 | $M_2{\le}2\log R$ 한계 (표준), 2311.08463 Eq (7) | 없음(한계 포화) |
+| **부호이론 특수화: 아핀⟺$A_W{\in}\{0,M\}$ + Sidon 정확법칙 + 랜덤 $\mathbb E[\xi]$ + Grover 적용** | (A)(B)(C)(D) 어디에도 없음(RK는 물리모델만) | **좁은 잔여(방어가능)** |
+| 인수인계서 "최소 해밍거리→magic" | 반례로 무력화(`marker_code_magic.py` §1) | **정정(지표 부정확)** |
 
 **다음 행동(우선순위):**
 1. **재포지셔닝 필수.** magic-and-quantum-speedup.md는 2605.05347을 **주 레퍼런스로 인용**하고,
@@ -229,6 +319,28 @@ IOP/Springer 등록본을 서버측에서 읽어 출판본을 잡음(이번에 P
   (walk magic ~ log time)
 - Combarro et al. 2021 (Comput. Math. Methods) — BV/DJ를 stabilizer formalism으로 설명
   (Simon/BV가 클리포드=magic 0임의 근거)
+- **부호 이론 융합(§5c) 관련:**
+  - PRX 2, 041021 — Campbell–Anwar–Browne, Magic-state distillation in all prime dimensions
+    using quantum Reed–Muller codes (RM ↔ 증류)
+  - 2510.10852 — Sublogarithmic Distillation in all Prime Dimensions using Punctured RM Codes
+  - 1702.06990 — Signed quantum weight enumerators characterize qubit magic state distillation
+  - 2501.10163 — Invariant Theory, Magic State Distillation, and Bounds on Classical Codes
+  - 2308.05152 — Quantum Lego Expansion Pack: Enumerators from Tensor Networks (가중치열거자→SRE)
+  - **2308.01886 — Chen, Yan, Zhou, Magic of quantum hypergraph states, Quantum 8, 1351 (2024)**
+    [**전문 확인**] Def 1·Eq(1) 위상 인코딩 $\prod CZ_e|{+}\rangle^n$; Thm 2 평균차수 상계;
+    nonquadraticity 연결(Ref[49]=Liu–Winter PRX Q 3,020333); support상태 미취급 — 최근접 이웃
+  - **2602.23687 — Kagamihara, Tsuchiya, SRE of 3-uniform hypergraph states (v2 2026-05-14)**
+    [**전문 확인**] Eq(3) ∏CCZ 위상; Thm 1 SRE=GF(2)행렬 $C{+}C^T$ rank, $O(N^3 2^N)$;
+    support상태 미취급 — 최근접 이웃
+  - 2402.08551 — Passarelli, Fazio, Lucignano, Nonstabilizerness of Permutationally Invariant
+    Systems [전문 확인] 순열대칭→Dicke 기저 $O(N^3)$ 환원, LMG/Dicke만; 임의-W 미취급
+  - 2308.05152 — Cao, Gullans, Lackey, Wang, Quantum Lego: Enumerators from Tensor Networks
+    [전문 확인] higher-genus 가중치열거자=SRE(식 III.41–47) 텐서망 계산도구; 마커집합 부호이론 아님
+  - **2311.08463 — Tarabunga, Castelnovo, Magic in generalized Rokhsar–Kivelson wavefunctions,
+    Quantum 8, 1347 (2024)** [전문 확인] Eq (8) 임의 상태 4-copy SRE 공식 = **명제 4의 선점**
+    (flat 상태로 특수화 시 우리 가법에너지 닫힌형과 전단사로 일치); 물리 SMF 모델에만 적용
+  - (참고) 2510.01380 — Non-stabilizerness in quantum-enhanced metrological protocols (대칭상태 SRE 환원)
+  - 2512.19657 — Extremizing Measures of Magic on Pure States by Clifford-stabilizer States (검색상 인접; 전문 미확보)
 
 ### 게재 상태/DOI (저널측 검토 2026-06-17)
 *이 환경은 Crossref/저널 API egress 차단 — WebSearch로 저널 페이지를 읽어 확인. 구조화된
