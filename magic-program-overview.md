@@ -115,8 +115,9 @@ M4 (완료) ── 과제 C+D: 명제 6 (상태 magic ⟺ 오라클 T-비용, �
    │          산출: oracle_tcount_magic.py, marker_code_expected.py
    │          잔여: 과제 E(A·C 선행 전문 대조; 네트워크 필요)
    ▼
-M5 (다음) ── 논문화: 명제 1–6 + 사다리 통합 초안 (Grover 다항우위 magic + 부호이론 마커 SRE)
+M5 (진행) ── 논문화 초안 작성: `magic-paper-draft.md` (명제 1–6 + 사다리 + 부호이론 통합)
               주 인용 2605.05347(Shor 선점) / 최근접이웃 (B) 차별화 / DTQW 2편 DOI
+              잔여: 과제 E 전문 대조 후 정식 인용 확정 → arXiv 제출본
 ```
 
 **의존성·우선순위:** A는 B와 독립 착수 가능하나, B(닫힌형)가 A(평균식)의 해석 골격을 줄 수 있어
@@ -151,7 +152,11 @@ M5 (다음) ── 논문화: 명제 1–6 + 사다리 통합 초안 (Grover 다
 | `magic-results.md` | 명제·증명 (보조정리1·따름정리1·2·명제2/3/2′) |
 | `magic-and-quantum-speedup.md` | 연구노트 (T3, 다음 과제: 부호이론) |
 | `magic-prior-art.md` | 선행조사 (§5c 부호↔magic 3갈래, B 전문확인) |
+| `magic-paper-draft.md` | 논문 초안 (명제 1–6 + 사다리 + 부호이론, 영문) |
 | `magic-쉬운설명.md` | 초등 수준 직관 설명 |
+| `experiments/marker_code_closed_form.py` | 명제 4·5 (가법에너지 닫힌형 / Sidon 법칙) |
+| `experiments/marker_code_expected.py` | 명제 5′ (E[ξ] 정확 닫힌형) |
+| `experiments/oracle_tcount_magic.py` | 명제 6 (상태 magic ⟺ 오라클 T-비용) |
 | `experiments/grover_magic.py` | Grover magic 궤적·정점 포화·일반 M |
 | `experiments/shor_comb_magic.py` | comb magic, 정정된 T1, Shor 대조 |
 | `experiments/oracle_magic.py` | 오라클-가림 (아핀 ⟺ M₂=0) |
