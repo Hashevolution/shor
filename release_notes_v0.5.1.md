@@ -69,7 +69,24 @@ expectation, $d_{\min}$ refutation, Grover application), and oracle-hiding = $T$
 - `magic-results.md` — Props 4, 5, 5′, 6 (with prior-work credits).
 - `magic-prior-art.md` — §5c: full-text audit of (A)(B)(C)(D), novelty table, citations.
 - `paper.md` — new §9 "Companion direction: magic across the speedup ladder" + abstract pointer +
-  references [15]–[22]; `paper.tex` remains frozen at v0.2.1.
+  references [15]–[22]; `paper.tex` remains frozen at v0.2.1. **§9 also includes the D3 finding
+  paragraph** (asymptotic tightness of Prop 5′, see below).
+
+### Added late in v0.5.1 (post-initial-draft, before Zenodo mint): JAMES-DISCOVER + D3
+- `ai-discovery-engine-design.md` — design + feasibility review for an automated discovery loop
+  (Generator → Probe → Miner → Adversary → Promoter) layered on the existing magic infrastructure.
+  numpy-only; no LLM in the core loop (kept as optional D3+ extension).
+- `experiments/discover_poc.py` — D1 sanity gate. Re-discovers the Sidon constant
+  $M_2=\log_2(M^3/(7M-6))$ and the additive-energy closed form (Props 4/5) from scratch.
+- `experiments/discover_d3_jensen.py` — **D3 result**, closing one of v0.5.1's listed open items.
+  Defines the Jensen gap $J(M,N):=\mathbb E[M_2]+\log_2\mathbb E[\xi]\ge 0$ (Prop 5′ closes only
+  $\mathbb E[\xi]$, leaving $J$ uncontrolled) and finds $J\propto 1/N$ in the sparse regime
+  $M^2\ll N$ (measured slope $-0.96$ across $M\in\{6,8,10\}$, $n\in\{10,\dots,13\}$). Consequence:
+  **$-\log_2\mathbb E[\xi]$ is not merely a Jensen lower bound but an asymptotically tight estimate
+  of $\mathbb E[M_2]$, with absolute error $O(1/N)$.** Also records the saturation boundary
+  $M^2/N\to 1$ where the $1/N$ law breaks (additive-collision saturation), and reports
+  $\kappa(M):=J\cdot N$ as having no simple closed form in the elementary dictionary
+  $\{M,M^2,M(M-1),M^3,M\log_2 M,1\}$ — kept as an open sub-question rather than over-fit.
 
 ### Verification
 - Regression suite `magic_proofs_check.py`: **42 assertions pass**.
@@ -85,8 +102,10 @@ expectation, $d_{\min}$ refutation, Grover application), and oracle-hiding = $T$
 ## Honest scope / remaining
 - (A) full-text checked for 2308.05152 only; the distillation refs (2510.10852, 1702.06990,
   2501.10163) are *distillation*-side and do not affect our claims.
-- Open: the $M^2\gtrsim N$ regime of $\mathbb E[\xi]$ is exact in closed form but its asymptotics are
-  characterized only to leading order.
+- ~~Open: the $M^2\gtrsim N$ regime of $\mathbb E[\xi]$ is exact in closed form but its asymptotics are
+  characterized only to leading order.~~ **(D3 partial closure:** in the sparse regime $M^2\ll N$,
+  Prop 5′ is shown asymptotically tight with absolute error $O(1/N)$. The $M^2/N\to 1$ saturation
+  boundary remains open, and the prefactor $\kappa(M)=J\cdot N$ remains open in closed form.**)**
 
 ## Citing
 Cite v0.5.1 for the marker-set coding-theory + oracle/T-cost, alongside v0.5.0 (magic direction +
