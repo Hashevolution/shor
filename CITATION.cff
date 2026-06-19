@@ -26,14 +26,28 @@ abstract: >-
   grows with problem size; magic vanishes iff the underlying function is
   F2-affine (Simon's linear oracle), formalizing how an oracle/FFT black box
   can hide the nonlinearity that is magic's true source.
+  v0.5.1 adds a coding-theory of marker sets -- an additive-energy closed form
+  for the flat marker state (Prop 4), a Sidon law M2 = log2(M^3/(7M-6)) (Prop 5),
+  and an exact expectation for random supports (Prop 5') -- and identifies
+  oracle-hiding with non-Clifford T-cost (Prop 6), with a fault-tolerant T-count
+  estimate. An honest full-text prior-art audit credits the flat-state closed
+  form to Tarabunga-Castelnovo (Quantum 8, 1347 (2024)) and the 2 log M rate to
+  the standard M_alpha <= 2 log R bound; the surviving contributions are the
+  Grover 3-bit ladder, the coding-theoretic specialization, and oracle = T-cost.
 authors:
   - family-names: "Hashevolution"
     given-names: ""
 repository-code: "https://github.com/Hashevolution/shor"
 url: "https://github.com/Hashevolution/shor"
+# NOTE: v0.5.1's own Zenodo DOI is minted at publication time; until then the
+# latest *minted* record DOI (v0.5.0) is kept below. After publishing v0.5.1,
+# replace the `doi:` field and the first identifier with the new record DOI.
 doi: "10.5281/zenodo.20725965"
 identifiers:
-  - description: "v0.5.0 (current release): nonstabilizerness (magic) across quantum speedups — Grover 3-bit saturation, oracle-hiding M2=0 iff affine, Shor comb scaling"
+  - description: "v0.5.1 record DOI — PENDING Zenodo publication (write back after release)"
+    type: other
+    value: "pending-zenodo-publication"
+  - description: "v0.5.0: nonstabilizerness (magic) across quantum speedups — Grover 3-bit saturation, oracle-hiding M2=0 iff affine, Shor comb scaling"
     type: doi
     value: "10.5281/zenodo.20725965"
   - description: "v0.4.0: Theorem 6 SR no-go + cryptographic N-scaling + honest verified-and-bounded framing"
@@ -66,6 +80,12 @@ keywords:
   - nonstabilizerness
   - magic
   - stabilizer Renyi entropy
+  - additive energy
+  - Sidon set
+  - coding theory
+  - Rokhsar-Kivelson wavefunction
+  - T-count
+  - fault-tolerant quantum computing
 license: MIT
-version: "0.5.0"
-date-released: 2026-06-17
+version: "0.5.1"
+date-released: 2026-06-19

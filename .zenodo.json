@@ -1,6 +1,6 @@
 {
-  "title": "A Noise-Invariant Determinism Theorem for Multi-Base Post-Processing in Shor's Order Finding (v0.5.0: nonstabilizerness / magic across quantum speedups)",
-  "description": "v0.5.0 of the multi-base post-processing analysis of Shor's order finding, adding a new research direction: nonstabilizerness (\"magic\") across quantum speedups, measured and proven on the repository's numpy statevector simulation. RETAINED (unchanged): the six theorems on classical post-processing of multi-base order-finding measurements — (T1) noise-invariant determinism, (T2) logarithmic coverage time, (T3) exact noise scaling 1/g_M(eta), (T4) conditional compatibility with Regev's 2023 multi-base framework, (T5) a hybrid (C)+Regev b-trick factoring algorithm, and (T6) a sign-agnostic stochastic-resonance no-go — together with the closed-form sigma-curve p(sigma)=rho+(p0-rho)exp(-sigma^2) verified across five algorithm classes. NEW IN v0.5.0 (magic): using a verified stabilizer 2-Renyi entropy (SRE) tool computed by the XOR fast Walsh-Hadamard transform (cross-checked against three independent implementations to 1e-15), the work shows that the amount and density of nonstabilizerness separates the TYPE of quantum speedup. Main results: (i) Grover's unstructured-search state has magic that peaks at EXACTLY 3 bits as a function of problem size n and returns to zero at the answer, so its magic density M2/n -> 0 (closed form for a single marked item; peak = max of -log2(a^8+(1-a^2)^4) at a^2=1/2); (ii) the function graph state (1/sqrt N) sum_x |x>|f(x)> has M2 = 0 if and only if f is F2-affine, so Simon's algorithm with a linear (Clifford) oracle generates zero magic despite an exponential query speedup, while Shor's modular-exponentiation oracle is nonlinear and forces magic — formalizing how an oracle or FFT black box can HIDE the nonlinearity that is magic's true source; (iii) Shor's post-measurement comb state has magic growing with problem size, completing a speedup ladder: Clifford/affine -> 0, Grover (quadratic) -> bounded with density 0, Shor (exponential) -> growing toward maximal. A flat-state lemma (M2=0 iff the support is an F2-affine subspace) underpins the corollaries. Includes a reproducible 42-assertion proposition checker and a prior-art survey relating the results to arXiv:2605.05347 (Shor magic, preprint), published quantum-walk magic (Phys. Rev. Research 10.1103/7rwg-lhpv; Phys. Rev. B 113 075142, 10.1103/nzrp-49mr), and algorithm-magic comparisons (arXiv:2505.17185, 2507.16543). numpy + Python standard library only; no quantum libraries required.",
+  "title": "A Noise-Invariant Determinism Theorem for Multi-Base Post-Processing in Shor's Order Finding (v0.5.1: nonstabilizerness / magic — coding-theory of marker sets + oracle-hiding as T-cost)",
+  "description": "v0.5.1 extends the magic (nonstabilizerness) direction of v0.5.0 (DOI 10.5281/zenodo.20725965). The six order-finding theorems (T1-T6) are RETAINED unchanged; the magic direction is now integrated into the canonical paper as Section 9. NEW IN v0.5.1: (1) A coding-theory of marker sets for the flat state |flat_W> over a support W in F2^n: an additive-energy closed form M2 = -log2(M^-4 sum_x E(W cap (W+x))) (Prop 4), the exact zero-test M2=0 iff the autocorrelation A_W is two-valued ({0,M}) iff W is an affine subspace, a Sidon (B2) law M2 = log2(M^3/(7M-6)) -> 2 log2 M - log2 7 (Prop 5), and an exact expectation for a uniform random M-subset E[xi] M^4 = (7M^2-6M) + 7(M)_4/(N-3) + N(N-1)(N-2)(N-4)(M)_8/(N)_8 (Prop 5'). The minimum Hamming distance is shown NOT to determine magic ({0,1,2,3} vs {0,1,2,4} share d_min=1 but M2=0 vs 1.54). (2) Oracle-hiding = T-cost (Prop 6): M2(graph state of f) > 0 iff f has a degree>=2 ANF monomial iff the oracle U_f needs non-Clifford (Toffoli/T) gates, all zero iff f is affine; a fault-tolerant resource estimate (oracle_ftqc_estimate.py) converts the nonlinear ANF (degree-d monomial -> (2d-3) Toffolis -> 7T each) into a T-count, with the honest caveat that per-output-bit ANF synthesis is an UPPER bound (real modular exponentiation is far cheaper via windowed arithmetic; cf. Gidney-Ekera 2021). HONEST NOVELTY AUDIT (the headline of this release): full-text comparison of all four code<->magic literatures shows the flat-state closed form (Prop 4) is the uniform-support specialization of Tarabunga-Castelnovo's Rokhsar-Kivelson SRE formula (Quantum 8, 1347 (2024), Eq. 8) -- CREDITED, not claimed as new -- and the 2 log M growth rate is the saturation of the standard bound M_alpha <= 2 log R. The surviving defensible contributions are the Grover 3-bit ladder (carried from v0.5.0), the coding-theoretic SPECIALIZATION (zero-test, exact Sidon constant, exact random expectation, d_min refutation, Grover multi-marked application), and oracle-hiding = T-cost; differentiated from hypergraph-state magic (phase-encoded / RM(2): arXiv:2308.01886, 2602.23687), weight-enumerator SRE tools (arXiv:2308.05152), and permutation-invariant/Dicke magic (arXiv:2402.08551). Carried from v0.5.0: a verified stabilizer 2-Renyi entropy tool (XOR fast Walsh-Hadamard, cross-checked to 1e-15), the speedup ladder (Simon/affine -> 0; Grover quadratic -> bounded, density 0; Shor exponential -> growing), and a 42-assertion proposition checker (all pass). numpy + Python standard library only; no quantum libraries required.",
   "upload_type": "publication",
   "publication_type": "preprint",
   "creators": [
@@ -23,6 +23,16 @@
     "Clifford circuits",
     "Gottesman-Knill",
     "T-count",
+    "fault-tolerant quantum computing",
+    "magic state distillation",
+    "additive energy",
+    "additive combinatorics",
+    "Sidon set",
+    "Rokhsar-Kivelson wavefunction",
+    "coding theory",
+    "Reed-Muller code",
+    "algebraic normal form",
+    "Grover multiple marked",
     "integer factoring",
     "regev factoring",
     "order finding",
@@ -48,12 +58,37 @@
       "scheme": "url"
     },
     {
-      "identifier": "10.5281/zenodo.20688069",
+      "identifier": "10.5281/zenodo.20725965",
       "relation": "isNewVersionOf",
       "scheme": "doi"
     },
     {
       "identifier": "arXiv:2605.05347",
+      "relation": "cites",
+      "scheme": "arxiv"
+    },
+    {
+      "identifier": "10.22331/q-2024-05-14-1347",
+      "relation": "cites",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "arXiv:2308.01886",
+      "relation": "cites",
+      "scheme": "arxiv"
+    },
+    {
+      "identifier": "arXiv:2602.23687",
+      "relation": "cites",
+      "scheme": "arxiv"
+    },
+    {
+      "identifier": "arXiv:2308.05152",
+      "relation": "cites",
+      "scheme": "arxiv"
+    },
+    {
+      "identifier": "arXiv:2402.08551",
       "relation": "cites",
       "scheme": "arxiv"
     },
