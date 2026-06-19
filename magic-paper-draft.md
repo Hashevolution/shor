@@ -19,9 +19,10 @@ grows with problem size (density $\to1$), reproducing and contrasting with Pavig
 [arXiv:2605.05347]. We then develop a **coding-theory of marker sets**: the magic of a flat
 ("uniform-amplitude, uniform-phase") superposition over a set $W\subseteq\mathbb F_2^n$ is governed
 *not* by the minimum Hamming distance but by the **additive energy** of the shifted self-intersections
-of $W$. This yields (a) an exact closed form, (b) the law $M_2=\log_2\!\frac{M^3}{7M-6}\approx
-2\log_2 M-\log_2 7$ for generic (Sidon) marker sets, and (c) an exact expression for the expected
-$M_2$ of a random marker set. Finally we unify oracle-hiding with gate cost: the magic a query
+of $W$ (the uniform-support case of Tarabunga–Castelnovo's Rokhsar–Kivelson SRE formula, which we
+credit). Specializing it to a coding-theory of marker sets yields (a) the exact zero-test
+$M_2=0\iff A_W\in\{0,M\}$, (b) the law $M_2=\log_2\!\frac{M^3}{7M-6}\approx2\log_2 M-\log_2 7$ for
+generic (Sidon) marker sets, and (c) an exact expression for the expected $M_2$ of a random marker set. Finally we unify oracle-hiding with gate cost: the magic a query
 oracle hides equals the non-Clifford ($T$) cost of its gate decomposition; both vanish iff the
 oracle function is affine. All claims are verified numerically to $\le10^{-13}$ and by a 42-assertion
 regression suite.
@@ -85,19 +86,24 @@ solution. (Numerics: peak $\to3.000$ at $n=30$.)
 For multiple marked items, the excess magic comes from the *structure of the marker set*
 $W\subseteq\mathbb F_2^n$ ($M=|W|$). Writing $|{\rm flat}_W\rangle=M^{-1/2}\sum_{x\in W}|x\rangle$:
 
-**Proposition 4 (closed form via additive energy).**
+**Proposition 4 (additive-energy form; specialization of Tarabunga–Castelnovo).**
 $$M_2(|{\rm flat}_W\rangle)=-\log_2\Big(\tfrac1{M^4}\sum_{x\in\mathbb F_2^n}E\big(W\cap(W{\oplus}x)\big)\Big),
 \quad E(S)=\#\{(a,b,c,d)\in S^4:a{\oplus}b{\oplus}c{\oplus}d=0\}=\textstyle\sum_v A_S(v)^2,$$
 the **additive energy** of the shifted self-intersections $S_x=W\cap(W\oplus x)$ (verified to
-$4\times10^{-15}$). This completes the general-$M$ form left open by the single-marked case, and
-reduces to $M_2=0$ for $M=1$ and for affine $W$ (Lemma 1). The relevant invariant is the
-**autocorrelation/Fourier spectrum** of $\mathbf 1_W$, *not* the minimum Hamming distance: e.g.
-$\{0,1,2,3\}$ ($M_2=0$) and $\{0,1,2,4\}$ ($M_2=1.54$) share $d_{\min}=1$.
+$4\times10^{-15}$). **This closed form is not new:** it is the uniform-support specialization of the
+4-copy SRE formula of Tarabunga–Castelnovo (*Quantum* **8**, 1347 (2024), Eq. (8)), via the bijection
+$(\sigma^{(1)},\sigma^{(2)},\sigma^{(3)},\sigma^{(4)})=(a,b,c,a{\oplus}b{\oplus}c{\oplus}x)$; we credit
+it and use it as a tool. Our contribution is the **coding-theoretic specialization**: $M_2=0$ for
+$M=1$ and for affine $W$ (Lemma 1), the exact zero-test $M_2=0\iff A_W\in\{0,M\}$ (two-valued
+autocorrelation), and that the controlling invariant is the **autocorrelation spectrum** of
+$\mathbf 1_W$, *not* the minimum Hamming distance: $\{0,1,2,3\}$ ($M_2=0$) and $\{0,1,2,4\}$
+($M_2=1.54$) share $d_{\min}=1$.
 
 **Proposition 5 (generic/Sidon law).** If $W$ is a Sidon ($B_2$) set,
 $$M_2=\log_2\frac{M^3}{7M-6}\ \xrightarrow{M\to\infty}\ 2\log_2 M-\log_2 7.$$
 A random $W$ is Sidon w.h.p. for $M\ll2^{n/2}$, so its magic concentrates on this value (matched to
-$10^{-16}$). *Generic marker-set magic grows like $2\log_2 M$.*
+$10^{-16}$). The $2\log_2 M$ growth rate is the saturation of the standard bound $M_\alpha\le2\log_2 R$
+($R\le M$); the new content is the **exact constant $\log_2 7$ and finite-$M$ form**.
 
 **Proposition 5′ (exact expected magic).** For a uniform random $M$-subset of $\mathbb F_2^n$ ($N=2^n$),
 $$\mathbb E[\xi]\,M^4=(7M^2-6M)+\frac{7(M)_4}{N-3}+\frac{N(N-1)(N-2)(N-4)(M)_8}{(N)_8},\quad
@@ -105,9 +111,14 @@ $$\mathbb E[\xi]\,M^4=(7M^2-6M)+\frac{7(M)_4}{N-3}+\frac{N(N-1)(N-2)(N-4)(M)_8}{
 where the Sidon term comes from degenerate quadruples and the correction from genuine additive
 quadruples; $\Delta\xi\to7(M)_4/(M^4N)$ for $M\ll N$. (Closed form vs Monte Carlo: $\le1.4\times10^{-2}$.)
 
-**Relation to prior art.** The autocorrelation object coincides with the geometric term $\Lambda$ of
-arXiv:2605.05347. Our contribution is its *flat-marker* specialization, the affine $\iff
-A_W\in\{0,M\}$ zero-test, the additive-energy/Sidon laws, and the $d_{\min}$ refutation. This is
+**Relation to prior art.** The flat-state closed form (Prop. 4) is the uniform-support case of
+Tarabunga–Castelnovo's 4-copy SRE formula for Rokhsar–Kivelson/SMF wavefunctions (*Quantum* **8**,
+1347 (2024), Eq. (8)), which we credit; the $2\log_2 M$ rate is the standard $M_\alpha\le2\log_2 R$
+bound. They apply it to *physical* SMF models (Ising, $J_1$–$J_2$, triangular AFM, spin glass) only.
+Our contribution is the **coding-theoretic specialization**: the affine $\iff A_W\in\{0,M\}$
+zero-test, the **exact Sidon law** (constant $\log_2 7$, finite-$M$ form, Prop. 5), the **exact random
+expectation** (Prop. 5$'$), the $d_{\min}$ refutation, and the **Grover multi-marked application**. The
+autocorrelation object also coincides with the geometric term $\Lambda$ of arXiv:2605.05347. This is
 distinct from the nearest-neighbor literature on **hypergraph-state magic** (Chen–Yan–Zhou,
 *Quantum* **8**, 1351 (2024); Kagamihara–Tsuchiya, arXiv:2602.23687), where the Boolean function is
 **phase-encoded** ($\prod CZ_e|+\rangle^n=\sum_x(-1)^{f(x)}|x\rangle$) and the relevant code is
@@ -135,10 +146,13 @@ Krüger–Mauerer (arXiv:2507.16543).
 
 ## 5. Positioning and novelty
 
-- **Primary prior result (cited, not claimed):** arXiv:2605.05347 settles Shor's magic↔period law
-  (still a preprint, so the novelty window is open).
+- **Primary prior results (cited, not claimed):** arXiv:2605.05347 settles Shor's magic↔period law
+  (still a preprint); Tarabunga–Castelnovo (*Quantum* **8**, 1347 (2024)) own the flat/SMF SRE closed
+  form (our Prop. 4 is its specialization); $2\log_2 M$ is the standard $M_\alpha\le2\log_2 R$ bound.
 - **Genuinely new:** the Grover/polynomial-speedup magic trajectory and $3$-bit saturation; the
-  coding-theory of marker sets (Props 4, 5, 5′); oracle-hiding $=$ $T$-cost (Prop 6).
+  **coding-theoretic specialization** of marker sets — affine$\iff A_W\in\{0,M\}$ zero-test, exact
+  Sidon law (constant $\log_2 7$), exact random expectation (Prop. 5$'$), $d_{\min}$ refutation,
+  Grover application; oracle-hiding $=$ $T$-cost (Prop. 6).
 - **Nearest neighbor differentiated:** hypergraph-state magic (phase / RM(2)) vs our support / RM(1).
 - **Quantum-walk magic** (arXiv:2506.17783 PRR; arXiv:2504.19750 PRB 113,075142) is 1D-lattice
   transport, not search; cited as adjacent.

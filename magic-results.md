@@ -106,6 +106,13 @@ $$\boxed{\,M_2(|{\rm flat}_W\rangle)=-\log_2\!\Big(\tfrac1{M^4}\sum_{x\in\mathbb
 E(S)=\#\{(a,b,c,d)\in S^4:a{\oplus}b{\oplus}c{\oplus}d=0\}=\sum_{v}A_S(v)^2,$$
 즉 magic은 **이동 자기교집합 $S_x=W\cap(W{\oplus}x)$의 가법 에너지(additive energy)** 합으로 닫힌다.
 
+> **선행 credit(중요):** 이 닫힌형은 **신규가 아니다.** Tarabunga–Castelnovo
+> (*Quantum* **8**, 1347 (2024); arXiv:2311.08463) **Eq (8)** 의 임의 상태 4-copy SRE 공식
+> $e^{-M_2}=\sum_{\sigma^{(1..4)}}c_{\sigma^{(1)}}c_{\sigma^{(2)}}c_{\sigma^{(3)}}c_{\sigma^{(1)}\sigma^{(2)}\sigma^{(3)}}c^*_{\sigma^{(1)}\sigma^{(2)}\sigma^{(4)}}\cdots$
+> 를 균일 flat 상태로 특수화한 것이다(전단사 $(\sigma^{(1)},\sigma^{(2)},\sigma^{(3)},\sigma^{(4)})
+> =(a,b,c,a{\oplus}b{\oplus}c{\oplus}x)$ 로 정확히 일치). 본 명제의 가치는 *가법에너지 재명명* +
+> 아래 부호이론 특수화(영점판정·Sidon·랜덤 기댓값·Grover 적용)이며, Eq (8) 자체는 2311.08463에 귀속.
+
 *증명(개요).* 실진폭이라 $\langle Z^zX^x\rangle=\tfrac1M\hat g_x(z)$, $g_x=1_{S_x}$.
 $\sum_z\hat g_x(z)^4=N\sum_{a\oplus b\oplus c\oplus d=0}1_{S_x}(a)\cdots1_{S_x}(d)=N\,E(S_x)$ (Parseval;
 $E(S)=\tfrac1N\sum_z\hat1_S(z)^4$). 대입하면 위 식. **특수값:** $W$ 아핀부분공간이면
@@ -119,7 +126,9 @@ $W$가 **Sidon(B$_2$) 집합**(0 아닌 XOR 차분이 모두 서로 다름)이�
 0 아닌 차분 $x$($M(M{-}1)/2$개)마다 $|S_x|{=}2,\ E(S_x){=}8$ 이므로
 $$\boxed{\,M_2=\log_2\!\frac{M^3}{7M-6}\ \xrightarrow{M\to\infty}\ 2\log_2 M-\log_2 7\,}.$$
 랜덤 $W$는 $M\ll2^{n/2}$에서 whp Sidon이라 $\mathbb E[M_2]\to$ 이 값(수치 $10^{-16}$ 일치). 즉
-**구조 없는 마커상태의 magic은 $\sim2\log_2 M$로 자란다.** 유한 $N$에서 $M^2\gtrsim N$이면 가법
+**구조 없는 마커상태의 magic은 $\sim2\log_2 M$로 자란다** (단 $2\log_2 M$ *증가율*은 표준 한계
+$M_\alpha\le2\log_2 R,\ R\le M$ 의 포화로 **기지**; 본 명제의 신규는 *정확 상수 $\log_2 7$·유한형*).
+유한 $N$에서 $M^2\gtrsim N$이면 가법
 quadruple(충돌)이 늘어 $E\uparrow,\ \xi\uparrow,\ M_2\downarrow$ — 보정은 *하락*이고 $M^2/N$로 통제
 (수치: $M{=}8$ gap $0.53\to0.17\to0.00$ as $n{=}6{\to}8{\to}10$). `marker_code_closed_form.py` §2.
 

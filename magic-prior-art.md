@@ -206,19 +206,34 @@ $|{\rm flat}_W\rangle$의 SRE를 $W$의 대수적 특성으로 예측)를 정조
   기댓값으로 환원; 2510.01380) 등이 **대칭 support 평탄상태의 magic을 이미 다룬다.** → "평탄상태의
   magic을 support 구조로"의 *대칭 특수case*는 점유. 우리 차별점: **임의/랜덤 $W$ + 자기상관
   영점판정 + Grover 다중표시 맥락**(대칭 가정 없음).
+- **(D) flat/SMF 상태 SRE 닫힌형 — *명제 4의 직접 선점* [전문 확인 2026-06-18].**
+  **2311.08463 "Magic in generalized Rokhsar–Kivelson wavefunctions"** (Tarabunga–Castelnovo,
+  *Quantum* **8**, 1347 (2024)). 임의 $|\psi\rangle{=}\sum_\sigma c_\sigma|\sigma\rangle$의 $M_2$를 4-copy 공식
+  **Eq (8)** $e^{-M_2}{=}\sum_{\sigma^{(1..4)}}c_{\sigma^{(1)}}c_{\sigma^{(2)}}c_{\sigma^{(3)}}c_{\sigma^{(1)}\sigma^{(2)}\sigma^{(3)}}c^*_{\sigma^{(1)}\sigma^{(2)}\sigma^{(4)}}c^*_{\sigma^{(1)}\sigma^{(3)}\sigma^{(4)}}c^*_{\sigma^{(2)}\sigma^{(3)}\sigma^{(4)}}c^*_{\sigma^{(4)}}$
+  ($\sigma\sigma\sigma$=점곱=XOR)로 쓰고, SMF면 $M_2{=}-\log(Z_M/Z^4)$ (Eq 9, 4-copy 분배함수). 균일
+  flat 상태($c_\sigma{=}1/\sqrt M$ on $W$)를 대입하면, 전단사
+  $(\sigma^{(1)},\sigma^{(2)},\sigma^{(3)},\sigma^{(4)}){=}(a,b,c,a{\oplus}b{\oplus}c{\oplus}x)$ 로
+  **그들 Eq (8) = 우리 명제 4** $e^{-M_2}M^4{=}\sum_x E(W\cap(W{\oplus}x))$ 가 정확히 일치(검산 완료).
+  ⟹ **명제 4(가법에너지 닫힌형)는 신규 아님 — 2311.08463 Eq (8)의 균일-$W$ 특수화 + 재명명.**
+  "$2\log_2 M$"도 그들 Eq (7) $M_2{\le}4D_{\min}$ 및 표준 $M_\alpha{\le}2\log R$의 포화로 기지.
+  **그러나 그들은 이 공식을 *물리 SMF 모델*(1D/2D/3D Ising, J1-J2, 삼각격자 AFM, EA 스핀글래스)
+  에만 적용**; 임의/Grover 마커·부호이론은 다루지 않음. ⟹ 명제 4는 **인용·credit**하고, 우리
+  기여는 아래 *부호이론 특수화*로 재포지션.
 
 **우리 고유 객체의 출처 정직고지:** 자기상관 $A_W$/Walsh-4차모멘트라는 핵심 양 자체는
-**2605.05347의 기하항 $\Lambda$**(균일진폭·유사난수위상 comb)에서 왔다 — 이미 주 선점문헌으로
-인용 중. 따라서 신규 기여는 "자기상관 아이디어"가 아니라 **그 *평탄(균일위상) 마커상태*로의
-특수화 + 아핀⟺$A_W\in\{0,M\}$ 영점판정 + 최소거리 무력성 반례**다.
+**2605.05347의 기하항 $\Lambda$**(균일진폭·유사난수위상 comb)에서 왔고, **flat 상태 SRE 닫힌형은
+2311.08463 Eq (8)이 선점**(명제 4 = 그 특수화). 따라서 신규 기여는 "닫힌형/자기상관 아이디어"가
+아니라 **그 공식의 *부호이론 특수화*: 아핀⟺$A_W\in\{0,M\}$ 영점판정 + Sidon 정확법칙 + 랜덤-$W$
+정확 기댓값(명제 5′) + 최소거리 무력성 반례 + Grover 다중표시 적용**이다.
 
-**진짜로 비어있는 좁은 잔여 (방어 가능):**
-- **$|{\rm flat}_W\rangle$(support+균일위상)의 SRE 정확형 = $\tfrac1{NM^4}\sum_{x,z}\hat g_x(z)^4$
-  ($g_x=1_W\cdot 1_{W\oplus x}$)와 그 부호이론적 영점판정 "아핀 ⟺ 자기상관 2값($\{0,M\}$)"**,
-  그리고 이를 **Grover 다중표시 magic(명제 2′)에 직접 적용**한 조합은 (A)(B)(C) 어디에도 없다.
+**진짜로 비어있는 좁은 잔여 (방어 가능, RK 선점 반영 후):**
+- **부호이론 특수화** — (i) 아핀 ⟺ 자기상관 2값($A_W\in\{0,M\}$) 영점판정, (ii) Sidon 정확법칙
+  $\log_2\frac{M^3}{7M-6}$(상수·유한형), (iii) 랜덤-$W$ 정확 기댓값 $\mathbb E[\xi]$(명제 5′ 4중쌍 분류),
+  (iv) **Grover 다중표시(명제 2′)에 적용** — 은 (A)(B)(C)(D) 어디에도 없다(RK는 물리 SMF 모델만).
 - **인수인계서 지표 정정의 박제값:** 최소 해밍 거리(=1차 비선형성류)는 magic을 결정하지 못함
   (`marker_code_magic.py` §1: $\{0,1,2,3\}$ vs $\{0,1,2,4\}$ 동일 $d_{\min}{=}1$, magic 0 vs 1.54).
   cf. bent 함수(아핀까지 최대거리)는 *위상* 함수 개념이라 support 마커와는 다른 대상.
+- **명제 6(오라클-가림 = T-비용)** 은 RK와 무관 — 상대적으로 안전(단 ANF↔Toffoli·따름정리 1은 기지).
 
 **조사 범위 메모(정직):** 이 환경은 **WebFetch가 전면 403**(arXiv·Quantum 저널·NASA ADS·
 Semantic Scholar 본문 미확보) — WebSearch 스니펫 + HF 논문검색만 가능. **단 (B) 2편은 사용자가
@@ -249,7 +264,9 @@ Ref[49], 2602.23687 Thm 1의 2차형식 rank)을 **본문 식·정리로 확정*
 | 부호: RM ↔ magic상태 증류/가중치열거자 | PRX 2,041021, 2510.10852, 1702.06990, 2501.10163, 2308.05152 | 없음(다른 의미·용어충돌) |
 | 부호: Boolean 비선형성 ↔ magic | **2308.01886·2602.23687** [전문확인] (위상인코딩, RM(2)/nonquadraticity, support 미취급) | 없음 — 단 위상 vs support·RM(2) vs RM(1)로 차별 |
 | 부호: 구조적 support 평탄상태 magic | 2402.08551(순열불변), Dicke/대칭 SRE | 대칭case 점유 |
-| **flat 마커상태 SRE = 자기상관/Walsh-4차, 아핀⟺$A_W{\in}\{0,M\}$, Grover 다중표시** | (A)(B)(C) 어디에도 없음; 자기상관 객체는 2605.05347 $\Lambda$ | **좁은 잔여(방어가능)** |
+| flat/SMF 상태 SRE 닫힌형 (=명제 4) | **2311.08463 Eq (8)** [전문확인] (RK, 임의 $c_\sigma$) | **없음(선점)** — 명제 4는 그 특수화 |
+| "$2\log_2 M$" 성장 | $M_2{\le}2\log R$ 한계 (표준), 2311.08463 Eq (7) | 없음(한계 포화) |
+| **부호이론 특수화: 아핀⟺$A_W{\in}\{0,M\}$ + Sidon 정확법칙 + 랜덤 $\mathbb E[\xi]$ + Grover 적용** | (A)(B)(C)(D) 어디에도 없음(RK는 물리모델만) | **좁은 잔여(방어가능)** |
 | 인수인계서 "최소 해밍거리→magic" | 반례로 무력화(`marker_code_magic.py` §1) | **정정(지표 부정확)** |
 
 **다음 행동(우선순위):**
@@ -311,6 +328,9 @@ Ref[49], 2602.23687 Thm 1의 2차형식 rank)을 **본문 식·정리로 확정*
     [**전문 확인**] Eq(3) ∏CCZ 위상; Thm 1 SRE=GF(2)행렬 $C{+}C^T$ rank, $O(N^3 2^N)$;
     support상태 미취급 — 최근접 이웃
   - 2402.08551 — Nonstabilizerness of Permutationally Invariant Systems (대칭 support 평탄상태)
+  - **2311.08463 — Tarabunga, Castelnovo, Magic in generalized Rokhsar–Kivelson wavefunctions,
+    Quantum 8, 1347 (2024)** [전문 확인] Eq (8) 임의 상태 4-copy SRE 공식 = **명제 4의 선점**
+    (flat 상태로 특수화 시 우리 가법에너지 닫힌형과 전단사로 일치); 물리 SMF 모델에만 적용
   - (참고) 2510.01380 — Non-stabilizerness in quantum-enhanced metrological protocols (대칭상태 SRE 환원)
   - 2512.19657 — Extremizing Measures of Magic on Pure States by Clifford-stabilizer States (검색상 인접; 전문 미확보)
 
