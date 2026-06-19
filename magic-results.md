@@ -123,6 +123,23 @@ $$\boxed{\,M_2=\log_2\!\frac{M^3}{7M-6}\ \xrightarrow{M\to\infty}\ 2\log_2 M-\lo
 quadruple(충돌)이 늘어 $E\uparrow,\ \xi\uparrow,\ M_2\downarrow$ — 보정은 *하락*이고 $M^2/N$로 통제
 (수치: $M{=}8$ gap $0.53\to0.17\to0.00$ as $n{=}6{\to}8{\to}10$). `marker_code_closed_form.py` §2.
 
+## 명제 5′ (랜덤 마커 $\mathbb E[\xi]$ 정확 닫힌형 — $\Delta(M,N)$ 완성)
+
+균일 랜덤 $M$-부분집합 $W\subset\mathbb F_2^n$ ($N{=}2^n$)의 $\xi=2^{-M_2}=\tfrac1{M^4}\sum_x E(S_x)$ 에 대해
+$$\boxed{\,\mathbb E[\xi]\,M^4 = \underbrace{(7M^2-6M)}_{\text{Sidon (명제 5)}} + \underbrace{\frac{7\,(M)_4}{N-3} + \frac{N(N-1)(N-2)(N-4)\,(M)_8}{(N)_8}}_{\Delta(M,N)\ (\text{genuine 4중쌍})}\,},\quad (M)_k=\tfrac{M!}{(M-k)!}.$$
+
+*증명(개요).* $\xi M^4=\#\{(a,b,c,d,x):a{\oplus}b{\oplus}c{\oplus}d{=}0,\ \{a,b,c,d\}\cup\{a{\oplus}x,..,d{\oplus}x\}\subseteq W\}$.
+base 4중쌍 $N^3$개를 **all-equal**($N$), **paired**($3N(N{-}1)$), **genuine**($N(N{-}1)(N{-}2)$)로 분류
+(합 $=N^3$). genuine 4중쌍의 6 차분은 2차원 부분공간 $\{0,\delta_1,\delta_2,\delta_3\}$를 이뤄
+$x\in$그 4원소면 $A{\oplus}x{=}A$($k{=}4$), 그 외 $N{-}4$개는 $k{=}8$. 각 8점 배치의 서로 다른 점
+수 $k$에 균일 확률 $(M)_k/(N)_k$를 곱해 합산하면 위 식. all-equal+paired가 정확히 Sidon 주항
+$7M^2{-}6M$을 준다. **검증:** 닫힌형 vs 몬테카를로 상대오차 $\le1.4\times10^{-2}$(표본오차 수준).
+$\blacksquare$
+
+- **점근**($M{\ll}N$): $\Delta\xi\to 7(M)_4/(M^4 N)$ (수치 비$\to1$); $(M)_4/M^4\to1$은 $M\to\infty$.
+- $\mathbb E[M_2]\ge-\log_2\mathbb E[\xi]$ (Jensen; $-\log_2$ 볼록), 간극 작아 **$-\log_2\mathbb E[\xi]$ 가
+  $\mathbb E[M_2]$의 정밀 추정**. `experiments/marker_code_expected.py`.
+
 ## 명제 6 (오라클-가림 = T-비용 가림)
 
 그래프상태 $|\psi_f\rangle=2^{-n/2}\sum_x|x\rangle|f(x)\rangle$ 와 오라클 $U_f:|x\rangle|y\rangle\mapsto|x\rangle|y{\oplus}f(x)\rangle$ 에 대해

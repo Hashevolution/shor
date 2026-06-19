@@ -110,12 +110,12 @@ M3 (완료) ── 과제 B: 일반-M 닫힌형 = 가법에너지 (명제 4)
    │          + 과제 A: 통계 예측식 = Sidon 값 log₂(M³/(7M−6))≈2log₂M−log₂7 (명제 5)
    │          산출: marker_code_closed_form.py (닫힌형 4e-15, Sidon 1e-16, 랜덤W→Sidon 수렴)
    ▼
-M4 (진행) ── 과제 C+D 완료: 명제 6 (상태 magic ⟺ 오라클 T-비용, 둘 다 f 아핀에서만 0)
-   │          산출: oracle_tcount_magic.py (T_proxy↔M₂ 동반, Simon 0 vs Shor 4→156)
-   │          잔여: 과제 E(A·C 선행 전문 대조; 네트워크 필요) + Δ(M,N) 해석 전개
-   │          산출: 게이트수준 대조, 차별화 서술 완성
+M4 (완료) ── 과제 C+D: 명제 6 (상태 magic ⟺ 오라클 T-비용, 둘 다 f 아핀에서만 0)
+   │          + Δ(M,N) 해석 전개: 명제 5′ (E[ξ] 정확 닫힌형, MC 상대오차≤1.4e-2)
+   │          산출: oracle_tcount_magic.py, marker_code_expected.py
+   │          잔여: 과제 E(A·C 선행 전문 대조; 네트워크 필요)
    ▼
-M5 ──────── 논문화: Grover 다항우위 magic + 부호이론 마커 SRE
+M5 (다음) ── 논문화: 명제 1–6 + 사다리 통합 초안 (Grover 다항우위 magic + 부호이론 마커 SRE)
               주 인용 2605.05347(Shor 선점) / 최근접이웃 (B) 차별화 / DTQW 2편 DOI
 ```
 
