@@ -176,13 +176,14 @@ $|{\rm flat}_W\rangle$의 SRE를 $W$의 대수적 특성으로 예측)를 정조
 충돌하므로, 차별화가 필수다.
 
 **점유된 것 (세 갈래):**
-- **(A) RM 부호 ↔ 매직상태 증류 / 가중치 열거자.** "Reed–Muller ↔ magic"은 수십 년 트랙:
-  RM 부호의 transversal 비클리포드 게이트로 매직상태 증류(**PRX 2, 041021**, Campbell–Anwar–
-  Browne; Hastings–Haah; **2510.10852** punctured RM 서브로그 증류). 부호의 *가중치 열거자*가
-  증류 성능·SRE를 통제(**1702.06990** signed quantum weight enumerators; **2501.10163** 불변량
-  이론; **2308.05152** Quantum Lego: 텐서망 enumerator로 SRE 계산). → **여기서 "부호→magic"은
-  *부호화된/증류되는* 상태의 얘기**지, *평탄 마커상태의 SRE를 support의 자기상관으로 예측*하는
-  우리 각도가 아니다. **용어 충돌 주의**(2303.11317 "black box"식 충돌과 동급) — 명시적 구분 필요.
+- **(A) RM 부호 ↔ 매직상태 증류 / 가중치 열거자 [전문 확인 2026-06-18: 2308.05152].** "Reed–Muller
+  ↔ magic"은 수십 년 트랙: RM 부호의 transversal 비클리포드 게이트로 매직상태 증류(**PRX 2, 041021**,
+  Campbell–Anwar–Browne; Hastings–Haah; **2510.10852** punctured RM 서브로그 증류). 부호의
+  *가중치 열거자*가 증류 성능·SRE를 통제(**1702.06990** signed quantum weight enumerators;
+  **2501.10163** 불변량 이론; **2308.05152** Quantum Lego: **higher-genus 가중치열거자=SRE**(식
+  III.41–47)를 텐서망으로 계산 — 전문 확인). → **여기서 "부호→magic"은 *부호화/증류되는* 상태의
+  가중치열거자(SRE *계산 도구*)** 지, *평탄 마커상태의 SRE를 support 자기상관으로 닫고 Sidon/아핀
+  판정으로 예측*하는 우리 각도가 아니다. **용어 충돌 주의**(2303.11317식) — 명시적 구분, 포섭 없음.
 - **(B) Boolean 함수 비선형성 ↔ 하이퍼그래프 상태 magic — *최근접 이웃* [전문 확인 2026-06-18, 저자제공 PDF].**
   **2308.01886 "Magic of quantum hypergraph states"** (Chen–Yan–Zhou, **Quantum 8, 1351 (2024)**, v2),
   **2602.23687 "SRE of 3-uniform hypergraph states"** (Kagamihara–Tsuchiya, v2 2026-05-14):
@@ -200,12 +201,12 @@ $|{\rm flat}_W\rangle$의 SRE를 $W$의 대수적 특성으로 예측)를 정조
   $1_W$의 자기상관*. **두 논문 모두 flat/indicator(support) 상태·받침 자기상관은 전혀 다루지 않음**
   (전 본문이 위상상태 전용; 전문 대조로 확인). **반드시 (B)를 최근접 이웃으로 인용하고 "위상 vs
   support / RM(2) vs RM(1)"로 차별화.**
-- **(C) 구조적 support의 평탄상태 = Dicke/순열불변 상태 magic.** Dicke 상태는 곧
-  $W=\{x:\mathrm{wt}(x)=k\}$ 위 평탄상태(=비아핀 구조적 support). **arXiv:2402.08551
-  "Nonstabilizerness of Permutationally Invariant Systems"**, 대칭상태 SRE(소수의 집합스핀
-  기댓값으로 환원; 2510.01380) 등이 **대칭 support 평탄상태의 magic을 이미 다룬다.** → "평탄상태의
-  magic을 support 구조로"의 *대칭 특수case*는 점유. 우리 차별점: **임의/랜덤 $W$ + 자기상관
-  영점판정 + Grover 다중표시 맥락**(대칭 가정 없음).
+- **(C) 구조적 support의 평탄상태 = Dicke/순열불변 상태 magic [전문 확인 2026-06-18: 2402.08551].**
+  Dicke 상태는 곧 $W=\{x:\mathrm{wt}(x)=k\}$ 위 평탄상태(=비아핀 구조적 support). **arXiv:2402.08551
+  "Nonstabilizerness of Permutationally Invariant Systems"** (Passarelli–Fazio–Lucignano): *순열대칭*을
+  이용해 Pauli 계산을 Dicke 기저에서 $O(N^3)$로 환원, LMG·Dicke 상태에 적용. → **대칭 support
+  특수case만 점유**(전문 확인: 임의/랜덤 $W$·자기상관·Sidon·아핀판정·Grover 없음). 우리 차별점:
+  **임의/랜덤 $W$ + 자기상관 영점판정 + Sidon/E[ξ] + Grover 다중표시**(대칭 가정 없음).
 - **(D) flat/SMF 상태 SRE 닫힌형 — *명제 4의 직접 선점* [전문 확인 2026-06-18].**
   **2311.08463 "Magic in generalized Rokhsar–Kivelson wavefunctions"** (Tarabunga–Castelnovo,
   *Quantum* **8**, 1347 (2024)). 임의 $|\psi\rangle{=}\sum_\sigma c_\sigma|\sigma\rangle$의 $M_2$를 4-copy 공식
@@ -241,7 +242,11 @@ PDF를 제공하여 전문 정독 완료**(2026-06-18): 결정적 2점(① 위�
 2602.23687 Eq(3); ② magic 원천=nonquadraticity/degree$\ge3$=RM(2)까지 거리 — 2308.01886 Thm 2·
 Ref[49], 2602.23687 Thm 1의 2차형식 rank)을 **본문 식·정리로 확정**, 또한 **둘 다 support/indicator·
 받침 자기상관은 전혀 다루지 않음**을 확인. → "위상 vs support / RM(2) vs RM(1)" 차별화 **최종 확정.**
-(A)(C)는 여전히 식별·요약 수준(전문 미대조) — 정식 제출 전 1회 대조 권장.
+**(A)(C)(D)도 전문 확인 완료(2026-06-18, 사용자 제공 PDF):** (A) 2308.05152=가중치열거자→SRE 계산도구,
+(C) 2402.08551=순열대칭 환원(대칭 support만), (D) 2311.08463 Eq(8)=flat-state 닫힌형 선점. ⟹ **부호↔magic
+4갈래(A·B·C·D) 전문 대조 종료.** 결론: **명제 4·"2logM"은 선점(D·표준한계)**, 살아남는 신규는
+**부호이론 특수화**(아핀⟺$A_W{\in}\{0,M\}$·Sidon 상수·랜덤 E[ξ]·$d_{\min}$ 반례·Grover 적용) **+ 명제 6
++ Grover 3-bit 사다리**. (잔여 전문 미대조: 2510.10852·1702.06990·2501.10163 — 모두 *증류* 쪽이라 영향 없음.)
 
 ---
 
@@ -327,7 +332,10 @@ Ref[49], 2602.23687 Thm 1의 2차형식 rank)을 **본문 식·정리로 확정*
   - **2602.23687 — Kagamihara, Tsuchiya, SRE of 3-uniform hypergraph states (v2 2026-05-14)**
     [**전문 확인**] Eq(3) ∏CCZ 위상; Thm 1 SRE=GF(2)행렬 $C{+}C^T$ rank, $O(N^3 2^N)$;
     support상태 미취급 — 최근접 이웃
-  - 2402.08551 — Nonstabilizerness of Permutationally Invariant Systems (대칭 support 평탄상태)
+  - 2402.08551 — Passarelli, Fazio, Lucignano, Nonstabilizerness of Permutationally Invariant
+    Systems [전문 확인] 순열대칭→Dicke 기저 $O(N^3)$ 환원, LMG/Dicke만; 임의-W 미취급
+  - 2308.05152 — Cao, Gullans, Lackey, Wang, Quantum Lego: Enumerators from Tensor Networks
+    [전문 확인] higher-genus 가중치열거자=SRE(식 III.41–47) 텐서망 계산도구; 마커집합 부호이론 아님
   - **2311.08463 — Tarabunga, Castelnovo, Magic in generalized Rokhsar–Kivelson wavefunctions,
     Quantum 8, 1347 (2024)** [전문 확인] Eq (8) 임의 상태 4-copy SRE 공식 = **명제 4의 선점**
     (flat 상태로 특수화 시 우리 가법에너지 닫힌형과 전단사로 일치); 물리 SMF 모델에만 적용
