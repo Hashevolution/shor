@@ -100,6 +100,9 @@ The regime map predicts that noise-as-resource in quantum factoring is naturally
 | `experiments/sr_amplification.py` | Over-thinned amplification test (null result) |
 | `experiments/sr_mild_amplification.py` | Mild-thinned amplification test (5× amplification) |
 | `experiments/*_results.txt`, `*_histograms.txt` | Raw measurement data |
+| `ai-discovery-engine-design.md` | **JAMES-DISCOVER** — design + feasibility review for an automated discovery loop (Generator → Probe → Miner → Adversary → Promoter) layered on the existing magic infrastructure |
+| `experiments/discover_poc.py` | D1 sanity gate — re-discovers the Sidon constant and additive-energy closed form (Prop. 4/5) from scratch |
+| `experiments/discover_d3_jensen.py` | D3 result — Jensen-gap law $J(M,N)\propto 1/N$ in sparse regime, asymptotic tightness of Prop. 5$'$ (cited in paper §9) |
 | `summary.md` / `frontier.md` / `hypotheses.md` / `roadmap.md` | Research notes in Korean (working diary) |
 
 ## Quick start
