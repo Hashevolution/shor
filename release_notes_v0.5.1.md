@@ -1,6 +1,6 @@
 # Release notes — v0.5.1 (2026-06-19)
 
-**DOI**: _pending (Zenodo upon release)_
+**DOI**: [10.5281/zenodo.20767685](https://doi.org/10.5281/zenodo.20767685)
 
 ## Summary
 

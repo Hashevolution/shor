@@ -1,5 +1,6 @@
 # Shor's Algorithm — Multi-Base Order Finding and Noise-as-Resource Mechanism
 
+[![DOI v0.5.1](https://zenodo.org/badge/DOI/10.5281/zenodo.20767685.svg)](https://doi.org/10.5281/zenodo.20767685)
 [![DOI v0.5.0](https://zenodo.org/badge/DOI/10.5281/zenodo.20725965.svg)](https://doi.org/10.5281/zenodo.20725965)
 [![DOI v0.4.0](https://zenodo.org/badge/DOI/10.5281/zenodo.20688069.svg)](https://doi.org/10.5281/zenodo.20688069)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -140,8 +141,8 @@ All experimental scripts are *resumable* (immediate per-cell save, skip-existing
 
 ```
 Hashevolution. (2026). A Noise-Invariant Determinism Theorem for Multi-Base
-Post-Processing in Shor's Order Finding (Version 0.5.0). Zenodo.
-https://doi.org/10.5281/zenodo.20725965
+Post-Processing in Shor's Order Finding (Version 0.5.1). Zenodo.
+https://doi.org/10.5281/zenodo.20767685
 ```
 
 BibTeX:
@@ -154,13 +155,14 @@ BibTeX:
   month        = jun,
   year         = 2026,
   publisher    = {Zenodo},
-  version      = {v0.5.0},
-  doi          = {10.5281/zenodo.20725965},
-  url          = {https://doi.org/10.5281/zenodo.20725965}
+  version      = {v0.5.1},
+  doi          = {10.5281/zenodo.20767685},
+  url          = {https://doi.org/10.5281/zenodo.20767685}
 }
 ```
 
 Previous version DOIs:
+- v0.5.0: [10.5281/zenodo.20725965](https://doi.org/10.5281/zenodo.20725965)
 - v0.4.0: [10.5281/zenodo.20688069](https://doi.org/10.5281/zenodo.20688069)
 - v0.3.0: [10.5281/zenodo.20685015](https://doi.org/10.5281/zenodo.20685015)
 - v0.2.1: [10.5281/zenodo.20681847](https://doi.org/10.5281/zenodo.20681847)

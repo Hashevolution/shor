@@ -39,14 +39,11 @@ authors:
     given-names: ""
 repository-code: "https://github.com/Hashevolution/shor"
 url: "https://github.com/Hashevolution/shor"
-# NOTE: v0.5.1's own Zenodo DOI is minted at publication time; until then the
-# latest *minted* record DOI (v0.5.0) is kept below. After publishing v0.5.1,
-# replace the `doi:` field and the first identifier with the new record DOI.
-doi: "10.5281/zenodo.20725965"
+doi: "10.5281/zenodo.20767685"
 identifiers:
-  - description: "v0.5.1 record DOI — PENDING Zenodo publication (write back after release)"
-    type: other
-    value: "pending-zenodo-publication"
+  - description: "v0.5.1: marker-set coding-theory + oracle/T-cost + JAMES-DISCOVER (D3 Jensen-gap law J ∝ 1/N closing Prop 5' open item)"
+    type: doi
+    value: "10.5281/zenodo.20767685"
   - description: "v0.5.0: nonstabilizerness (magic) across quantum speedups — Grover 3-bit saturation, oracle-hiding M2=0 iff affine, Shor comb scaling"
     type: doi
     value: "10.5281/zenodo.20725965"
