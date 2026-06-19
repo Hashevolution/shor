@@ -123,6 +123,19 @@ $$\boxed{\,M_2=\log_2\!\frac{M^3}{7M-6}\ \xrightarrow{M\to\infty}\ 2\log_2 M-\lo
 quadruple(충돌)이 늘어 $E\uparrow,\ \xi\uparrow,\ M_2\downarrow$ — 보정은 *하락*이고 $M^2/N$로 통제
 (수치: $M{=}8$ gap $0.53\to0.17\to0.00$ as $n{=}6{\to}8{\to}10$). `marker_code_closed_form.py` §2.
 
+## 명제 6 (오라클-가림 = T-비용 가림)
+
+그래프상태 $|\psi_f\rangle=2^{-n/2}\sum_x|x\rangle|f(x)\rangle$ 와 오라클 $U_f:|x\rangle|y\rangle\mapsto|x\rangle|y{\oplus}f(x)\rangle$ 에 대해
+$$\boxed{\,M_2(|\psi_f\rangle)>0\iff f\text{ 의 ANF에 차수}\ge2\text{ 단항식 존재}\iff U_f\text{ 게이트분해가 비클리포드(Toffoli/}T)\text{ 게이트 요구}\,}.$$
+세 조건 모두 **$f$ 아핀에서만 동시 0**(따름정리 1 + ANF: 1차항=CNOT 클리포드, 2차항=Toffoli=$T$).
+
+*근거.* 따름정리 1로 $M_2{=}0\iff f$ 아핀$\iff$ ANF가 1차 이하. 출력비트 ANF의 차수$\ge2$ 단항식
+수 $T_{\rm proxy}$(=Toffoli/$T$ 비용 대용)와 $M_2$가 **함께 0에서 켜지고 함께 증가**(수치 $n{=}4$:
+$T_{\rm proxy}{=}0,1,2,3,4 \Rightarrow M_2{=}0,1.54,2.48,3.70,4.43$). 끝점: **Simon**(선형 오라클,
+$T_{\rm proxy}{=}0,\ M_2{=}0$인데도 지수 쿼리 우위) vs **Shor** modexp(비선형, $T_{\rm proxy}{=}4{\to}156,\
+M_2{=}1.54{\to}5.23$). ⟹ 쿼리 오라클이 숨기는 "보이지 않는 magic"은 곧 게이트분해의 $T$-비용이다.
+*(2507.16543의 Clifford-가림과 구분: 이쪽은 오라클/추상화가 가림.)* `experiments/oracle_tcount_magic.py`.
+
 ---
 
 ## 속도우위 사다리 (요약)

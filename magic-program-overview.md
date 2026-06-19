@@ -85,13 +85,11 @@ $M_2(|{\rm flat}_W\rangle)=-\log_2\!\big(\tfrac1{M^4}\sum_x E(W\cap(W{\oplus}x))
 (명제 4). $M{=}1$·아핀 → 0 환원 확인, $\Lambda$(2605.05347)와 동형. 수치 $4{\times}10^{-15}$.
 *잔여(선택):* 2-진폭 Grover(비-flat)의 명시 닫힌형(현재 명제 2′ 분해 + 명제 4로 환원 가능).
 
-### 과제 C — Grover 게이트분해 T-count 대조
-정점 3-bit가 **게이트수준 T-count**와 어떻게 대응하는지(상태 magic vs 회로 magic 구분).
-오라클-가림(따름정리 1)과 연결: Simon(선형⟹T-count 0류) vs Grover/Shor.
-
-### 과제 D — 오라클-가림 정식화 마무리
-"보이는 magic=0이어도 오라클을 게이트분해하면 드러난다"를 Simon(0) vs Shor(>0)로 정량화,
-**2507.16543의 Clifford-가림과 명시적 차별화**(이쪽은 *오라클/FFT 추상화*가 가림).
+### 과제 C+D ✅ 완료 — 오라클-가림 = T-비용 가림 (명제 6)
+$M_2(|\psi_f\rangle)>0\iff f$ 비선형 $\iff U_f$ 게이트분해가 비클리포드($T$) 요구 — 셋 다 $f$
+아핀에서만 0(따름정리 1 + ANF 차수≥2 ⟺ Toffoli/$T$). 비선형 ANF 단항식 수 $T_{\rm proxy}$와
+$M_2$ 동반 증가; Simon($0/0$) vs Shor modexp($T_{\rm proxy}{=}4{\to}156,\ M_2{=}1.54{\to}5.23$).
+**2507.16543 Clifford-가림과 차별화**(오라클/추상화가 가림). `experiments/oracle_tcount_magic.py`.
 
 ### 과제 E (마감용) — (A)(C) 선행 전문 대조
 정식 제출 전 RM↔증류/가중치열거자(A)와 Dicke/순열불변(C) 핵심 논문 **전문 1회 대조**
@@ -112,7 +110,9 @@ M3 (완료) ── 과제 B: 일반-M 닫힌형 = 가법에너지 (명제 4)
    │          + 과제 A: 통계 예측식 = Sidon 값 log₂(M³/(7M−6))≈2log₂M−log₂7 (명제 5)
    │          산출: marker_code_closed_form.py (닫힌형 4e-15, Sidon 1e-16, 랜덤W→Sidon 수렴)
    ▼
-M4 (다음) ── 과제 C(T-count) + 과제 D(오라클-가림 정식화) + 과제 E(A·C 전문 대조)
+M4 (진행) ── 과제 C+D 완료: 명제 6 (상태 magic ⟺ 오라클 T-비용, 둘 다 f 아핀에서만 0)
+   │          산출: oracle_tcount_magic.py (T_proxy↔M₂ 동반, Simon 0 vs Shor 4→156)
+   │          잔여: 과제 E(A·C 선행 전문 대조; 네트워크 필요) + Δ(M,N) 해석 전개
    │          산출: 게이트수준 대조, 차별화 서술 완성
    ▼
 M5 ──────── 논문화: Grover 다항우위 magic + 부호이론 마커 SRE
