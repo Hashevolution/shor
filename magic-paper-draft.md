@@ -1,7 +1,37 @@
-# Magic across the quantum speedup ladder: from Grover's saturation to a coding-theory of marker sets
+# Magic across the quantum speedup ladder: a Grover saturation, a coding-theory specialization, and oracle-hiding as T-cost
 
 *Working draft (v0.5.0+). Full proofs in `magic-results.md`; prior art in `magic-prior-art.md`;
 reproducible code in `experiments/` (`magic.py` + `magic_proofs_check.py`, 42 assertions).*
+
+---
+
+## Contributions vs prior art (honest summary)
+
+After full-text comparison with the four nearest code↔magic literatures, our defensible
+contributions and what we **credit to prior work** are:
+
+**New (this work).**
+1. **Grover/polynomial-speedup magic** — closed form for single-marked Grover, peak saturating at
+   **exactly 3 bits**, density $M_2/n\to0$, returned to $0$ at the solution; the speedup **ladder**
+   (Simon $0$ / Grover finite / Shor $\to L$) (Props 2–3, Cor 1–2).
+2. **Coding-theoretic *specialization* of marker sets** — the exact zero-test
+   $M_2=0\iff A_W\in\{0,M\}$, the **Sidon law** with exact constant $\log_2 7$ and finite-$M$ form
+   (Prop 5), the **exact random expectation** $\mathbb E[\xi]$ (Prop 5$'$), the $d_{\min}$ refutation,
+   and the **Grover multi-marked application** (Prop 2$'$).
+3. **Oracle-hiding = $T$-cost** — $M_2(|\psi_f\rangle)>0\iff f$ nonlinear $\iff U_f$ needs $T$ gates
+   (Prop 6).
+
+**Credited to prior work (not claimed).**
+- Shor's magic↔period quantitative law — Paviglianiti et al., arXiv:2605.05347.
+- The flat-state SRE **closed form** (our Prop 4 via additive energy) — uniform-support case of
+  Tarabunga–Castelnovo's RK/SMF formula, *Quantum* **8**, 1347 (2024), Eq. (8).
+- The $2\log_2 M$ growth rate — saturation of the standard bound $M_\alpha\le2\log_2 R$.
+- SRE definition/tool (Leone–Oliviero–Hamma); XOR-FWHT computation (arXiv:2512.24685).
+
+**Nearest neighbors differentiated.** Hypergraph-state magic (phase / RM(2): Chen–Yan–Zhou *Quantum*
+**8**, 1351; Kagamihara–Tsuchiya arXiv:2602.23687) vs ours (support / RM(1)); weight-enumerator SRE
+tools (Quantum Lego arXiv:2308.05152); permutation-invariant/Dicke magic (arXiv:2402.08551,
+symmetric support only).
 
 ---
 
