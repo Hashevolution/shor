@@ -50,6 +50,17 @@ class RegevSetup:
     N: int
 
 
+def rv_scale_S(N: int, d: int, A: float = 2.0) -> int:
+    """RV §6 의 lattice scaling S = 2^(An/d).
+
+    n = N.bit_length(); A 는 RV의 정확도-보안 trade-off 상수 (RV §6 Lemma 6.5
+    참조; A 가 클수록 corrupted 샘플 분리 능력 증가, LLL 비용 증가). A=2 가
+    실용적 default — N=437 (n=9), d=4 → S = 2^5 = 32; N=4087 (n=12), d=4 → S = 2^6 = 64.
+    """
+    n = max(1, N.bit_length())
+    return 1 << math.ceil(A * n / d)
+
+
 def regev_setup_bases(N: int, d: int, rng: random.Random) -> RegevSetup:
     """d 개 random b_i ∈ (Z/N)*, a_i = b_i² mod N."""
     b = []
@@ -135,17 +146,24 @@ def rv_filter_round(
 
 
 def filter_uncorrupted(
-    samples: list[RegevSample], target_size: int, S: int = 100,
-    max_iter: int = 30,
+    samples: list[RegevSample], target_size: int, S: int | None = None,
+    max_iter: int = 30, N: int | None = None, d: int | None = None,
+    A: float = 2.0,
 ) -> list[RegevSample]:
     """RV Algorithm 6.1 — full filter loop.
 
     매 iteration: 남은 샘플에서 E 선택 → rv_filter_round → support 인덱스를 B 에 추가.
     |B| ≥ target_size 가 될 때까지 반복.
 
-    S: 격자 scaling. RV 의 S = 2^(An/d) 와 다르게 단순 정수 (실용 검증용).
-       너무 크면 LLL 느림, 너무 작으면 corrupted 와 uncorrupted 가 구분 안 됨.
+    S: 격자 scaling. None 이면 RV §6 공식 `S = 2^(An/d)` 로 자동 계산
+       (`rv_scale_S(N, d, A)`). 명시 S 값은 디버깅/legacy 비교용 (이전 default=100).
     """
+    if S is None:
+        if samples and N is not None:
+            d_eff = d if d is not None else len(samples[0].k_vec)
+            S = rv_scale_S(N, d_eff, A=A)
+        else:
+            S = 100  # legacy fallback when N/d unknown
     B: list[RegevSample] = []
     remaining = list(samples)
     for _ in range(max_iter):
@@ -167,46 +185,44 @@ def filter_uncorrupted(
 
 def regev_algorithm_b1(
     samples: list[RegevSample], bases: list[list[int]], N: int,
-    epsilon: int = 1,
+    epsilon: int = 1, S: int | None = None,
 ) -> list[list[int]]:
-    """RV Appendix B.1 / Regev 2023 Algorithm B.1: 표준 Regev 후처리.
+    """Regev 2023 Algorithm B.1 — kernel-of-measurements 격자 후처리.
 
-    격자 Λ ⊆ R^(d+k) basis (열 단위):
-        [ I_d    ε^(-1) W ]
-        [  0      I_k     ]
-    W ∈ R^(d×k) 의 열 = 측정 벡터 w_i.
+    찾는 격자: L_meas = {z ∈ Z^d : k^{(j)} · z ≡ 0 mod Q ∀j}. Shor 측정에서
+    k^{(j)}_i ≈ Q·m/r_i 이므로 z 의 r_i 배수 좌표가 nontrivial 짧은 vector 가 됨.
+    nontrivial 짧은 z 는 ∏ a_i^{z_i} ≡ 1 mod N (L_a 의 원소) 가 되고, Regev 의
+    b_i (a_i = b_i²) 트릭으로 비자명 제곱근 → gcd 인수.
 
-    LLL 환원 → Gram-Schmidt → 짧은 벡터들 추출.
+    격자 임베딩 in Z^(d+m), basis (sympy 행=basis 컨벤션):
+        [ S·I_d     K^T   ]
+        [   0    Q·I_m    ]
+    여기서 K ∈ Z^(d×m), 열 j = k^{(j)}. LLL output v = (S·α, K^T α + Q·β) 의
+    last-m 부분이 0 (또는 작음) 이면 k^{(j)} · α ≡ 0 mod Q for all j → α ∈ L_meas.
+    z = v[:d] / S 가 후보 relation.
 
-    각 출력 벡터의 첫 d 좌표 = 잠재적 lattice L_a 의 원소 (정수 관계).
-    L_a = {z ∈ Z^d : ∏ a_i^z_i ≡ 1 mod N}. 만약 z ∈ L_a 면 z 의 좌표가 base 들의
-    multi-base 위수 관계를 줌.
-
-    Note: 본 구현은 Regev 의 lattice L₀ = {z : ∏ a_i^z_i ≡ 1} 의 직접 후처리.
-    원본 Regev 는 quadratic character b_i² = a_i 를 사용해 ±1 lattice L 에서
-    short vector → 비자명 square root → 인수. 본 구현은 a_i 만 사용 — 인수보단
-    "multi-base 정수 관계 = 위수 정보" 회수에 집중.
+    S = 2^(An/d) (RV §6, A=2 default) — 작은 z 를 선호하는 격자 스케일링.
     """
     if not samples:
         return []
-    k = len(samples)
+    m = len(samples)
     d = len(samples[0].k_vec)
     Q = samples[0].Q
+    if S is None:
+        S = rv_scale_S(N, d, A=2.0)
 
-    # W ∈ Z^(d×k), 각 열 = sample 의 k_vec (Q-스케일)
-    # 정수 LLL 을 위해 ε^(-1) 를 정수 factor 로 흡수
     rows = []
-    # 첫 d 개 행: (I_d 단위벡터, 0)
+    # First d rows: (S·e_i, K^T row_i) = (S·e_i, k^{(1)}_i, ..., k^{(m)}_i)
     for i in range(d):
-        row = [0] * (d + k)
-        row[i] = 1
+        row = [0] * (d + m)
+        row[i] = S
+        for j in range(m):
+            row[d + j] = samples[j].k_vec[i]
         rows.append(row)
-    # 다음 k 개 행: (ε^(-1) w_j, e_j). ε=1, w_j = k_vec
-    for j, s in enumerate(samples):
-        row = [0] * (d + k)
-        for i in range(d):
-            row[i] = s.k_vec[i] // max(1, epsilon)
-        row[d + j] = 1
+    # Next m rows: (0, Q·e_j) — enforce mod-Q
+    for j in range(m):
+        row = [0] * (d + m)
+        row[d + j] = Q
         rows.append(row)
 
     H = Matrix(rows)
@@ -215,19 +231,22 @@ def regev_algorithm_b1(
     except Exception:
         return []
 
-    # 짧은 벡터들의 첫 d 좌표 추출
-    # Threshold: T = 2^(C·n) 같은 형식이지만, 단순화로 직접 norm 기반.
-    vectors = []
-    norms = []
+    # Extract z candidates: first-d / S where divisible by S
+    candidates = []
     for i in range(reduced.rows):
-        v = [int(reduced[i, j]) for j in range(d)]
-        full = [int(reduced[i, j]) for j in range(reduced.cols)]
-        nrm = sum(x * x for x in full) ** 0.5
-        norms.append((nrm, v))
-    norms.sort()
-
-    # 가장 짧은 d 개를 출력 (Regev 의 l 값 계산은 단순화)
-    return [v for _, v in norms[:d]]
+        v_full = [int(reduced[i, j]) for j in range(reduced.cols)]
+        z_part = v_full[:d]
+        # divisibility check (LLL outputs in lattice, so first d should be S·integer)
+        if any(c % S != 0 for c in z_part):
+            continue
+        z = [c // S for c in z_part]
+        if all(zi == 0 for zi in z):
+            continue
+        # rank by full-vector L2 (prefer short)
+        nrm = sum(x * x for x in v_full)
+        candidates.append((nrm, z))
+    candidates.sort()
+    return [z for _, z in candidates[:d + 2]]  # top d+2 short relations
 
 
 def try_factor_via_b_squareroot(
@@ -401,7 +420,8 @@ def end_to_end_factor_comparison_v2(
     print(f"# corrupt_p={corrupt_prob}, noise={noise_label}")
     print(f"  {'method':<26} {'mean K':>8} {'max K':>6} {'success':>9}")
 
-    results = {"c_lcm": [], "b_trick": [], "hybrid": []}
+    results = {"c_lcm": [], "b_trick": [], "hybrid": [], "pure_rv": []}
+    S_rv = rv_scale_S(N, d, A=2.0)
 
     for t in range(n_trials):
         rng_py = random.Random(seed + t * 1000)
@@ -499,10 +519,38 @@ def end_to_end_factor_comparison_v2(
                     break
         results["hybrid"].append(method3_K)
 
+        # 방법 4: pure RV — filter (S=2^(An/d)) → Algorithm B.1 LLL → b-sqrt factor.
+        # 필터는 m≥2d 샘플에서 의미가 있으므로 K = max(2d, 1) 부터 시도.
+        method4_K = max_runs
+        for K in range(max(1, 2 * d), max_runs + 1):
+            samples_so_far = runs[:K]
+            try:
+                filtered = filter_uncorrupted(
+                    samples_so_far, target_size=K, S=S_rv,
+                    N=N, d=d,
+                )
+            except Exception:
+                continue
+            if len(filtered) < d:
+                continue
+            try:
+                relations = regev_algorithm_b1(filtered, setup.a, N)
+            except Exception:
+                continue
+            if not relations:
+                continue
+            factor, _ = try_factor_via_b_squareroot(relations, setup)
+            if factor is not None and 1 < factor < N:
+                method4_K = K
+                break
+        results["pure_rv"].append(method4_K)
+
+    print(f"  (S_RV = 2^({math.ceil(2.0 * N.bit_length() / d)}) = {S_rv})")
     for label, key in [
         ("(C) lcm only", "c_lcm"),
         ("Regev b-trick", "b_trick"),
         ("(C)+b-trick hybrid", "hybrid"),
+        ("pure RV (filter+B.1+sqrt)", "pure_rv"),
     ]:
         ks = results[key]
         succ = sum(1 for k in ks if k < max_runs)

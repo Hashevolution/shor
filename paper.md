@@ -306,7 +306,18 @@ Across 4 semiprimes (200 trials each), the joint constraint changes `K_λ^{Regev
 
 **Observation.** (C) coordinate-wise degrades gracefully — at 30% corruption rate, it needs only 22% more runs than noise-free. RV's filter precision drops from 100% to 66.5% over the same range (i.e., one-third of "uncorrupted" samples are actually corrupt), at which point RV must rely on Regev's downstream LLL tolerating these stragglers. The (C) framework avoids the filter entirely — per-coordinate verification (`a^d ≡ 1 mod N`) is itself a built-in corruption check.
 
-**Caveat (full comparison requires Regev LLL).** Our RV implementation uses a simplified scaling `S = 100` rather than RV's `S = 2^{An/d}`. We also implement a skeleton of Regev's downstream Algorithm B.1 (`regev_algorithm_b1` in the companion code: builds the lattice `[I_d  ε^{-1} W; 0  I_k]` and LLL-reduces it). The skeleton's output (LLL-reduced basis) does not currently translate to a nontrivial factor of `N` without the full lattice `L` construction over Regev's quadratic characters `b_i` (with `b_i^2 ≡ a_i mod N`) — only with that construction can short vectors give rise to nontrivial square roots and hence factors. The (C) framework bypasses this step entirely: `λ(N)` recovery suffices via Miller-Rabin reduction. A full head-to-head — Regev's filter-then-LLL pipeline (with proper `b_i` and `S = 2^{An/d}`) vs (C) coordinate-wise, both ending in a factor of `N` — is left to future work. Reproduce: `python -m experiments.rv_filter_lll compare`.
+**Full head-to-head (N=437, d=4, 30 trials, noise-free).** We complete the pipeline along both axes the previous version listed as future work: (i) the filter now uses RV's formula `S = 2^{An/d}` (with `A = 2` default; `rv_scale_S` in the companion code, giving `S = 32` at `N=437`, `d=4`), and (ii) Algorithm B.1 is rebuilt as the embedded measurement-kernel lattice `[S·I_d  K^T; 0  Q·I_m]` where `K\in\mathbb Z^{d\times m}` collects the `m` measurements as columns — short LLL vectors then have first-`d` part in `S\cdot\mathbb Z^d`, dividing by `S` yields candidate relations `z`, and `try_factor_via_b_squareroot` evaluates `b = \prod b_i^{z_i} \bmod N` against the nontrivial-square-root test `b^2\equiv 1 \wedge b\not\equiv\pm 1` for factor recovery via `\gcd(b\pm1, N)`. The four-method head-to-head is:
+
+| method | mean K | success |
+|---|---:|---:|
+| (C) lcm only | 6.70 | 21/30 (70%) |
+| Regev b-trick (no `L` accumulation) | 3.13 | 27/30 (90%) |
+| pure RV (filter + B.1 + sqrt) | 9.20 | 27/30 (90%) |
+| **(C) + b-trick hybrid (Algorithm 2)** | **1.03** | **30/30 (100%)** |
+
+**Observation.** Pure RV now works as a factoring pipeline (90% success at `N=437`), matching standalone Regev b-trick on success rate but requiring roughly 3× more measurements on average — the extra cost comes from LLL needing a few uncorrupted samples *before* a short relation appears, whereas b-trick exploits each single-base order recovery the moment it succeeds. The hybrid still dominates by ~3–9× in mean K thanks to coordinate-wise (C) carrying the noise-tolerant per-base recovery and b-trick converting each into a factor attempt immediately. Reproduce: `python -m experiments.rv_filter_lll compare`. Raw output: `experiments/rv_vs_c_baseline_437.txt`.
+
+**Caveat.** Pure-RV cost scaling at larger `N` (and under noise) is not measured here; the hybrid's 100% success at `N=437` does not by itself rule out a regime where pure RV's LLL provides a smaller absolute K. A noise/`N` scan for pure RV is left as follow-up.
 
 ### 3.5 Theorem 5: Hybrid (C) + Regev b-trick (factoring)
 

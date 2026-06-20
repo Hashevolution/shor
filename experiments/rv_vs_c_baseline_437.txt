@@ -1,0 +1,9 @@
+
+# End-to-end 인수 비교 v2: N=437, d=4, 30 trials
+# corrupt_p=0.0, noise=noise-free
+  method                       mean K  max K   success
+  (S_RV = 2^(5) = 32)
+  (C) lcm only                   6.70     20  21/30
+  Regev b-trick                  3.13     20  27/30
+  (C)+b-trick hybrid             1.03      2  30/30
+  pure RV (filter+B.1+sqrt)      9.20     20  27/30
