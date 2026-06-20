@@ -91,9 +91,21 @@ $M_2(|\psi_f\rangle)>0\iff f$ 비선형 $\iff U_f$ 게이트분해가 비클리�
 $M_2$ 동반 증가; Simon($0/0$) vs Shor modexp($T_{\rm proxy}{=}4{\to}156,\ M_2{=}1.54{\to}5.23$).
 **2507.16543 Clifford-가림과 차별화**(오라클/추상화가 가림). `experiments/oracle_tcount_magic.py`.
 
-### 과제 E (마감용) — (A)(C) 선행 전문 대조
-정식 제출 전 RM↔증류/가중치열거자(A)와 Dicke/순열불변(C) 핵심 논문 **전문 1회 대조**
-(현재 식별·요약 수준). arXiv egress 허용 환경 필요(현 환경 WebFetch 전면 차단).
+### 과제 E ✅ 완료 (2026-06-18) — (A)(C)(D) 선행 전문 대조 종료
+사용자가 (A) 2308.05152, (C) 2402.08551, (D) 2311.08463 PDF 직접 제공 → 전문 정독 완료
+(`magic-prior-art.md` §5 244–249줄). 결론: **(D) 2311.08463 Eq(8) = flat-state 닫힌형 선점**
+이라 명제 4는 그 uniform-support 특수화 (정직 credit), **(A)** 가중치열거자→SRE *계산도구*
+(별개 트랙), **(C)** 순열대칭=대칭 support only (우리 임의-W 미점유). 부호↔magic 4갈래
+(A·B·C·D) 전문 대조 종료, 신규성 표는 §6 에 확정. v0.5.1 릴리스 노트에 반영됨.
+
+### 과제 F (신규, JAMES-DISCOVER D3 후속) — open sub-questions
+D3 (`experiments/discover_d3_jensen.py`) 가 $J(M,N)\propto 1/N$ 발견 후 남긴 두 항목:
+- **F1**: saturation boundary $M^2/N\to 1$ 에서 $J\cdot N$ 이 점근 $\kappa$ 아래로 떨어지는
+  현상 — 가법충돌 포화의 정량 해석 (현재 Adversary 가 경계만 명시).
+- **F2**: 희박영역 prefactor $\kappa(M)=J\cdot N$ 의 닫힌형 — 사전 $\{M,M^2,M(M{-}1),M^3,
+  M\log_2 M,1\}$ 최소부분집합 적합 실패(잔차 1.7–4.8%). 더 큰 사전 또는 비대각 결합항 필요.
+
+둘 다 로컬 계산만으로 가능, 외부 네트워크 불요. 우선순위 낮음(arXiv 제출 후 후속).
 
 ---
 
@@ -113,21 +125,22 @@ M3 (완료) ── 과제 B: 일반-M 닫힌형 = 가법에너지 (명제 4)
 M4 (완료) ── 과제 C+D: 명제 6 (상태 magic ⟺ 오라클 T-비용, 둘 다 f 아핀에서만 0)
    │          + Δ(M,N) 해석 전개: 명제 5′ (E[ξ] 정확 닫힌형, MC 상대오차≤1.4e-2)
    │          산출: oracle_tcount_magic.py, marker_code_expected.py
-   │          잔여: 과제 E(A·C 선행 전문 대조; 네트워크 필요)
    ▼
-M5 (진행) ── 논문화 초안 작성: `magic-paper-draft.md` (명제 1–6 + 사다리 + 부호이론 통합)
-              주 인용 2605.05347(Shor 선점) / 최근접이웃 (B) 차별화 / DTQW 2편 DOI
-              잔여: 과제 E 전문 대조 후 정식 인용 확정 → arXiv 제출본
+M5 (완료) ── 논문화 초안 + 과제 E 전문 대조 종료(2026-06-18) + D3 흡수(2026-06-19, v0.5.1)
+   │          산출: magic-paper-draft.md (명제 1–6 + 사다리 + 부호이론), magic-prior-art.md
+   │          §5 (A·B·C·D 4갈래 전문 대조 종료), paper.md §9 D3 단락
+   │          v0.5.1 DOI: 10.5281/zenodo.20767685
+   ▼
+M6 (다음) ── arXiv 제출본 확정: magic-paper-draft.md → LaTeX → arXiv (endorsement 등 외부절차)
+              병행 가능: 과제 F (D3 후속 — saturation boundary + κ(M) 닫힌형)
 ```
 
-**의존성·우선순위:** A는 B와 독립 착수 가능하나, B(닫힌형)가 A(평균식)의 해석 골격을 줄 수 있어
-**A·B 병행**이 효율적. C·D는 A·B와 독립(언제든). E는 제출 직전 마감 작업.
+**의존성·우선순위 (현재):** M1–M5 완료. M6 (arXiv 제출) 은 외부 절차 (endorsement,
+포맷 변환) 가 주이므로 사용자 주도. 과제 F (D3 후속) 는 병행 가능, 로컬만으로 충분.
 
-**위험·완화:**
-- *A 닫힌형이 안 닫힐 위험* → 점근식 + 수치 fit(이미 $\tau^{0.32}$ 추세 확보)로 후퇴 가능.
-- *시뮬레이션 규모 한계*($n\lesssim14$–16, $O(n4^n)$) → 해석적 푸리에 경로로 큰 $n$ 곡선 보강.
+**위험·완화 (잔여):**
 - *신규성 잠식*(2605.05347 출판 시) → 다항우위(Grover)·support 인코딩 각도는 (B)(2605)와 직교, 방어선 유지.
-- *환경 egress 차단* → A·B·C는 로컬 계산만으로 가능; E만 외부 네트워크 필요.
+- *arXiv 카테고리 endorsement* → 사용자 계정 보유 여부 확인 필요 (`quant-ph`).
 
 ---
 
